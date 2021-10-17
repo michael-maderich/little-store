@@ -1,0 +1,34 @@
+@charset "ISO-8859-1";
+#registration-panel h2 {
+    font-family: 'Gravitas One', Verdana, Geneva, Tahoma, sans-serif;
+}
+form input {
+    margin-bottom:1em;
+}
+form .text-field {
+    width:16em;
+}
+#city {width:13em;}
+#left-img-content {
+    float:left;
+    position:absolute;
+    top:20em;
+    left:10%;
+    z-index:-1;
+}
+#left-img-content img {
+    height:20em;
+}
+#right-img-content {
+    float:right;
+    position:absolute;
+    top:20em;
+    right:10%;
+    z-index:-1;
+}
+#right-img-content img {
+    height:20em;
+}
+.has-error {
+	color:#cc0000;
+}

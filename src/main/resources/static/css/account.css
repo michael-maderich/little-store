@@ -1,0 +1,35 @@
+@charset "ISO-8859-1";
+#profile-panel h2, #profile-panel h5 {
+	font-family: 'Gravitas One', Verdana, Geneva, Tahoma, sans-serif;
+}
+#profile-panel h6 {
+	font-family: 'Inknut Antiqua', Verdana, Geneva, Tahoma, sans-serif;
+}
+form input {
+	margin-bottom:1em;
+}
+form .text-field {
+	width:16em;
+}
+#city {width:13em;}
+
+#left-img-content {
+	float:left;
+	position:absolute;
+	top:20em;
+	left:10%;
+	z-index:-1;
+}
+#left-img-content img {
+	height:20em;
+}
+#right-img-content {
+	float:right;
+	position:absolute;
+	top:20em;
+	right:10%;
+	z-index:-1;
+}
+#right-img-content img {
+	height:20em;
+}

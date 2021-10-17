@@ -1,0 +1,77 @@
+@charset "ISO-8859-1";
+
+/* Extra small devices (portrait phones, less than 576px)
+// No media query since this is the default in Bootstrap*/
+
+/* Extra-small devices */
+@media (min-width: 0px) { html {font-size:10px;} }
+
+/* Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) { html {font-size:12px;} }
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) { html {font-size:14px;} }
+
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) { html {font-size:16px;} }
+
+/* Extra large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) { html {font-size:16px;} }
+
+html {height:100%;}
+body {height:100%; background-color:powderblue;}
+header {
+	width:100%;
+	background-color:skyblue;
+	/* position:fixed;
+	top:0; left:0; */
+	padding:.75em;
+	height:3.5em;
+}
+#logoutbtn {
+	margin-left:.5em;
+} 
+
+nav {
+	float:left;
+}
+#action-icons {
+	float:right;
+}
+#action-icons a {
+	padding-left:1em;
+	padding-right:1em;
+}
+/*#action-icons span, #action-icons i {
+	position:relative;
+	bottom:.3em;
+	display:inline-block;
+}*/
+
+#side-nav {
+	float:left;
+	height:0px;
+/*	width:8em;*/
+	background-color:skyblue;
+	max-width:15%;
+}
+.subNavItem {
+	padding-left:1em;
+	font-size:.8rem;
+}
+
+#center-content {
+	text-align:center;
+	padding-top:3em;
+	/*margin-right:8em;  /*match site-map width*/
+}
+
+footer {
+	position:fixed;
+	bottom:0;right:0;
+	text-align:right;
+	font-size:.75em;
+	}
+.footer-container {
+	padding-right:1.5em;
+}
