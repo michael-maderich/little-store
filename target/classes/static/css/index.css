@@ -1,0 +1,10 @@
+@charset "ISO-8859-1";
+	   #center-content p {
+			font-family: 'Inknut Antiqua', Verdana, Geneva, Tahoma, sans-serif;
+			font-size: 4em;
+		}
+		#center-content img {
+			margin-top:2em;
+			width:40%;
+			opacity:88%;
+		}

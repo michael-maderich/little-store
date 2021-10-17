@@ -1,0 +1,17 @@
+@charset "ISO-8859-1";
+#login-panel h2 {
+	font-family: 'Gravitas One', Verdana, Geneva, Tahoma, sans-serif;
+}
+form input {
+	margin-bottom:1em;
+}
+form .text-field {
+	width:16em;
+}
+
+/* #bottom-img-content {
+}*/
+
+/* To re-center password field after addition of eye */
+#password {margin-left:1.3em;}
+.fa-eye {width:1em;}
