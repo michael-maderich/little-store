@@ -20,10 +20,12 @@ public class SendSimpleEmail {
 		Properties props = new Properties();
 		props.put("mail.smtp.auth", "true");
 		props.put("mail.smtp.host", emailSMTPserver);
-	 
+		props.put("mail.smtp.socketFactory.port", "465");
+		props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+		props.put("mail.smtp.port", "465");
 		try { 			
 			Authenticator auth = new SMTPAuthenticator();
-	                Session session = Session.getInstance(props, auth);
+			Session session = Session.getInstance(props, auth);
 			Message message = new MimeMessage(session);
 			message.setFrom(new InternetAddress(senderEmailId));
 			message.setRecipients(Message.RecipientType.TO, 
