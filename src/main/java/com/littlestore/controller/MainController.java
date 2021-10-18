@@ -40,6 +40,8 @@ import com.littlestore.service.ProductService;
 import com.littlestore.service.SecurityService;
 import com.littlestore.validator.CustomerFormValidator;
 
+import com.littlestore.utils.SendSimpleEmail;
+
 /**
  * @author Michael Maderich
  *
@@ -533,8 +535,125 @@ public class MainController {
 			customerOrder.setOrderItems(orderItems);
 			orderService.save(customerOrder);
 			cartService.delete(customerCart);				// Remove the cart from DB
-			
-			// Remove sold qtys from database !!!!!!!!!!!
+
+			// Send order confirmation to customer's email address
+			String emailBody =
+			"<div id='customer-panel'>/n"+
+			"<h2>Thank You For Your Order!</h2>/n"+
+			"<h4 class='checkoutHeader'>Customer Details</h4>/n"+
+				"<table id='customer-table'>/n"+
+					"<tr>/n"+
+						"<td class='customer_td_label'>/n"+
+							"<label for='email'>Name:</label>/n"+
+						"</td>/n"+
+						"<td colspan=2 class='customer_td_input'>/n"+
+						"<input id='customerName' name='customerName' type='text' placeholder=' ${customerInfo.firstName} ${customerInfo.lastName}' class='info-field' disabled></input>/n"+
+						"</td>/n"+
+						"<td class='customer_td_label'>/n"+
+							"<label for='email'>Email:</label>/n"+
+						"</td>/n"+
+						"<td colspan=2 class='customer_td_input'>/n"+
+						"<input name='email' id='email' type='email' placeholder=' ${customerInfo.email}' class='info-field' disabled></input>/n"+
+					"</td>/n"+
+					"<td class='customer_td_label'>/n"+
+							"<label for='phone'>Phone:</label>/n"+
+						"</td>/n"+
+						"<td colspan=2 class='customer_td_input'>/n"+
+						"<input name='phone' id='phone' type='text' placeholder=' ${not empty customerInfo.phone ? customerInfo.phone : `(None Supplied)`}' class='info-field' disabled></input>/n"+
+					"</td>/n"+
+					"</tr>/n"+
+					"<tr>/n"+
+						"<td colspan=2 class='customer_td_label'>/n"+
+							"<label for='address'>Meet-Up Address:</label>/n"+
+						"</td>/n"+
+						"<td colspan=2 class='customer_td_input'>/n"+
+						"<input name='address' id='address' type='text' placeholder=' ${customerInfo.address}' class='text-field' disabled></input>/n"+
+					"</td>/n"+
+						"<td class='customer_td_label'>/n"+
+							"<label for='city'>City:</label>/n"+
+						"</td>/n"+
+						"<td colspan=2 class='customer_td_input'>/n"+
+						"<input name='city' id='city' type='text' placeholder=' ${customerInfo.city}' class='text-field' disabled></input>/n"+
+					"</td>/n"+
+						"<td class='customer_td_label'>/n"+
+						"<label for='state'>State:</label>/n"+
+						"</td>/n"+
+						"<td class='customer_td_input'>/n"+
+						"<c:forEach items='${listStates}' var='st'>/n"+
+						"<c:if test='${st==customerInfo.state}'>/n"+
+							"<input name='state' id='state' type='text' placeholder=' ${st}' class='text-field' disabled></input>/n"+
+						"</c:if>/n"+
+					"</c:forEach>/n"+
+					"</td>/n"+
+				"</tr>/n"+
+				"<tr>/n"+
+					"<td colspan=2 class='customer_td_label'>/n"+
+						"<label for='paymentType'>Payment Type:</label>/n"+
+					"</td>/n"+
+					"<td colspan=2 class='customer_td_input'>/n"+
+						"<c:forEach items='${listPayTypes}' var='payType'>/n"+
+						"<c:if test='${payType==customerInfo.preferredPayment}'>/n"+
+							"<input name='paymentType' id='paymentType' type='text' placeholder=' ${payType}' class='text-field' disabled>/n"+
+						"</c:if>/n"+
+					"</c:forEach>/n"+
+					"</td>/n"+
+					"<td colspan=2 class='customer_td_label'>/n"+
+						"<label for='paymentHandle'>Payment Handle:</label>/n"+
+					"</td>/n"+
+					"<td colspan=2 class='customer_td_input'>/n"+
+						"<input type='text' id='paymentHandle' name='paymentHandle' placeholder=' ${customerInfo.paymentHandle}' class='text-field' disabled/>/n"+
+					"</td>/n"+
+				"</tr>/n"+
+			"</table>/n"+
+		"</div>/n"+
+		"<div id='checkout-panel'>/n"+
+			"<h4 class='checkoutHeader'>Order Details</h4>/n"+
+			"<div class='orderDetailHeader'><h4>/n"+
+				"<span>Order #${customerOrder.orderNum}</span>/n"+
+				"<span>Order Date:"+
+					"<fmt:parseDate  value='${customerOrder.orderDateTime}'  type='date' pattern='yyyy-MM-dd' var='parsedDate' />/n"+
+					"<fmt:formatDate value='${parsedDate}' type='date' pattern='MM-dd-yyyy' />/n"+
+				"</span>/n"+
+				"<span>Status: ${customerOrder.status}</span>/n"+
+			"</h4></div>/n"+
+			"<c:set var='orderTotal' value='${0}' />/n"+
+			"<table id='checkout-table'>/n"+
+				"<thead>/n"+
+					"<tr>/n"+
+						"<th></th>/n"+
+						"<th>Item</th>/n"+
+						"<th>Scent/Style</th>/n"+
+						"<th>Size</th>/n"+
+						"<th>Quantity</th>/n"+
+						"<th>Unit Price</th>/n"+
+						"<th>Subtotal</th>/n"+
+					"</tr>/n"+
+				"</thead>/n"+
+				"<tbody>/n"+
+				"<c:forEach items='${customerOrder.orderItems}' var='orderItem'>/n"+
+					"<tr>/n"+
+						"<td class='checkout_image_panel'><img src='${orderItem.product.image}' alt='${orderItem.product.description}' /></td>/n"+
+						"<td>${orderItem.product.name}</td>/n"+
+						"<td>${orderItem.product.options}</td>/n"+
+						"<td>${orderItem.product.size}</td>/n"+
+						"<td>${orderItem.qty}</td>/n"+
+						"<td><fmt:formatNumber value = '${orderItem.price}' type = 'currency' /></td>/n"+
+						"<td><fmt:formatNumber value = '${orderItem.qty * orderItem.price}' type = 'currency' /></td>/n"+
+					"</tr>/n"+
+					"<c:set var='orderTotal' value='${orderTotal + orderItem.qty * orderItem.price}' />/n"+
+				"</c:forEach></tbody>/n"+
+				"<tfoot>/n"+
+					"<tr>/n"+
+						"<td  colspan=6 style='text-align:right;' class='checkout_subtotal_panel'>Total:</td>/n"+
+						"<td class='checkout_subtotal_panel'><fmt:formatNumber value = '${orderTotal}' type = 'currency' /></td>/n"+
+					"</tr>/n"+
+				"</tfoot>/n"+
+			"</table>/n"+
+		"</div>";
+			new SendSimpleEmail(customer.getEmail(), 
+					 "Little Store Order #"+customerOrder.getOrderNum()+" Confirmation",
+					 emailBody);
+
 			
 			model.addAttribute("customerInfo", customer);
 			model.addAttribute("customerOrder", customerOrder);

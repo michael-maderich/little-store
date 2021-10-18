@@ -16,6 +16,7 @@ public class Utils {
 		LocalDate getLocalDate = date.toInstant().atZone(timeZone).toLocalDate();
 		return getLocalDate.getYear();
 	}
+	
 	// Products in the cart, stored in Session.
 	public static Cart getCartInSession(HttpServletRequest request) {
 
@@ -40,5 +41,5 @@ public class Utils {
 
 	public static Cart getLastOrderedCartInSession(HttpServletRequest request) {
 		return (Cart) request.getSession().getAttribute("lastOrderedCart");
-	}
+	}	
 }
