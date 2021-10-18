@@ -1,6 +1,6 @@
 package com.littlestore.utils;
 
-import java.time.LocalDate;
+//import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
 
@@ -11,10 +11,11 @@ import com.littlestore.entity.Cart;
 public class Utils {
 
 	public static int currentYear() {
-		Date date = new Date();
-		ZoneId timeZone = ZoneId.systemDefault();
-		LocalDate getLocalDate = date.toInstant().atZone(timeZone).toLocalDate();
-		return getLocalDate.getYear();
+//		Date date = new Date();
+//		ZoneId timeZone = ZoneId.systemDefault();
+//		LocalDate getLocalDate = date.toInstant().atZone(timeZone).toLocalDate();
+//		return getLocalDate.getYear();
+		return new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().getYear();
 	}
 	
 	// Products in the cart, stored in Session.

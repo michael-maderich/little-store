@@ -32,6 +32,7 @@
                     <h4 class="checkoutHeader">Customer Details</h4>
  					<table id="customer-table">
  						<tr>
+ 							<td></td>
  							<td class="customer_td_label">
  								<label for="email">Name:</label>
  							</td>
@@ -77,6 +78,7 @@
 								</c:if>
 							</c:forEach>
 							</td>
+							<td></td>
 						</tr>
 						<tr>
 							<td colspan=2 class="customer_td_label">

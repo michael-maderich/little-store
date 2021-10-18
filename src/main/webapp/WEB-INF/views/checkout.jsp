@@ -68,6 +68,7 @@
 					<form:form method="POST" modelAttribute="customerInfo" class="form-signin" action="/confirmation">
  					<table id="customer-table">
  						<tr>
+ 							<td></td>
  							<td class="customer_td_label">
  								<label for="email">Name:</label>
  							</td>
@@ -81,19 +82,20 @@
  								<label for="email">Email:</label>
  							</td>
  							<td colspan=2 class="customer_td_input">
-								<form:input path="email" id="email" type="email" class="info-field" disabled="true"></form:input>
+								<input id="email" type="email" placeholder=" ${customerInfo.email}" class="text-field" disabled></input>
 							</td>
 							<td class="customer_td_label">
  								<label for="phone">Phone:</label>
  							</td>
  							<td colspan=2 class="customer_td_input">
 								<form:input path="phone" id="phone" type="text"
-								value=" ${not empty customerInfo.phone ? customerInfo.phone : '(Or Other Contact)'}" class="info-field"></form:input>
+								placeholder=" (Or Other Contact)"
+								value=" ${not empty customerInfo.phone ? customerInfo.phone.trim() : ''}" class="text-field"></form:input>
 							</td>
  						</tr>
  						<tr>
  							<td colspan=2 class="customer_td_label">
- 								<label for="address">Meet-Up Address (Optional):<br/><span>(will be saved to profile)</span></label>
+ 								<label for="address">Meet-Up Address (Optional):<br/><span>(changes will be saved to profile)</span></label>
  							</td>
  							<td colspan=2 class="customer_td_input">
 								<form:input path="address" id="address" type="text" class="text-field"></form:input>
@@ -117,7 +119,7 @@
 						</tr>
 						<tr>
 							<td colspan=2 class="customer_td_label">
-								<label for="paymentType">Payment Type:</label>
+								<label for="paymentType">Payment Type (Optional):</label>
 							</td>
 							<td colspan=2 class="customer_td_input">
 								<form:select path="preferredPayment" name="preferredPayment">
