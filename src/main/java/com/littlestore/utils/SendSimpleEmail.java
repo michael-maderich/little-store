@@ -22,6 +22,7 @@ public class SendSimpleEmail {
 		props.put("mail.smtp.host", emailSMTPserver);
 		props.put("mail.smtp.socketFactory.port", "465");
 		props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+		props.put("mail.smtp.ssl.enable", true);
 		props.put("mail.smtp.port", "465");
 		try { 			
 			Authenticator auth = new SMTPAuthenticator();

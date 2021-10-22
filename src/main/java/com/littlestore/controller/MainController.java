@@ -439,7 +439,7 @@ public class MainController {
 				model.addAttribute("customerCart", customerCart);
 				return "redirect:/cart";
 			}
-			// Reorganize cart so it's ordered by category/subcategory\name/options/size
+			// Reorganize cart so it's ordered by category/subcategory/name/options/size
 			List<CartDetail> cartItems = customerCart.getCartItems();
 			Collections.sort(cartItems);			// CartDetail entity contains compareTo() method
 			model.addAttribute("customerInfo", customer);
@@ -465,7 +465,7 @@ public class MainController {
 				model.addAttribute("customerCart", customerCart);
 				return "redirect:/cart";
 			}
-			// Reorganize cart so it's ordered by category/subcategory\name/options/size
+			// Reorganize cart so it's ordered by category/subcategory/name/options/size
 			List<CartDetail> cartItems = customerCart.getCartItems();
 			Collections.sort(cartItems);			// CartDetail entity contains compareTo() method
 			model.addAttribute("customerInfo", customer);
