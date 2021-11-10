@@ -35,7 +35,7 @@ public class SendSimpleEmail {
 //			message.setText(messageText);
 	 
 			Transport.send(message); 
-			System.out.println("Email sent successfully."); 
+			System.out.println("Email sent to "+receiverEmail+" successfully."); 
 	    } catch (Exception e) {
 		e.printStackTrace();
 	    System.err.println("Error in sending email.");
