@@ -261,9 +261,9 @@ public class MainController {
 								@RequestParam(value = "itemQty", defaultValue="0") String itemQty) {
 
 		String referer = request.getHeader("Referer");						// http://localhost:8080/xxxxxx - we just want the "xxxxxx"
-		if (referer==null) return "redirect:/cart";					// If page request didn't come from the cart, reject it and return to cart
+		if (referer==null) return "redirect:/cart";					// If page request didn't come from product page, reject and return to cart
 		else {
-			referer = referer.substring( referer.indexOf('/', referer.indexOf("//")+2) );		// everything after root '/', inlcuding the /
+			referer = referer.substring( referer.indexOf('/', referer.indexOf('/')+2) );		// everything after root '/', including the /
 			referer = referer.substring(0, (referer.indexOf('?') != -1) ? referer.indexOf('?') : referer.length());	// remove the query string if exists
 			if (!referer.startsWith("/category")) return "redirect:/"+referer;
 		}
@@ -271,9 +271,9 @@ public class MainController {
 		Customer customer = getLoggedInUser();
 		Cart customerCart;
 		Product purchasedProduct;
-		int purchasedQty = Integer.parseInt(itemQty);		// Can't throw exception because referer string format already checked
+		int purchasedQty = Integer.parseInt(itemQty);		// Can't throw exception because referrer string format already checked
 		int addedItemQty = purchasedQty;
-		try {												// Irrelevant since referer string checked, but maybe missed something
+		try {												// Irrelevant since referrer string checked, but maybe missed something
 			purchasedProduct = productService.get(upc);
 		}
 		catch (NoSuchElementException e) {
@@ -292,7 +292,7 @@ public class MainController {
 				customerCart.setCustomer(customer);
 				customerCart.setCartCreationDateTime(LocalDateTime.now());
 				customerCart.setCartItems(new ArrayList<CartDetail>());
-				cartService.save(customerCart);					// New cart needs to be saved before items can be added because of FK relationship
+				cartService.save(customerCart);					// New cart needs to be saved before items can be added because of Foreign Key relationship
 			}
 			List<CartDetail> cartItems = new ArrayList<>(customerCart.getCartItems());
 			int lineNum = 1;

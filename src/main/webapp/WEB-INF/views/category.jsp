@@ -52,7 +52,7 @@
 								<td class="customerQty">
 									<input type="hidden" id="upc${item.upc}" name="upc" value="${item.upc}" />
 									<label for="itemQty">
-										<input type="number" id="itemQty${item.upc}" name="itemQty" min="1" max="${item.stockQty}" step="1" value="0" ${item.stockQty==0 ? 'disabled' : ''} />
+										<input type="number" id="itemQty${item.upc}" name="itemQty" min="0" max="${item.stockQty}" step="1" value="0" ${item.stockQty==0 ? 'disabled' : ''} />
 									</label>
 								</td>
 								<td class="button_panel">
