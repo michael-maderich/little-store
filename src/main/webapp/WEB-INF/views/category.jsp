@@ -29,7 +29,7 @@
 					<table id="product-table">
 						<thead>
 							<tr>
-								<th>Click to<br /> Enlarge</th>
+								<th>(Click to<br /> Enlarge)</th>
 								<th>Item</th>
 								<th>Scent/Style</th>
 								<th>Size</th>

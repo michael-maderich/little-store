@@ -265,7 +265,7 @@ public class MainController {
 		else {
 			referer = referer.substring( referer.indexOf('/', referer.indexOf('/')+2) );		// everything after root '/', including the /
 			referer = referer.substring(0, (referer.indexOf('?') != -1) ? referer.indexOf('?') : referer.length());	// remove the query string if exists
-			if (!referer.startsWith("/category")) return "redirect:/"+referer;
+			if (!referer.startsWith("/category")) return "redirect:"+referer;
 		}
 
 		Customer customer = getLoggedInUser();
@@ -273,7 +273,7 @@ public class MainController {
 		Product purchasedProduct;
 		int purchasedQty = Integer.parseInt(itemQty);		// Can't throw exception because referrer string format already checked
 		int addedItemQty = purchasedQty;
-		if (addedItemQty == 0) return "redirect:/"+referer;	// 0 is a valid qty option, but we don't want to add that to the cart
+		if (addedItemQty == 0) return "redirect:"+referer;	// 0 is a valid qty option, but we don't want to add that to the cart
 		try {												// Irrelevant since referrer string checked, but maybe missed something
 			purchasedProduct = productService.get(upc);
 		}
