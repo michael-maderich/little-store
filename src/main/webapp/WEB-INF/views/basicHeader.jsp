@@ -7,7 +7,7 @@
 				Menu
 			</nav> -->
 			<nav>
-				<input type="text" placeholder=" Search">
+				<input type="text" placeholder=" Search (Out of Order)" disabled>
 			</nav>
  			<div id="action-icons">
 				<form id="logoutForm" method="POST" action="${contextPath}/logout">

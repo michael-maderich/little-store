@@ -35,7 +35,7 @@
 								<th>Size</th>
 								<th>Price</th>
 								<th>Quantity<br />Available</th>
-								<th>Qty<br />to Add</th>
+								<th>Quantity<br />to Add</th>
 								<th></th>
 							</tr>
 						</thead>
@@ -61,7 +61,7 @@
 								<span>
 									${ addedUpc eq item.upc ? '<span style="color:blue;">'
 									.concat(addedItemQty).concat(' ').concat(item.name).concat(' ').concat(item.options)
-									.concat(' ').concat(item.size).concat(' added to cart</span> ') : ''}
+									.concat(' ').concat(item.size).concat(' added to <a href="/cart" alt="View Cart" title="View Cart">cart</a></span> ') : ''}
 								</span>
 							</tr>
 						</form>
