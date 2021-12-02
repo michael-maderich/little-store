@@ -273,6 +273,7 @@ public class MainController {
 		Product purchasedProduct;
 		int purchasedQty = Integer.parseInt(itemQty);		// Can't throw exception because referrer string format already checked
 		int addedItemQty = purchasedQty;
+		if (addedItemQty == 0) return "redirect:/"+referer;	// 0 is a valid qty option, but we don't want to add that to the cart
 		try {												// Irrelevant since referrer string checked, but maybe missed something
 			purchasedProduct = productService.get(upc);
 		}
