@@ -55,6 +55,10 @@ public class ProductService {
 //		return repo.findByCategoryMainOrderByDescription(categoryName);
 	}
 
+	public List<Product> findByCategoryMainMinQtySorted(String categoryName, int minQty) {
+		return repo.findByCategoryMainAndStockQtyGreaterThanOrderByCategorySpecificAscNameAscOptionsAscSizeAsc(categoryName, minQty);
+	}
+    
 	public List<String> listCategorySpecificUnderMain(String categoryMain) {
 		return repo.findAllCategorySpecificUnderMainAsc(categoryMain);
 	}	 

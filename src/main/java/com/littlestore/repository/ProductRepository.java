@@ -20,10 +20,12 @@ public interface ProductRepository extends CrudRepository<Product, String> {
 	public List<String> findAllCategoryMainAsc();
     
 	public List<Product> findByCategoryMain(String categoryName);
-	
+		
 //	public List<Product> findByCategoryMainOrderByDescription(String categoryName);
 	
 	public List<Product> findByCategoryMainOrderByCategorySpecificAscNameAscOptionsAscSizeAsc(String categoryName);
+    
+	public List<Product> findByCategoryMainAndStockQtyGreaterThanOrderByCategorySpecificAscNameAscOptionsAscSizeAsc(String categoryName, int minQty);
     
 //	public List<String> findAllDistinctCategorySpecificGroupByCategoryMainOrderByCategorySpecific();
 	

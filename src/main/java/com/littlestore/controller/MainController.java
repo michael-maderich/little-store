@@ -210,8 +210,8 @@ public class MainController {
 	public String listItemsInCategory(Model model, @PathVariable(name="categoryName") String categoryName,
 										@RequestParam(value = "addedUpc", defaultValue="") String addedUpc,
 										@RequestParam(value = "addedItemQty", defaultValue="0") String addedItemQty) {
-		List<Product> itemList = productService.findByCategoryMainSorted(categoryName);
-		for (Product p : itemList) if (p.getStockQty() == 0) itemList.remove(p);	// Remove 0 stock items
+		List<Product> itemList = productService.findByCategoryMainMinQtySorted(categoryName, 0);
+//		List<Product> itemList = productService.findByCategoryMainSorted(categoryName);
 		boolean goodLink = false;
 		for (Product p : itemList) if ( p.getCategoryMain().equals(categoryName) ) goodLink = true;
 		if (!goodLink) return "redirect:/";
