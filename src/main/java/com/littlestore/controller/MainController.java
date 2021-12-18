@@ -211,6 +211,7 @@ public class MainController {
 										@RequestParam(value = "addedUpc", defaultValue="") String addedUpc,
 										@RequestParam(value = "addedItemQty", defaultValue="0") String addedItemQty) {
 		List<Product> itemList = productService.findByCategoryMainSorted(categoryName);
+		for (Product p : itemList) if (p.getStockQty() == 0) itemList.remove(p);	// Remove 0 stock items
 		boolean goodLink = false;
 		for (Product p : itemList) if ( p.getCategoryMain().equals(categoryName) ) goodLink = true;
 		if (!goodLink) return "redirect:/";
