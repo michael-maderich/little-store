@@ -242,7 +242,8 @@ public class MainController {
 										@PathVariable(name="subCategoryName") String subCategoryName, Model model,
 										@RequestParam(value = "addedUpc", defaultValue="") String addedUpc,
 										@RequestParam(value = "addedItemQty", defaultValue="0") String addedItemQty) {
-		List<Product> itemList = productService.findByCategorySpecificSorted(subCategoryName);
+		List<Product> itemList = productService.findByCategorySpecificMinQtySorted(subCategoryName, 0);
+//		List<Product> itemList = productService.findByCategorySpecificSorted(subCategoryName);
 		boolean goodLink = false;
 		for (Product p : itemList) if ( p.getCategoryMain().equals(categoryName) 
 									&& p.getCategorySpecific().equals(subCategoryName) ) goodLink = true;

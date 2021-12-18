@@ -71,6 +71,10 @@ public class ProductService {
 		return repo.findByCategorySpecificOrderByNameAscOptionsAscSizeAsc(subCategoryName);		
 	}
 	
+	public List<Product> findByCategorySpecificMinQtySorted(String subCategoryName, int minQty) {
+		return repo.findByCategorySpecificAndStockQtyGreaterThanOrderByNameAscOptionsAscSizeAsc(subCategoryName, minQty);
+	}
+	
 /*	public PaginationResult<Product> queryProducts(int page, int maxResult, int maxNavigationPage, String likeName) {
 		String sql = "Select new " + Product.class.getName() //
 				+ "(p.code, p.name, p.price) " + " from "//

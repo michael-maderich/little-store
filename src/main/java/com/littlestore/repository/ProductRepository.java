@@ -38,4 +38,5 @@ public interface ProductRepository extends CrudRepository<Product, String> {
     
 	public List<Product> findByCategorySpecificOrderByNameAscOptionsAscSizeAsc(String subCategoryName);
 
+	public List<Product> findByCategorySpecificAndStockQtyGreaterThanOrderByNameAscOptionsAscSizeAsc(String subCategoryName, int minQty);
 }
