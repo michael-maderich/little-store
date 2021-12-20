@@ -63,9 +63,15 @@ public class MainController {
 
 	private List<String> listPayTypes = Stream.of(Customer.PaymentMethods.values()).map(Enum::name).collect(Collectors.toList());
 	
-	private	List<String> getNavMenuItems() {return productService.listCategoryMain();}
+	private	List<String> getNavMenuItems() {
+//		return productService.listCategoryMain();
+		return productService.listCategoryMainWithStock();
+	}
 
-	private List<String> getNavSubMenuItems(String categoryName) {return productService.listCategorySpecificUnderMain(categoryName);}
+	private List<String> getNavSubMenuItems(String categoryName) {
+//		return productService.listCategorySpecificUnderMain(categoryName);
+		return productService.listCategorySpecificUnderMainWithStock(categoryName);
+	}
 	
 	private Customer getLoggedInUser() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -242,8 +248,8 @@ public class MainController {
 										@PathVariable(name="subCategoryName") String subCategoryName, Model model,
 										@RequestParam(value = "addedUpc", defaultValue="") String addedUpc,
 										@RequestParam(value = "addedItemQty", defaultValue="0") String addedItemQty) {
-		List<Product> itemList = productService.findByCategorySpecificMinQtySorted(subCategoryName, 0);
-//		List<Product> itemList = productService.findByCategorySpecificSorted(subCategoryName);
+		List<Product> itemList = productService.findByCategorySpecificMinQtySorted(subCategoryName, 0);	// Filter out 0 qty items
+//		List<Product> itemList = productService.findByCategorySpecificSorted(subCategoryName);			// Shows 0 qty items
 		boolean goodLink = false;
 		for (Product p : itemList) if ( p.getCategoryMain().equals(categoryName) 
 									&& p.getCategorySpecific().equals(subCategoryName) ) goodLink = true;

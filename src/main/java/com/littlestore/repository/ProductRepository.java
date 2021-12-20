@@ -18,7 +18,10 @@ public interface ProductRepository extends CrudRepository<Product, String> {
 	// Get list of Product Main Categories
 	@Query(value = "SELECT DISTINCT p.categoryMain FROM product p ORDER BY p.categoryMain", nativeQuery=true)
 	public List<String> findAllCategoryMainAsc();
-    
+
+	@Query(value = "SELECT DISTINCT p.categoryMain FROM product p WHERE p.stockQty != 0 ORDER BY p.categoryMain", nativeQuery=true)
+	public List<String> findAllCategoryMainWithStockAsc();
+
 	public List<Product> findByCategoryMain(String categoryName);
 		
 //	public List<Product> findByCategoryMainOrderByDescription(String categoryName);
@@ -29,11 +32,16 @@ public interface ProductRepository extends CrudRepository<Product, String> {
     
 //	public List<String> findAllDistinctCategorySpecificGroupByCategoryMainOrderByCategorySpecific();
 	
-	// Get list of Product Specific Categories Under the passed Main Category
+	// Get list of Product Specific Categories under the passed Main Category
 	@Query(value = "SELECT DISTINCT p.categorySpecific FROM product p "
 				+ "WHERE p.categoryMain = :mainCat ORDER BY p.categorySpecific", nativeQuery=true)
 	public List<String> findAllCategorySpecificUnderMainAsc(@Param("mainCat") String categoryMain);
-    
+
+	// Get list of Product Specific Categories that have stock, under the passed Main Category
+	@Query(value = "SELECT DISTINCT p.categorySpecific FROM product p WHERE p.stockQty !=0 "
+			+ "AND p.categoryMain = :mainCat ORDER BY p.categorySpecific", nativeQuery=true)
+public List<String> findAllCategorySpecificUnderMainWithStockAsc(@Param("mainCat") String categoryMain);
+
 	public List<Product> findByCategorySpecific(String categoryName);
     
 	public List<Product> findByCategorySpecificOrderByNameAscOptionsAscSizeAsc(String subCategoryName);

@@ -46,6 +46,10 @@ public class ProductService {
 		return repo.findAllCategoryMainAsc();
 	}	 
 	
+	public List<String> listCategoryMainWithStock() {
+		return repo.findAllCategoryMainWithStockAsc();
+	}	 
+	
 	public List<Product> findByCategoryMain(String categoryName) {
 		return repo.findByCategoryMain(categoryName);
 	}
@@ -61,6 +65,10 @@ public class ProductService {
     
 	public List<String> listCategorySpecificUnderMain(String categoryMain) {
 		return repo.findAllCategorySpecificUnderMainAsc(categoryMain);
+	}	 
+	
+	public List<String> listCategorySpecificUnderMainWithStock(String categoryMain) {
+		return repo.findAllCategorySpecificUnderMainWithStockAsc(categoryMain);
 	}	 
 	
 	public List<Product> findByCategorySpecific(String categoryName) {
