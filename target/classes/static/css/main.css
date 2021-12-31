@@ -50,10 +50,11 @@ nav {
 
 #side-nav {
 	float:left;
-	height:0px;
-/*	width:8em;*/
-	background-color:skyblue;
-	max-width:15%;
+	height:100%;
+	width:8em;
+	background-color:#cafae6;/*skyblue;*/
+	min-width:8rem;
+/* 	max-width:15%; */
 }
 .subNavItem {
 	padding-left:1em;
