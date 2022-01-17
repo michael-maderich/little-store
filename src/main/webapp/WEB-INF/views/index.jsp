@@ -20,7 +20,7 @@
 			<jsp:include page="sideNav.jsp"></jsp:include>
 			<div id="center-content"><!--  style="height:100%; background-image:url('images/Main_BG.jpg');opacity:50%;"> -->
 				<p>The Little Store</p>
-				<div id="sitemap">
+<%-- 				<div id="sitemap">
 					<table>
 						<tr>
 						<c:forEach items="${navMenuItems}" var="mainCategory">
@@ -30,7 +30,7 @@
 						</c:forEach>
 						</tr>
 					</table>
-				</div>
+				</div> --%>
 				<img src="images/Main_BG.jpg" alt="Stockpile Photo" />
 			</div>
 		</div>
