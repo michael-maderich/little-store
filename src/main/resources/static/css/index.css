@@ -8,3 +8,9 @@
 			width:40%;
 			opacity:88%;
 		}
+		table { margin: 0 auto; }
+		td {
+			font-family: 'Gravitas One', Verdana, Geneva, Tahoma, sans-serif;
+/* 			font-size: 1.25em; */
+			margin: 4em;
+		}

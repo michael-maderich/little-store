@@ -17,9 +17,20 @@
 			<jsp:include page="basicHeader.jsp"></jsp:include>
 		</header>
 		<div id="main-content">
-			<jsp:include page="sideNav.jsp"></jsp:include>
+<%-- 			<jsp:include page="sideNav.jsp"></jsp:include> --%>
 			<div id="center-content"><!--  style="height:100%; background-image:url('images/Main_BG.jpg');opacity:50%;"> -->
 				<p>The Little Store</p>
+				<div id="sitemap">
+					<table>
+						<tr>
+						<c:forEach items="${navMenuItems}" var="mainCategory">
+							<td>
+								<a class="nav-link" href="/category/${mainCategory}">${mainCategory}</a>
+							</td>
+						</c:forEach>
+						</tr>
+					</table>
+				</div>
 				<img src="images/Main_BG.jpg" alt="Stockpile Photo" />
 			</div>
 		</div>
