@@ -1,6 +1,7 @@
 package com.littlestore.entity;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -75,6 +76,14 @@ public class Customer implements Serializable {
 	@Basic
 	@Column(name="isEnabled", nullable=false, columnDefinition="boolean default true")	// Set to false if user account is deleted or disabled by admin
 	private Boolean isEnabled;
+	
+	@Basic
+	@Column(name="lastVisited", nullable=true)
+	private LocalDateTime lastVisited;
+	
+	@Basic
+	@Column(name="accountCreated", nullable=false)
+	private LocalDateTime accountCreated;
 	
  /*   @ManyToMany 
     @JoinTable(name = "customer_role",

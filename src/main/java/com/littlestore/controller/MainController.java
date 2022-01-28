@@ -106,7 +106,7 @@ public class MainController {
 		if (error != null) model.addAttribute("error", "Your username and/or password is invalid.");
 		if (logout != null) model.addAttribute("message", "You have been logged out successfully.");
 		model.addAttribute("navMenuItems", getNavMenuItems());
-		if (getLoggedInUser() != null) return "redirect:/account";		// If user is logged in, redirect to account page
+		if (getLoggedInUser() != null) return "/newitems";				// If user is logged in, redirect to newitems page
 		else return "/login";											// Otherwise, submit POST request to login page (handled by Spring Security)
 	}
 
@@ -261,6 +261,25 @@ public class MainController {
 		model.addAttribute("addedItemQty", addedItemQty);
 		model.addAttribute("itemList", itemList);
 		return "category";
+	}
+
+	@GetMapping("/newitems")
+	public String showNewItems(Model model) {//, @PathVariable(name="categoryName") String categoryName,
+//										@RequestParam(value = "addedUpc", defaultValue="") String addedUpc,
+//										@RequestParam(value = "addedItemQty", defaultValue="0") String addedItemQty) {
+		Customer customer = getLoggedInUser();
+		if (customer != null) {										// If a User is logged in, get their cart, (or null if it doesn't exist)
+			List<Product> itemList = productService.getNewItems(customer.getId());
+			Cart customerCart = cartService.findByCustomerEmail(customer.getEmail());
+			if (customerCart != null)
+			{		// If they have a cart, fill cartItems with their cart item quantities
+				List<CartDetail> cartItems = customerCart.getCartItems();
+				model.addAttribute("cartItems", cartItems);
+			}
+			model.addAttribute("itemList", itemList);
+		}
+		model.addAttribute("navMenuItems", getNavMenuItems());
+		return "newitems";
 	}
 
 	@GetMapping("/addToCart")

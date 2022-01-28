@@ -42,6 +42,10 @@ public class ProductService {
 		return repo.findByName(name);
 	}
 
+	public List<Product> getNewItems(int customerNumber) {
+		return repo.getNewItems(customerNumber);
+	}
+	
 	public List<String> listCategoryMain() {
 		return repo.findAllCategoryMainAsc();
 	}	 

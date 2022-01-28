@@ -15,6 +15,9 @@ public interface ProductRepository extends CrudRepository<Product, String> {
             + " OR p.description LIKE '%' || :keyword || '%'")
     public List<Product> findByName(@Param("keyword") String keyword);
 	
+	@Query(value = "SELECT p FROM Product p JOIN Customer c ON p.dateAdded > c.lastVisited WHERE c.id = :customerNum")// ORDER BY p.categoryMain ASC, p.categorySpecific ASC, p.name ASC, p.options ASC")
+	public List<Product> getNewItems(@Param("customerNum") int customerNumber);
+	
 	// Get list of Product Main Categories
 	@Query(value = "SELECT DISTINCT p.categoryMain FROM product p ORDER BY p.categoryMain", nativeQuery=true)
 	public List<String> findAllCategoryMainAsc();

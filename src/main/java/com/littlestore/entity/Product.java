@@ -1,7 +1,7 @@
 package com.littlestore.entity;
 
 import java.io.Serializable;
-
+import java.time.LocalDateTime;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -67,6 +67,10 @@ public class Product implements Serializable {
 	@Column(name="stockQty", nullable=false)
 	private int stockQty;
 
+	@Basic
+	@Column(name="dateAdded", nullable=false)
+	private LocalDateTime dateAdded;
+	
 /*	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="creationDate", nullable=false)
 	private Date createDate*/
