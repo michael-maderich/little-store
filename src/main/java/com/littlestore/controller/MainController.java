@@ -264,9 +264,11 @@ public class MainController {
 	}
 
 	@GetMapping("/newitems")
-	public String showNewItems(Model model) {//, @PathVariable(name="categoryName") String categoryName,
-//										@RequestParam(value = "addedUpc", defaultValue="") String addedUpc,
-//										@RequestParam(value = "addedItemQty", defaultValue="0") String addedItemQty) {
+	public String showNewItems(Model model, @RequestParam(value = "addedUpc", defaultValue="") String addedUpc,
+										@RequestParam(value = "addedItemQty", defaultValue="0") String addedItemQty) {
+		model.addAttribute("navMenuItems", getNavMenuItems());
+		model.addAttribute("addedUpc", addedUpc);
+		model.addAttribute("addedItemQty", addedItemQty);
 		Customer customer = getLoggedInUser();
 		if (customer != null) {										// If a User is logged in, get their cart, (or null if it doesn't exist)
 			List<Product> itemList = productService.getNewItems(customer.getId());
@@ -278,7 +280,6 @@ public class MainController {
 			}
 			model.addAttribute("itemList", itemList);
 		}
-		model.addAttribute("navMenuItems", getNavMenuItems());
 		return "newitems";
 	}
 

@@ -33,9 +33,9 @@
 								<th>Scent/Style</th>
 								<th>Size</th>
 								<th>Price</th>
-								<th>Quantity<br />Available</th>
+<%--								<th>Quantity<br />Available</th>
 								<th>Quantity<br />to Add</th>
-								<th></th>
+								<th></th>--%>
 							</tr>
 						</thead>
 						<tbody>
@@ -47,16 +47,16 @@
 								<td>${item.options}</td>
 								<td>${item.size}</td>
 								<td><fmt:formatNumber value = "${item.currentPrice}" type = "currency" /></td>
-								<td>${item.stockQty}</td>
+<%--								<td>${item.stockQty}</td>
 								<td class="customerQty">
 									<input type="hidden" id="upc${item.upc}" name="upc" value="${item.upc}" />
 									<label for="itemQty">
 										<input type="number" id="itemQty${item.upc}" name="itemQty" min="0" max="${item.stockQty}" step="1" value="0" ${item.stockQty==0 ? 'disabled' : ''} />
 									</label>
 								</td>
-								<td class="button_panel">
+ 								<td class="button_panel">
 									<button type="submit" class="btn btn-sm btn-primary btn-block" ${item.stockQty==0 ? 'disabled' : ''}>${item.stockQty==0 ? 'Out of Stock' : 'Add to Cart'}</button>
-								</td>
+								</td> --%>
 								<span>
 									${ addedUpc eq item.upc ? '<span style="color:blue;">'
 									.concat(addedItemQty).concat(' ').concat(item.name).concat(' ').concat(item.options)
