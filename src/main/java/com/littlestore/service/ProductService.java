@@ -59,12 +59,12 @@ public class ProductService {
 	}
 	
 	public List<Product> findByCategoryMainSorted(String categoryName) {
-		return repo.findByCategoryMainOrderByCategorySpecificAscNameAscOptionsAscSizeAsc(categoryName);
+		return repo.findByCategoryMainOrderByCategorySpecificAscNameAscSizeAscOptionsAsc(categoryName);
 //		return repo.findByCategoryMainOrderByDescription(categoryName);
 	}
 
 	public List<Product> findByCategoryMainMinQtySorted(String categoryName, int minQty) {
-		return repo.findByCategoryMainAndStockQtyGreaterThanOrderByCategorySpecificAscNameAscOptionsAscSizeAsc(categoryName, minQty);
+		return repo.findByCategoryMainAndStockQtyGreaterThanOrderByCategorySpecificAscNameAscSizeAscOptionsAsc(categoryName, minQty);
 	}
     
 	public List<String> listCategorySpecificUnderMain(String categoryMain) {
@@ -80,11 +80,11 @@ public class ProductService {
 	}
 	
 	public List<Product> findByCategorySpecificSorted(String subCategoryName) {
-		return repo.findByCategorySpecificOrderByNameAscOptionsAscSizeAsc(subCategoryName);		
+		return repo.findByCategorySpecificOrderByNameAscSizeAscOptionsAsc(subCategoryName);		
 	}
 	
 	public List<Product> findByCategorySpecificMinQtySorted(String subCategoryName, int minQty) {
-		return repo.findByCategorySpecificAndStockQtyGreaterThanOrderByNameAscOptionsAscSizeAsc(subCategoryName, minQty);
+		return repo.findByCategorySpecificAndStockQtyGreaterThanOrderByNameAscSizeAscOptionsAsc(subCategoryName, minQty);
 	}
 	
 /*	public PaginationResult<Product> queryProducts(int page, int maxResult, int maxNavigationPage, String likeName) {
