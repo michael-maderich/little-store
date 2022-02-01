@@ -19,7 +19,12 @@
 		<div id="main-content">
 	        <jsp:include page="sideNav.jsp"></jsp:include>
 			<div id="left-img-content">
+				<div class="image-buffer"></div>
 				<img src="https://azcdn.messenger.pgsitecore.com/en-us/-/media/Febreze/Images/Products/product_primary_images/November%202020%20Updates/PDP_DT_AE_GAIN_HoneyBerryHula.png" alt="Febreze Air Honey Berry Hula" />
+			</div>
+			<div id="right-img-content">
+				<div class="image-buffer"></div>
+				<img src="https://azcdn.messenger.pgsitecore.com/en-us/-/media/Febreze/Images/Products/product_primary_images/February%202021%20Updates/US_DT_PDP_AIR_UNS_Fresh.png" alt="Febreze Air Unstopables Fresh Scent" />
 			</div>
 			<div id="center-content">
 				<div id="registration-panel">
@@ -75,9 +80,6 @@
 						<br /><label for="submit"><form:button id="submit" name="submit" type="submit">Submit</form:button></label>
 					</form:form>
 				</div>
-			</div>
-			<div id="right-img-content">
-				<img src="https://azcdn.messenger.pgsitecore.com/en-us/-/media/Febreze/Images/Products/product_primary_images/February%202021%20Updates/US_DT_PDP_AIR_UNS_Fresh.png" alt="Febreze Air Unstopables Fresh Scent" />
 			</div>
 		</div>
         <footer>

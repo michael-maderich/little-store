@@ -334,7 +334,7 @@ public class MainController {
 					}
 //					item.setQty(item.getQty()+purchasedQty);	// Don't set now..
 					cartItems.remove(item);						// delete and recreate instead for smoother code
-					lineNum = item.getLineNumber() - 1;						// Get the item's line number -1 because will ++ after loop
+					lineNum = item.getLineNumber() - 1;			// Get the item's line number -1 because will ++ after loop
 					break;	// out of foreach loop
 				}
 				else if (item.getLineNumber() > lineNum) lineNum = item.getLineNumber();	// Get new line number based on max existing
@@ -347,7 +347,8 @@ public class MainController {
 			customerCart.setCartItems(cartItems);
 			cartDetailService.save(newLineItem);	// Will overwrite any previous cartDetail with same composite key (cartId/upc)
 			cartService.save(customerCart);
-/**/		System.out.println(customerCart);
+//			purchasedProduct.setStockQty(purchasedProduct.getStockQty()-addedItemQty);	// Remove items in carts from available qty
+			/* System.out.println(customerCart); */
 
 			model.addAttribute("customerCart", customerCart);
 			return "redirect:" + referer+"?addedUpc="+upc+"&addedItemQty="+addedItemQty;
@@ -416,6 +417,7 @@ public class MainController {
 			cartDetailService.deleteLineByCartAndProduct(customerCart, removedProduct);
 			if (cartItems.isEmpty()) cartService.delete(customerCart);	// If customer empties cart and comes back later, we want creation time to reset
 			else cartService.save(customerCart);
+//			removedProduct.setStockQty(removedProduct.getStockQty() + removedLineItem.getQty());	// Return deleted items back to available stock
 /**/		System.out.println(customerCart);
 
 			model.addAttribute("customer", customer);
