@@ -22,7 +22,7 @@ public class Customer implements Serializable {
 
 	private static final long serialVersionUID = 12546552190L;
 
-	public enum States {NJ, PA}
+	public enum States {DE, NJ, PA}
 	public enum PaymentMethods {CASH, CASHAPP, VENMO, PAYPAL, ZELLE, OTHER}
 
 	@Id
@@ -63,7 +63,7 @@ public class Customer implements Serializable {
 
 	@Basic
 	@Column(name="state", nullable=true)
-	private States state;									// 'NJ','PA'
+	private States state;									// 'DE','NJ','PA'
 	
 	@Basic
 	@Column(name="preferredPayment", nullable=true)
