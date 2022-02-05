@@ -73,7 +73,7 @@
 						<label for="statedd">
 							<form:select path="state" name="state" id="state" disabled="true">
 							<c:forEach items="${listStates}" var="st">
-								<option value="${st}" ${st=="PA" ? 'selected' : ''}>${st}</option>
+								<option value="${st}" ${st eq customerForm.state ? 'selected' : ''}>${st}</option>
 							</c:forEach>
 							</form:select>
 						</label>
