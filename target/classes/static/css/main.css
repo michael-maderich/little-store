@@ -51,13 +51,13 @@ nav {
 #side-nav {
 	float:left;
 	height:100%;
-	width:8em;
+	width:8rem;
 	background-color:#cafae6;/*skyblue;*/
 	min-width:8rem;
 /* 	max-width:15%; */
 }
 .subNavItem {
-	padding-left:1em;
+	padding-left:1rem;
 	font-size:.8rem;
 }
 

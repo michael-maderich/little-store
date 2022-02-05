@@ -9,7 +9,7 @@
 <html lang="en">
 	<head>
 <jsp:include page="headElement.jsp">
-	<jsp:param name="title" value="The Little Store - ${categoryName}${subCategoryName != null? ' - '.concat(subCategoryName).concat(' ') : '' }Category" />
+	<jsp:param name="title" value="The Little Store - ${categoryName}${subCategoryName != null? ' - '.concat(subCategoryName).concat(' ') : ' ' }Category" />
 	<jsp:param name="page" value="category" />
 </jsp:include>
 	</head>

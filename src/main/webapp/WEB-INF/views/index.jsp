@@ -22,12 +22,12 @@
 				<p>The Little Store</p>
  				<div id="sitemap">
 					<table>
-						<tr>
-						<c:forEach items="${navMenuItems}" var="mainCategory">
+						<tr><c:set var="numCats" value="${0}" /><c:forEach items="${navMenuItems}" var="mainCategory">
 							<td>
 								<a class="nav-link" href="/category/${mainCategory}">${mainCategory}</a>
-							</td>
-						</c:forEach>
+							</td><c:set var="numCats" value="${numCats+1}" /><c:if test = "${numCats eq 4}"><c:set var="numCats" value="${0}" />
+						</tr>
+						<tr></c:if></c:forEach>
 						</tr>
 					</table>
 				</div>
