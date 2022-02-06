@@ -28,7 +28,10 @@
 			<div id="center-content">
 				<div id="cart-panel">
                     <h2>Shopping Cart</h2>
-					${empty customerCart.cartItems ? '<div class="cartDetailHeader"><h4>No Items in Cart</h4></div>' : ''}
+					${empty customerCart.cartItems ? '<div class="cartDetailHeader"><h4>No Items in Cart</h4></div>' : '<span style="color:blue;">'
+									.concat('Please be sure to click the Check Out button to submit your order.')
+									.concat('<br/>You will receive an email confirmation.')
+									.concat('<br/>After submission, please contact me to complete meetup and payment details.</span>')}
 				<c:if test = "${not empty customerCart.cartItems}">
 					<c:set var="cartTotal" value="${0}" />
 					<table id="cart-table">

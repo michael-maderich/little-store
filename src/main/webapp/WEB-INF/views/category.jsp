@@ -61,7 +61,8 @@
 								<span>
 									${ addedUpc eq item.upc ? '<span style="color:blue;">'
 									.concat(addedItemQty).concat(' ').concat(item.name).concat(' ').concat(item.options)
-									.concat(' ').concat(item.size).concat(' added to <a href="/cart" alt="View Cart" title="View Cart">cart</a></span> ') : ''}
+									.concat(' ').concat(item.size).concat(' added to <a href="/cart" alt="View Cart" title="View Cart">cart</a>')
+									.concat('<br/>If you are ready to check out, please click the <a href="/cart" alt="View Cart" title="View Cart">cart</a> icon in the upper right.</span> ') : ''}
 								</span>
 							</tr>
 						</form>
