@@ -152,7 +152,8 @@ public class MainController {
 		Customer customer = getLoggedInUser();
 		if (customer == null) {
 			model.addAttribute("navMenuItems", getNavMenuItems());
-			return "redirect:/login";
+			model.addAttribute("error", "You must be logged in to view your account.");
+			return "/login";
 		}
 		else {
 			model.addAttribute("customerForm", customer);
@@ -181,7 +182,7 @@ public class MainController {
 		Customer customer = getLoggedInUser();
 		if (customer == null) {				// Can't view orders if not logged in, for now. Direct user to log in/sign up
 			model.addAttribute("error", "You must be logged in to view your orders.");
-			return "redirect:/login";
+			return "/login";
 		}
 		else {
 			model.addAttribute("customer", customer);
@@ -271,7 +272,11 @@ public class MainController {
 		model.addAttribute("addedUpc", addedUpc);
 		model.addAttribute("addedItemQty", addedItemQty);
 		Customer customer = getLoggedInUser();
-		if (customer != null) {										// If a User is logged in, get their cart, (or null if it doesn't exist)
+		if (customer == null) {				// Can't view new items if not logged in, for now. Direct user to log in/sign up
+			model.addAttribute("error", "You must be logged in to view new items.");
+			return "/login";
+		}
+		else {										// If a User is logged in, get their cart, (or null if it doesn't exist)
 			List<Product> itemList = productService.getNewItems(customer.getId());
 			Cart customerCart = cartService.findByCustomerEmail(customer.getEmail());
 			if (customerCart != null)
