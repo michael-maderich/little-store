@@ -25,6 +25,8 @@
  			<div id="center-content">
 				<div id="product-panel">
 					<h2>New Items Since Your Last Visit</h2>
+					${empty itemList ? '<div class="newItemsHeader"><br><h4>No New Items :(</h4></div>' : ''}
+				<c:if test = "${not empty itemList}">
 					<table id="product-table">
 						<thead>
 							<tr>
@@ -69,6 +71,7 @@
 						<tfoot>
 						</tfoot>
 					</table>
+				</c:if>
 				</div>
 			</div>
 		</div>

@@ -214,6 +214,22 @@ public class Customer implements Serializable {
 	}
 
 	
+	public LocalDateTime getLastVisited() {
+		return lastVisited;
+	}
+
+	public void setLastVisited(LocalDateTime lastVisited) {
+		this.lastVisited = lastVisited;
+	}
+
+	public LocalDateTime getAccountCreated() {
+		return accountCreated;
+	}
+
+	public void setAccountCreated(LocalDateTime accountCreated) {
+		this.accountCreated = accountCreated;
+	}
+
 	@Override
 	public String toString() {
 		return "Customer [id=" + id + ", email=" + email + ", password=" + password + ", passwordConfirm="

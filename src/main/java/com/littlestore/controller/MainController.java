@@ -124,7 +124,7 @@ public class MainController {
 	
 	// When registration form is submitted, the signup page sends a POST request to itself.
 	// The user info submitted is validated and return back to signup page if there are errors.
-	// If the info submitted is valid, persist the customer data to the databases
+	// If the info submitted is valid, persist the customer data to the database
 	@PostMapping("/signup")
 	public String registration(Model model, @ModelAttribute("customerForm") Customer customerForm, BindingResult bindingResult) {
 		model.addAttribute("navMenuItems", getNavMenuItems());
@@ -136,6 +136,7 @@ public class MainController {
 		}
 		else {
 			customerForm.setIsEnabled(true);
+			customerForm.setAccountCreated(LocalDateTime.now());
 			customerService.create(customerForm);
 			securityService.autoLogin(customerForm.getEmail(), customerForm.getPasswordConfirm());
 			model.addAttribute("listStates", listStates);
@@ -179,7 +180,7 @@ public class MainController {
 		model.addAttribute("navMenuItems", getNavMenuItems());
 		Customer customer = getLoggedInUser();
 		if (customer == null) {				// Can't view orders if not logged in, for now. Direct user to log in/sign up
-			model.addAttribute("error", "You must be logged in to add items to view your orders.");
+			model.addAttribute("error", "You must be logged in to view your orders.");
 			return "redirect:/login";
 		}
 		else {
@@ -534,6 +535,7 @@ public class MainController {
 			customer.setState(customerUpdates.getState());
 			customer.setPreferredPayment(customerUpdates.getPreferredPayment());
 			customer.setPaymentHandle(customerUpdates.getPaymentHandle().trim().isEmpty() ? null : customerUpdates.getPaymentHandle().trim());
+			customer.setLastVisited(LocalDateTime.now());
 			customerService.update(customer);
 
 			// Convert cart to Order and delete Cart
