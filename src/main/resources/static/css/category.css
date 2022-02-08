@@ -11,9 +11,9 @@
 #product-table {
 	margin:0 auto;
 	margin-top:2em;
-	max-width:75%;		/*70% is better but it shrinks the buttons so "Add to Cart" wraps. Also, still not enough to prevent overlapping menu at small screen widths*/
+	max-width:100%;		/*70% is better but it shrinks the buttons so "Add to Cart" wraps. Also, still not enough to prevent overlapping menu at small screen widths*/
 }
-#product-table td, #product-table th {
+.product_info, #product-table th {
 	background-color:white;/*rgb(223, 223, 223);*/
 	border:1px solid gray;
 	padding-left:1em;
@@ -35,3 +35,13 @@
 .inactive {
 	color:gray;
 }
+.transparent-td {
+	background-color:none;
+	color:green;
+	border: 0px;
+	padding-left:1em;
+	padding-right:1em;
+	padding-top:.5em;
+	padding-bottom:.5em;
+	width:7rem;
+	max-width:15em;}

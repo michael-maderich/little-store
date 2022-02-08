@@ -26,6 +26,7 @@
 				<div id="product-panel">
 					<h2>New Items Since Your Last Visit</h2>
 					${empty itemList ? '<div class="newItemsHeader"><br><h4>No New Items :(</h4></div>' : ''}
+					${empty cartAdjustments ? '' : '<div class="cartChangeMsg"><br/><span style="color:red;">'.concat(cartAdjustments).concat('</span></div>')}
 				<c:if test = "${not empty itemList}">
 					<table id="product-table">
 						<thead>

@@ -82,6 +82,41 @@ public class MainController {
 		else return null;
 	}
 	
+	private String updateCartChanges() {
+		String error = "";
+		Customer customer = getLoggedInUser();
+		Cart customerCart = cartService.findByCustomerEmail(customer.getEmail());
+		if (customerCart == null) {								// If not cart, no changes
+			return null;
+		}
+		List<CartDetail> cartItems = new ArrayList<>(customerCart.getCartItems());
+		int i = 0;
+		while (i < cartItems.size()) {
+			Product checkedProduct = cartItems.get(i).getProduct();
+			int diff = cartItems.get(i).getQty() - checkedProduct.getStockQty();
+			if (diff > 0) {
+				cartItems.get(i).setQty(checkedProduct.getStockQty());	// Set cart qty to available qty
+				if (cartItems.get(i).getQty() == 0) {
+					CartDetail removedLineItem = cartDetailService.findLineByCartAndProduct(customerCart, checkedProduct);
+					cartItems.remove(removedLineItem);
+					cartDetailService.delete(removedLineItem);
+					Collections.sort(cartItems);			// CartDetail entity contains compareTo() method
+					i--;		// Counteract i++ since list size has decreased
+				}
+				else {
+					cartDetailService.save(cartItems.get(i));	// Will overwrite any previous cartDetail with same composite key (cartId/upc)
+				}
+				error += "Available qty of " + checkedProduct.getDescription() + " has changed. " + diff + " removed from cart.<br/>";
+			}
+			i++;
+		}
+		customerCart.setCartItems(cartItems);
+		if (cartItems.isEmpty()) cartService.delete(customerCart);	// If no cart items left available, we want creation time to reset
+		else cartService.save(customerCart);
+/**/		System.out.println(customerCart);
+		return error;
+	}
+	
 	@GetMapping("/403")
 	public String accessDenied() {
 		  return "/403";
@@ -106,7 +141,7 @@ public class MainController {
 		if (error != null) model.addAttribute("error", "Your username and/or password is invalid.");
 		if (logout != null) model.addAttribute("message", "You have been logged out successfully.");
 		model.addAttribute("navMenuItems", getNavMenuItems());
-		if (getLoggedInUser() != null) return "/newitems";				// If user is logged in, redirect to newitems page
+		if (getLoggedInUser() != null) return "/index";				// If user is logged in, redirect to newitems page
 		else return "/login";											// Otherwise, submit POST request to login page (handled by Spring Security)
 	}
 
@@ -220,6 +255,7 @@ public class MainController {
 										@RequestParam(value = "addedItemQty", defaultValue="0") String addedItemQty) {
 		List<Product> itemList = productService.findByCategoryMainMinQtySorted(categoryName, 0);
 //		List<Product> itemList = productService.findByCategoryMainSorted(categoryName);
+		String cartAdjustments = null;
 		boolean goodLink = false;
 		for (Product p : itemList) if ( p.getCategoryMain().equals(categoryName) ) goodLink = true;
 		if (!goodLink) return "redirect:/";
@@ -232,10 +268,12 @@ public class MainController {
 			Cart customerCart = cartService.findByCustomerEmail(customer.getEmail());
 			if (customerCart != null)
 			{		// If they have a cart, fill cartItems with their cart item quantities
+				cartAdjustments = updateCartChanges();
 				List<CartDetail> cartItems = customerCart.getCartItems();
 				model.addAttribute("cartItems", cartItems);
 			}
 		}
+		model.addAttribute("cartAdjustments", cartAdjustments);
 		model.addAttribute("navMenuItems", getNavMenuItems());
 		model.addAttribute("navSubMenuItems", getNavSubMenuItems(categoryName));
 		model.addAttribute("addedUpc", addedUpc);
@@ -252,11 +290,24 @@ public class MainController {
 										@RequestParam(value = "addedItemQty", defaultValue="0") String addedItemQty) {
 		List<Product> itemList = productService.findByCategorySpecificMinQtySorted(subCategoryName, 0);	// Filter out 0 qty items
 //		List<Product> itemList = productService.findByCategorySpecificSorted(subCategoryName);			// Shows 0 qty items
+		String cartAdjustments = null;
 		boolean goodLink = false;
 		for (Product p : itemList) if ( p.getCategoryMain().equals(categoryName) 
 									&& p.getCategorySpecific().equals(subCategoryName) ) goodLink = true;
 		if (!goodLink) return "redirect:/";
 		
+		Customer customer = getLoggedInUser();
+		if (customer != null) {										// If a User is logged in, get their cart, (or null if it doesn't exist)
+			Cart customerCart = cartService.findByCustomerEmail(customer.getEmail());
+			if (customerCart != null)
+			{		// If they have a cart, fill cartItems with their cart item quantities
+				cartAdjustments = updateCartChanges();
+				List<CartDetail> cartItems = customerCart.getCartItems();
+				model.addAttribute("cartItems", cartItems);
+			}
+		}
+
+		model.addAttribute("cartAdjustments", cartAdjustments);
 		model.addAttribute("navMenuItems", getNavMenuItems());
 		model.addAttribute("navSubMenuItems", getNavSubMenuItems(categoryName));
 		model.addAttribute("addedUpc", addedUpc);
@@ -271,6 +322,7 @@ public class MainController {
 		model.addAttribute("navMenuItems", getNavMenuItems());
 		model.addAttribute("addedUpc", addedUpc);
 		model.addAttribute("addedItemQty", addedItemQty);
+		String cartAdjustments = "";
 		Customer customer = getLoggedInUser();
 		if (customer == null) {				// Can't view new items if not logged in, for now. Direct user to log in/sign up
 			model.addAttribute("error", "You must be logged in to view new items.");
@@ -281,9 +333,11 @@ public class MainController {
 			Cart customerCart = cartService.findByCustomerEmail(customer.getEmail());
 			if (customerCart != null)
 			{		// If they have a cart, fill cartItems with their cart item quantities
+				cartAdjustments = updateCartChanges();
 				List<CartDetail> cartItems = customerCart.getCartItems();
 				model.addAttribute("cartItems", cartItems);
 			}
+			model.addAttribute("cartAdjustments", cartAdjustments);
 			model.addAttribute("itemList", itemList);
 		}
 		return "newitems";
@@ -295,7 +349,7 @@ public class MainController {
 								@RequestParam(value = "itemQty", defaultValue="0") String itemQty) {
 
 		String referer = request.getHeader("Referer");						// http://localhost:8080/xxxxxx - we just want the "xxxxxx"
-		if (referer==null) return "redirect:/cart";					// If page request didn't come from product page, reject and return to cart
+		if (referer==null) return "redirect:/index";					// If page request didn't come from product page, reject and return to cart
 		else {
 			referer = referer.substring( referer.indexOf('/', referer.indexOf('/')+2) );		// everything after root '/', including the /
 			referer = referer.substring(0, (referer.indexOf('?') != -1) ? referer.indexOf('?') : referer.length());	// remove the query string if exists
@@ -363,6 +417,7 @@ public class MainController {
 
 	@GetMapping("/cart")
 	public String cart(Model model) {
+		String cartAdjustments;
 		Cart customerCart;
 		Customer customer = getLoggedInUser();
 		if (customer == null) {				// Can't view cart if not logged in, for now. Direct user to log in/sign up
@@ -377,11 +432,13 @@ public class MainController {
 				model.addAttribute("customerCart", null);
 				return "/cart";
 			}
+			cartAdjustments = updateCartChanges();
 			List<CartDetail> cartItems = customerCart.getCartItems();
 			Collections.sort(cartItems);			// CartDetail entity contains compareTo() method
 			customerCart.setCartItems(cartItems);
 			model.addAttribute("customer", customer);
 			model.addAttribute("customerCart", customerCart);
+			model.addAttribute("cartAdjustments", cartAdjustments);
 			return "/cart";
 		}
 	}
@@ -463,6 +520,7 @@ public class MainController {
 
 	@GetMapping("/checkout")
 	public String orderFinalizationPage(Model model) {
+		String cartAdjustments = "";
 		Customer customer = getLoggedInUser();
 		if (customer == null) {				// Can't check out if not logged in, for now. Direct user to log in
 			model.addAttribute("navMenuItems", getNavMenuItems());
@@ -477,10 +535,12 @@ public class MainController {
 				return "redirect:/cart";
 			}
 			// Reorganize cart so it's ordered by category/subcategory/name/options/size
+			cartAdjustments = updateCartChanges();
 			List<CartDetail> cartItems = customerCart.getCartItems();
 			Collections.sort(cartItems);			// CartDetail entity contains compareTo() method
 			model.addAttribute("customerInfo", customer);
 			model.addAttribute("customerCart", customerCart);
+			model.addAttribute("cartAdjustments", cartAdjustments);
 			model.addAttribute("listStates", listStates);
 			model.addAttribute("listPayTypes", listPayTypes);
 			return "checkout";

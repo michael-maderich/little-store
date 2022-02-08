@@ -29,6 +29,7 @@
 				<div id="checkout-panel">
                     <h2>Check Out</h2>
 					<h4 class="checkoutHeader">Order Details</h4>
+					${empty cartAdjustments ? '' : '<div class="cartChangeMsg"><br/><span style="color:red;">'.concat(cartAdjustments).concat('</span></div>')}
 					<c:set var="cartTotal" value="${0}" />
 					<table id="checkout-table">
 						<thead>
@@ -139,7 +140,7 @@
 						</tr>
 					</table>
 					<label for="submit"><form:button id="submit" name="submit" type="submit" class="btn btn-sm btn-primary btn-block highlighted">
-						Complete Order
+						Submit Order
 					</form:button></label>
 					</form:form>
 				</div>

@@ -32,6 +32,7 @@
 									.concat('Please be sure to click the Check Out button to submit your order.')
 									.concat('<br/>You will receive an email confirmation.')
 									.concat('<br/>After submission, please contact me to complete meetup and payment details.</span>')}
+					${empty cartAdjustments ? '' : '<div class="cartChangeMsg"><br/><span style="color:red;">'.concat(cartAdjustments).concat('</span></div>')}
 				<c:if test = "${not empty customerCart.cartItems}">
 					<c:set var="cartTotal" value="${0}" />
 					<table id="cart-table">
