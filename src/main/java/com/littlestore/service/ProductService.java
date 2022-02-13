@@ -1,5 +1,6 @@
 package com.littlestore.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,6 +86,38 @@ public class ProductService {
 	
 	public List<Product> findByCategorySpecificMinQtySorted(String subCategoryName, int minQty) {
 		return repo.findByCategorySpecificAndStockQtyGreaterThanOrderByNameAscSizeAscOptionsAsc(subCategoryName, minQty);
+	}
+	
+	public List<ArrayList<ArrayList<ArrayList<Product>>>> findAllByCatAndSubcat() {
+		List<String> catList =  listCategoryMainWithStock();
+		List<ArrayList<ArrayList<ArrayList<Product>>>> listByCatAndSubcat = new ArrayList<ArrayList<ArrayList<ArrayList<Product>>>>();
+		for (String cat : catList) {
+			List<String> subcatList = listCategorySpecificUnderMainWithStock(cat);
+			ArrayList<ArrayList<ArrayList<Product>>> listBySubcats = new ArrayList<ArrayList<ArrayList<Product>>>();
+			for (String subcat : subcatList) {
+				ArrayList<ArrayList<Product>> listByNameAndSize = new ArrayList<ArrayList<Product>>();
+				ArrayList<Product> groupItems = new ArrayList<Product>();
+				ArrayList<Product> subCatItems = (ArrayList<Product>) findByCategorySpecificMinQtySorted(subcat, 0);
+				String name = subCatItems.get(0).getName();
+				String size = subCatItems.get(0).getSize();
+				for (Product p : subCatItems) {
+					if (p.getName().equals(name) && p.getSize().equals(size)) {
+						groupItems.add(p);
+					}
+					else {
+						listByNameAndSize.add(groupItems);
+						name = p.getName();
+						size = p.getSize();
+						groupItems = new ArrayList<Product>();
+						groupItems.add(p);
+					}
+				}
+				listByNameAndSize.add(groupItems);
+				listBySubcats.add(listByNameAndSize);
+			}
+			listByCatAndSubcat.add(listBySubcats);
+		}
+		return listByCatAndSubcat;
 	}
 	
 /*	public PaginationResult<Product> queryProducts(int page, int maxResult, int maxNavigationPage, String likeName) {

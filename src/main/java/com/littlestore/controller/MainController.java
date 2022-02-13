@@ -316,6 +316,15 @@ public class MainController {
 		return "category";
 	}
 
+	@GetMapping("/images")
+	public String showCombinedImages(Model model) {
+		List<ArrayList<ArrayList<ArrayList<Product>>>> itemList = productService.findAllByCatAndSubcat();	// List<Cat<Subcat items>>
+		
+		model.addAttribute("allItems", itemList);
+		model.addAttribute("navMenuItems", getNavMenuItems());
+		return "images";
+	}
+	
 	@GetMapping("/newitems")
 	public String showNewItems(Model model, @RequestParam(value = "addedUpc", defaultValue="") String addedUpc,
 										@RequestParam(value = "addedItemQty", defaultValue="0") String addedItemQty) {
