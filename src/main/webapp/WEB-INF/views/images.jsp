@@ -3,6 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix = "fmt" uri = "http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 
 <!DOCTYPE html>
@@ -27,14 +28,14 @@
 	<c:forEach items="${mainCatGroup}" var="subCatGroup">
 						<div>
 						<h4><br><br>${subCatGroup[0][0].categorySpecific}</h4>
-		<c:forEach items="${subCatGroup}" var="nameSizeGroup">
+		<c:forEach items="${subCatGroup}" var="nameSizeGroup"><c:set var="rowMax" value="${Math.ceil(Math.sqrt(nameSizeGroup.size()))}"/>
 							<table id="product-table">
 								<tr><th colspan=4>${nameSizeGroup[0].name} ${nameSizeGroup[0].size} - <fmt:formatNumber value = "${nameSizeGroup[0].currentPrice}" type = "currency" /></th></tr>
 								<tr><c:set var="numItems" value="${0}" /><c:forEach items="${nameSizeGroup}" var="item">
 									<td class="product_image_panel product_info">
 										<a href="${item.image}" target="_blank"><img src="${item.image}" alt="${item.description}" title="${item.description}" /></a>
 									</td>
-									<c:set var="numItems" value="${numItems+1}" /><c:if test = "${numItems eq 4}"><c:set var="numItems" value="${0}" />
+									<c:set var="numItems" value="${numItems+1}" /><c:if test = "${numItems eq rowMax}"><c:set var="numItems" value="${0}" />
 								</tr>
 								<tr></c:if></c:forEach>
 								</tr>
