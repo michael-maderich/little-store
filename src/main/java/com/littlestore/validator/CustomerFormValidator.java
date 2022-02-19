@@ -38,5 +38,8 @@ public class CustomerFormValidator implements Validator {
 			errors.rejectValue("password", "Size.customerForm.password", "Password must be at least 8 characters.");
 		if (!customer.getPasswordConfirm().equals(customer.getPassword()))
 			errors.rejectValue("passwordConfirm", "Diff.customerForm.passwordConfirm", "Passwords must match.");
+		
+		if (customer.getPhone().length() > 16)
+			errors.rejectValue("phone", "Size.customerForm.phone", "Phone number must be less than 16 characters (including dashes and parentheses).");
 	}
 }

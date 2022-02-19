@@ -7,10 +7,10 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<jsp:include page="headElement.jsp">
-			<jsp:param name="title" value="The Little Store - Sign Up" />
-			<jsp:param name="page" value="signup" />
-		</jsp:include>
+<jsp:include page="headElement.jsp">
+	<jsp:param name="title" value="The Little Store - Sign Up" />
+	<jsp:param name="page" value="signup" />
+</jsp:include>
 	</head>
 	<body>
 		<header>
@@ -76,7 +76,12 @@
 							</c:forEach>
 							</form:select>
 						</label>
-						<br /><label for="phone"><form:input path="phone" id="phone" name="phone" type="text" placeholder=" Phone Number (optional)" class="text-field"></form:input></label>
+						<spring:bind path="phone">
+							<div class="form-group ${status.error ? 'has-error' : ''}">
+								<form:errors path="phone"></form:errors>${status.error ? '<br />' : ''}
+								<label for="phone"><form:input path="phone" id="phone" name="phone" type="text" placeholder=" Phone Number (optional)" class="text-field"></form:input></label>
+							</div>
+						</spring:bind>
 						<br /><label for="submit"><form:button id="submit" name="submit" type="submit">Submit</form:button></label>
 					</form:form>
 				</div>

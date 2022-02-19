@@ -171,7 +171,7 @@ public class MainController {
 		}
 		else {
 			customerForm.setIsEnabled(true);
-			customerForm.setAccountCreated(LocalDateTime.now());
+			customerForm.setAccountCreated(LocalDateTime.now().minusHours(5));
 			customerService.create(customerForm);
 			securityService.autoLogin(customerForm.getEmail(), customerForm.getPasswordConfirm());
 			model.addAttribute("listStates", listStates);
@@ -388,7 +388,7 @@ public class MainController {
 			if (customerCart == null) {							// If they don't have a cart started, start a new one
 				customerCart = new Cart();
 				customerCart.setCustomer(customer);
-				customerCart.setCartCreationDateTime(LocalDateTime.now());
+				customerCart.setCartCreationDateTime(LocalDateTime.now().minusHours(5));
 				customerCart.setCartItems(new ArrayList<CartDetail>());
 				cartService.save(customerCart);					// New cart needs to be saved before items can be added because of Foreign Key relationship
 			}
@@ -609,13 +609,13 @@ public class MainController {
 			customer.setState(customerUpdates.getState());
 			customer.setPreferredPayment(customerUpdates.getPreferredPayment());
 			customer.setPaymentHandle(customerUpdates.getPaymentHandle().trim().isEmpty() ? null : customerUpdates.getPaymentHandle().trim());
-			customer.setLastVisited(LocalDateTime.now());
+			customer.setLastVisited(LocalDateTime.now().minusHours(5));
 			customerService.update(customer);
 
 			// Convert cart to Order and delete Cart
 			Order customerOrder = new Order();
 			customerOrder.setCustomer(customer);
-			customerOrder.setOrderDateTime(LocalDateTime.now());
+			customerOrder.setOrderDateTime(LocalDateTime.now().minusHours(5));
 			customerOrder.setReqDeliveryDateTime(null);
 			customerOrder.setStatus("Confirmed");	// Will need to update this later using enum
 			customerOrder.setComments(null);
