@@ -50,11 +50,11 @@
 								<td class="product_info">${item.options}</td>
 								<td class="product_info">${item.size}</td>
 								<td class="product_info"><fmt:formatNumber value = "${item.currentPrice}" type = "currency" /></td>
-								<td class="product_info">${item.stockQty}</td>
+								<td class="product_info">${(item.purchaseLimit != 0 and item.purchaseLimit < item.stockQty) ? item.purchaseLimit : item.stockQty}</td>
 								<td class="customerQty product_info">
 									<input type="hidden" id="upc${item.upc}" name="upc" value="${item.upc}" />
 									<label for="itemQty">
-										<input type="number" id="itemQty${item.upc}" name="itemQty" min="0" max="${item.stockQty}" step="1" value="0" ${item.stockQty==0 ? 'disabled' : ''} />
+										<input type="number" id="itemQty${item.upc}" name="itemQty" min="0" max="${(item.purchaseLimit != 0 and item.purchaseLimit < item.stockQty) ? item.purchaseLimit : item.stockQty}" step="1" value="0" ${item.stockQty==0 ? 'disabled' : ''} />
 									</label>
 								</td>
  								<td class="button_panel product_info">

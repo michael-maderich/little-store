@@ -95,12 +95,12 @@ public class CartDetail implements Serializable, Comparable<CartDetail> {
 	}
 
 	@Override			// Could probably just implement a custom toString() for CartDetail and compare that
-	public int compareTo(CartDetail o) {		// Order by Main Category, Specific Category, name, options, size
+	public int compareTo(CartDetail o) {		// Order by Main Category, Specific Category, name, size, options
 		int compare = getProduct().getCategoryMain().compareTo(o.getProduct().getCategoryMain());
 		if (compare == 0) compare = getProduct().getCategorySpecific().compareTo(o.getProduct().getCategorySpecific());
 		if (compare == 0) compare = getProduct().getName().compareTo(o.getProduct().getName());
-		if (compare == 0) compare = getProduct().getOptions().compareTo(o.getProduct().getOptions());
 		if (compare == 0) compare = getProduct().getSize().compareTo(o.getProduct().getSize());
+		if (compare == 0) compare = getProduct().getOptions().compareTo(o.getProduct().getOptions());
 		return compare;
 	}
 	

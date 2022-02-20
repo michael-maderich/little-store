@@ -20,10 +20,6 @@ public class Product implements Serializable {
 	private String upc;
 
 	@Basic(optional=false)
-	@Column(name="name", length=50, nullable=false)
-	private String name;
-	
-	@Basic(optional=false)
 	@Column(name="categoryMain", length=50, nullable=false)
 	private String categoryMain;
 
@@ -31,21 +27,17 @@ public class Product implements Serializable {
 	@Column(name="categorySpecific", length=50, nullable=false)
 	private String categorySpecific;
 
-	@Basic
-	@Column(name="description", length=200)
-	private String description;
-
-	@Basic
-	@Column(name="size", length=10)
-	private String size;
-
+	@Basic(optional=false)
+	@Column(name="name", length=50, nullable=false)
+	private String name;
+	
 	@Basic
 	@Column(name="options", length=50)
 	private String options;
 
 	@Basic
-	@Column(name="image", length=255)
-	private String image;	// URL of product image
+	@Column(name="size", length=10)
+	private String size;
 
 	@Basic
 	@Column(name="cost", nullable=false)
@@ -68,31 +60,46 @@ public class Product implements Serializable {
 	private int stockQty;
 
 	@Basic
+	@Column(name="purchaseLimit", nullable=false)
+	private int purchaseLimit;
+
+	@Basic
+	@Column(name="description", length=200)
+	private String description;
+
+	@Basic
+	@Column(name="image", length=255)
+	private String image;	// URL of product image
+
+	@Basic
 	@Column(name="dateAdded", nullable=false)
 	private LocalDateTime dateAdded;
 	
-/*	@Temporal(TemporalType.TIMESTAMP)
+	/*	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="creationDate", nullable=false)
 	private Date createDate*/
 	
 	public Product() {
 	}
 
-	public Product(String upc, String name, String categoryMain, String categorySpecific, String description, String size, String options,
-			String image, float cost, float basePrice, float currentPrice, boolean onSale, int stockQty) {
+	public Product(String upc, String categoryMain, String categorySpecific, String name, String options, String size,
+			float cost, float basePrice, float currentPrice, boolean onSale, int stockQty, int purchaseLimit,
+			String description, String image, LocalDateTime dateAdded) {
 		this.upc = upc;
-		this.name = name;
 		this.categoryMain = categoryMain;
 		this.categorySpecific = categorySpecific;
-		this.description = description;
-		this.size = size;
+		this.name = name;
 		this.options = options;
-		this.image = image;
+		this.size = size;
 		this.cost = cost;
 		this.basePrice = basePrice;
 		this.currentPrice = currentPrice;
 		this.onSale = onSale;
 		this.stockQty = stockQty;
+		this.purchaseLimit = purchaseLimit;
+		this.description = description;
+		this.image = image;
+		this.dateAdded = dateAdded;
 	}
 
 	public String getUpc() {
@@ -100,6 +107,20 @@ public class Product implements Serializable {
 	}
 	public void setUpc(String upc) {
 		this.upc = upc;
+	}
+	
+	public String getCategoryMain() {
+		return categoryMain;
+	}
+	public void setCategoryMain(String categoryMain) {
+		this.categoryMain = categoryMain;
+	}
+
+	public String getCategorySpecific() {
+		return categorySpecific;
+	}
+	public void setCategorySpecific(String categorySpecific) {
+		this.categorySpecific = categorySpecific;
 	}
 
 	public String getName() {
@@ -109,34 +130,6 @@ public class Product implements Serializable {
 		this.name = name;
 	}
 
-	public String getCategoryMain() {
-		return categoryMain;
-	}
-	public void setCategoryMain(String category) {
-		this.categoryMain = category;
-	}
-
-	public String getCategorySpecific() {
-		return categorySpecific;
-	}
-	public void setCategorySpecific(String category) {
-		this.categorySpecific = category;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public String getSize() {
-		return size;
-	}
-	public void setSize(String size) {
-		this.size = size;
-	}
-
 	public String getOptions() {
 		return options;
 	}
@@ -144,11 +137,11 @@ public class Product implements Serializable {
 		this.options = options;
 	}
 
-	public String getImage() {
-		return image;
+	public String getSize() {
+		return size;
 	}
-	public void setImage(String image) {
-		this.image = image;
+	public void setSize(String size) {
+		this.size = size;
 	}
 
 	public float getCost() {
@@ -186,7 +179,34 @@ public class Product implements Serializable {
 		this.stockQty = stockQty;
 	}
 
-	
+	public int getPurchaseLimit() {
+		return purchaseLimit;
+	}
+	public void setPurchaseLimit(int purchaseLimit) {
+		this.purchaseLimit = purchaseLimit;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getImage() {
+		return image;
+	}
+	public void setImage(String image) {
+		this.image = image;
+	}
+
+	public LocalDateTime getDateAdded() {
+		return dateAdded;
+	}
+	public void setDateAdded(LocalDateTime dateAdded) {
+		this.dateAdded = dateAdded;
+	}
+
 	@Override
 	public String toString() {
 		return "Product [upc=" + upc + ", " + name + " " + size + " " + options + "]";
@@ -201,11 +221,13 @@ public class Product implements Serializable {
 		result = prime * result + ((categorySpecific == null) ? 0 : categorySpecific.hashCode());
 		result = prime * result + Float.floatToIntBits(cost);
 		result = prime * result + Float.floatToIntBits(currentPrice);
+		result = prime * result + ((dateAdded == null) ? 0 : dateAdded.hashCode());
 		result = prime * result + ((description == null) ? 0 : description.hashCode());
 		result = prime * result + ((image == null) ? 0 : image.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + (onSale ? 1231 : 1237);
 		result = prime * result + ((options == null) ? 0 : options.hashCode());
+		result = prime * result + purchaseLimit;
 		result = prime * result + ((size == null) ? 0 : size.hashCode());
 		result = prime * result + stockQty;
 		result = prime * result + ((upc == null) ? 0 : upc.hashCode());
@@ -216,7 +238,9 @@ public class Product implements Serializable {
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (!(obj instanceof Product))
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
 			return false;
 		Product other = (Product) obj;
 		if (Float.floatToIntBits(basePrice) != Float.floatToIntBits(other.basePrice))
@@ -234,6 +258,11 @@ public class Product implements Serializable {
 		if (Float.floatToIntBits(cost) != Float.floatToIntBits(other.cost))
 			return false;
 		if (Float.floatToIntBits(currentPrice) != Float.floatToIntBits(other.currentPrice))
+			return false;
+		if (dateAdded == null) {
+			if (other.dateAdded != null)
+				return false;
+		} else if (!dateAdded.equals(other.dateAdded))
 			return false;
 		if (description == null) {
 			if (other.description != null)
@@ -256,6 +285,8 @@ public class Product implements Serializable {
 			if (other.options != null)
 				return false;
 		} else if (!options.equals(other.options))
+			return false;
+		if (purchaseLimit != other.purchaseLimit)
 			return false;
 		if (size == null) {
 			if (other.size != null)

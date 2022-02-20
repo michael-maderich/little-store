@@ -437,6 +437,10 @@ public class MainController {
 						purchasedQty = item.getProduct().getStockQty();		// Lower purchased qty to available stock
 						addedItemQty = item.getProduct().getStockQty() - item.getQty();	// How many were actually added
 					}
+					else if (purchasedQty > item.getProduct().getPurchaseLimit()) {	// If more than purchase limit is requested..
+						purchasedQty = item.getProduct().getPurchaseLimit();		// Lower purchased qty to purchase limit
+						addedItemQty = item.getProduct().getPurchaseLimit() - item.getQty();	// How many were actually added
+					}
 //					item.setQty(item.getQty()+purchasedQty);	// Don't set now..
 					cartItems.remove(item);						// delete and recreate instead for smoother code
 					lineNum = item.getLineNumber() - 1;			// Get the item's line number -1 because will ++ after loop
@@ -659,6 +663,7 @@ public class MainController {
 			
 			// Add each Cart Detail to Order Detail table
 			List<CartDetail> cartItems = customerCart.getCartItems();
+			Collections.sort(cartItems);
 			List<OrderDetail> orderItems = new ArrayList<OrderDetail>();
 			int lineNum = 1;
 			for (CartDetail item : cartItems) {
