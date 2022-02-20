@@ -4,6 +4,7 @@
 				<ul class="nav flex-column">
 					<li class="nav-item"><a class="nav-link" href="/">Home</a></li>
 					<li class="nav-item"><a class="nav-link" href="/newitems"><b><i>New Items</i></b></a></li>
+					<li class="nav-item"><a class="nav-link" href="/dollarama">Dollarama</a></li>
 					<c:forEach items="${navMenuItems}" var="mainCategory">
 						<c:set var="subCatList" value="" />
 					<li class="nav-item ${categoryName == mainCategory ? 'highlighted' : ''}">

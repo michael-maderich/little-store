@@ -211,6 +211,23 @@ public class MainController {
 	}
 
 	// View account's order history - user must be logged in
+	@GetMapping("/account/edit")
+	public String editAccount(Model model) {
+		model.addAttribute("navMenuItems", getNavMenuItems());
+		Customer customer = getLoggedInUser();
+		if (customer == null) {				// Can't view orders if not logged in, for now. Direct user to log in/sign up
+			model.addAttribute("navMenuItems", getNavMenuItems());
+			model.addAttribute("error", "You must be logged in to edit your account details.");
+			return "/login";
+		}
+		else {
+			model.addAttribute("customerForm", customer);
+			model.addAttribute("listStates", listStates);
+			return "/account";
+		}
+	}
+
+	// View account's order history - user must be logged in
 	@GetMapping("/account/orders")
 	public String orderHistory(Model model) {
 		model.addAttribute("navMenuItems", getNavMenuItems());
@@ -348,6 +365,29 @@ public class MainController {
 		return "newitems";
 	}
 
+	@GetMapping("/dollarama")
+	public String showDollarItems(Model model, @RequestParam(value = "addedUpc", defaultValue="") String addedUpc,
+										@RequestParam(value = "addedItemQty", defaultValue="0") String addedItemQty) {
+		String cartAdjustments = "";
+		Customer customer = getLoggedInUser();
+		if (customer != null) {										// If a User is logged in, get their cart, (or null if it doesn't exist)
+			Cart customerCart = cartService.findByCustomerEmail(customer.getEmail());
+			if (customerCart != null)
+			{		// If they have a cart, fill cartItems with their cart item quantities
+				cartAdjustments = updateCartChanges();
+				List<CartDetail> cartItems = customerCart.getCartItems();
+				model.addAttribute("cartItems", cartItems);
+			}
+		}
+		List<Product> itemList = productService.getDollarItems();
+		model.addAttribute("cartAdjustments", cartAdjustments);
+		model.addAttribute("navMenuItems", getNavMenuItems());
+		model.addAttribute("addedUpc", addedUpc);
+		model.addAttribute("addedItemQty", addedItemQty);
+		model.addAttribute("itemList", itemList);
+		return "dollarama";
+	}
+
 	@GetMapping("/addToCart")
 	public String addItemsToCart(HttpServletRequest request, Model model,
 								@RequestParam(value = "upc", defaultValue="") String upc,
@@ -358,7 +398,7 @@ public class MainController {
 		else {
 			referer = referer.substring( referer.indexOf('/', referer.indexOf('/')+2) );		// everything after root '/', including the /
 			referer = referer.substring(0, (referer.indexOf('?') != -1) ? referer.indexOf('?') : referer.length());	// remove the query string if exists
-			if (!( referer.startsWith("/category") || referer.startsWith("/newitems") )) return "redirect:"+referer;
+			if (!( referer.startsWith("/category") || referer.startsWith("/newitems") || referer.startsWith("/dollarama") )) return "redirect:"+referer;
 		}
 
 		Customer customer = getLoggedInUser();
@@ -580,8 +620,8 @@ public class MainController {
 
 	// Move cart to order in database and delete cart
 	// Remove sold items from inventory
-	// Find a way to send order via email
-	// Display confirmation (perhaps order details/customer info/etc again
+	// Send order via email
+	// Display confirmation (order details/customer info/etc again)
 	@PostMapping("/confirmation")
 	public String completeOrder(Model model, @ModelAttribute("customerInfo") Customer customerUpdates) {
 		

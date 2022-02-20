@@ -67,15 +67,25 @@
 							</div>
 						</spring:bind>
 						<p>Meet-Up Address (Optional):</p>
-						<label for="address"><form:input path="address" id="address" name="address" type="text" placeholder=" Street Address (optional)" class="text-field"></form:input></label>
-						<br /><label for="city"><form:input path="city" id="city" name="city" type="text" placeholder=" City (optional)" class="text-field"></form:input></label>
-						<label for="statedd">
-							<form:select path="state" name="state" id="state">
-							<c:forEach items="${listStates}" var="st">
-								<option value="${st}" ${st=="PA" ? 'selected' : ''}>${st}</option>
-							</c:forEach>
-							</form:select>
-						</label>
+						<spring:bind path="address">
+							<div class="form-group ${status.error ? 'has-error' : ''}">
+								<form:errors path="address"></form:errors>${status.error ? '<br />' : ''}
+								<label for="address"><form:input path="address" id="address" name="address" type="text" placeholder=" Street Address (optional)" class="text-field"></form:input></label>
+							</div>
+						</spring:bind>
+						<spring:bind path="city">
+							<div class="form-group ${status.error ? 'has-error' : ''}">
+								<form:errors path="city"></form:errors>${status.error ? '<br />' : ''}
+								<label for="city"><form:input path="city" id="city" name="city" type="text" placeholder=" City (optional)" class="text-field"></form:input></label>
+								<label for="statedd">
+									<form:select path="state" name="state" id="state">
+									<c:forEach items="${listStates}" var="st">
+										<option value="${st}" ${st=="PA" ? 'selected' : ''}>${st}</option>
+									</c:forEach>
+									</form:select>
+								</label>
+							</div>
+						</spring:bind>
 						<spring:bind path="phone">
 							<div class="form-group ${status.error ? 'has-error' : ''}">
 								<form:errors path="phone"></form:errors>${status.error ? '<br />' : ''}

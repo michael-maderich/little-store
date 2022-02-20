@@ -10,24 +10,26 @@
 }
 #product-table {
 	margin:0 auto;
-	margin-top:2em;
+	margin-top:2rem;
 	max-width:100%;		/*70% is better but it shrinks the buttons so "Add to Cart" wraps. Also, still not enough to prevent overlapping menu at small screen widths*/
 }
 .product_info, #product-table th {
 	background-color:white;/*rgb(223, 223, 223);*/
 	border:1px solid gray;
-	padding-left:1em;
-	padding-right:1em;
-	padding-top:.5em;
-	padding-bottom:.5em;
-	max-width:15em;
+	padding-left:1rem;
+	padding-right:1rem;
+	padding-top:.5rem;
+	padding-bottom:.5rem;
+	max-width:15rem;
 }
 #product-table img {
-	height:5em;
+	height:100%;
+	max-height:5rem;
+	max-width:6rem;
 }
 .product_image_panel {
 	background-color:white;
-	max-width:8em;	
+	max-width:8rem;	
 }
 .product_subtotal_panel {
 	font-weight:bold;
@@ -39,10 +41,10 @@
 	background-color:none;
 	color:green;
 	border: 0px;
-	padding-left:1em;
-	padding-right:1em;
-	padding-top:.5em;
-	padding-bottom:.5em;
+	padding-left:1rem;
+	padding-right:1rem;
+	padding-top:.5rem;
+	padding-bottom:.5rem;
 	width:7rem;
-	max-width:15em;
+	max-width:15rem;
 }
