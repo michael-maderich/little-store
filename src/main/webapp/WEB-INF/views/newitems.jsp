@@ -9,8 +9,8 @@
 <html lang="en">
 	<head>
 <jsp:include page="headElement.jsp">
-	<jsp:param name="title" value="The Little Store - ${categoryName}${subCategoryName != null? ' - '.concat(subCategoryName).concat(' ') : '' }Category" />
-	<jsp:param name="page" value="category" />
+	<jsp:param name="title" value="The Little Store - New Items" />
+	<jsp:param name="page" value="newitems" />
 </jsp:include>
 	</head>
 	<body>
@@ -36,34 +36,42 @@
 								<th>Scent/Style</th>
 								<th>Size</th>
 								<th>Price</th>
-<%--								<th>Quantity<br />Available</th>
+								<th>Quantity<br />Available</th>
 								<th>Quantity<br />to Add</th>
-								<th></th>--%>
+								<th></th>
 							</tr>
 						</thead>
 						<tbody>
 						<c:forEach items="${itemList}" var="item">
 						<form action="/addToCart" method="GET">
 							<tr ${item.stockQty==0 ? 'class="inactive"' : ''}>
-								<td class="product_image_panel"><a href="${item.image}" target="_blank"><img src="${item.image}" alt="${item.description}" title="${item.description}" /></a></td>
-								<td>${item.name}</td>
-								<td>${item.options}</td>
-								<td>${item.size}</td>
-								<td><fmt:formatNumber value = "${item.currentPrice}" type = "currency" /></td>
-<%--								<td>${item.stockQty}</td>
-								<td class="customerQty">
+								<td class="product_image_panel product_info"><a href="${item.image}" target="_blank"><img src="${item.image}" alt="${item.description}" title="${item.description}" /></a></td>
+								<td class="product_info">${item.name}</td>
+								<td class="product_info">${item.options}</td>
+								<td class="product_info">${item.size}</td>
+								<td class="product_info"><fmt:formatNumber value = "${item.currentPrice}" type = "currency" /></td>
+								<td class="product_info">${item.stockQty}</td>
+								<td class="customerQty product_info">
 									<input type="hidden" id="upc${item.upc}" name="upc" value="${item.upc}" />
 									<label for="itemQty">
 										<input type="number" id="itemQty${item.upc}" name="itemQty" min="0" max="${item.stockQty}" step="1" value="0" ${item.stockQty==0 ? 'disabled' : ''} />
 									</label>
 								</td>
- 								<td class="button_panel">
+ 								<td class="button_panel product_info">
 									<button type="submit" class="btn btn-sm btn-primary btn-block" ${item.stockQty==0 ? 'disabled' : ''}>${item.stockQty==0 ? 'Out of Stock' : 'Add to Cart'}</button>
-								</td> --%>
+								</td>
+								<c:if test = "${not empty cartItems}">
+								<td class="transparent-td">
+								<c:forEach items="${cartItems}" var="cartItem">
+								<c:if test="${(cartItem.product.upc == item.upc) && (cartItem.qty != 0)}">(${cartItem.qty} in cart)</c:if>
+								</c:forEach>
+								</td>
+								</c:if>
 								<span>
 									${ addedUpc eq item.upc ? '<span style="color:blue;">'
 									.concat(addedItemQty).concat(' ').concat(item.name).concat(' ').concat(item.options)
-									.concat(' ').concat(item.size).concat(' added to <a href="/cart" alt="View Cart" title="View Cart">cart</a></span> ') : ''}
+									.concat(' ').concat(item.size).concat(' added to <a href="/cart" alt="View Cart" title="View Cart">cart</a>')
+									.concat('<br/>If you are ready to check out, please click the <a href="/cart" alt="View Cart" title="View Cart">cart</a> icon in the upper right.</span> ') : ''}
 								</span>
 							</tr>
 						</form>

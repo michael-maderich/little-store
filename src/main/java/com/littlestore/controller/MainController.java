@@ -260,9 +260,6 @@ public class MainController {
 		for (Product p : itemList) if ( p.getCategoryMain().equals(categoryName) ) goodLink = true;
 		if (!goodLink) return "redirect:/";
 
-		// May need this if we want the catalog to show the quantity already in cart
-//		int[] upcList = new String[itemList.size()];	// Array to hold items 
-//		int[] qtyList = new int[itemList.size()];	// Array to hold items to add to cart, initialized to all 0
 		Customer customer = getLoggedInUser();
 		if (customer != null) {										// If a User is logged in, get their cart, (or null if it doesn't exist)
 			Cart customerCart = cartService.findByCustomerEmail(customer.getEmail());
@@ -279,7 +276,6 @@ public class MainController {
 		model.addAttribute("addedUpc", addedUpc);
 		model.addAttribute("addedItemQty", addedItemQty);
 		model.addAttribute("itemList", itemList);
-//		model.addAttribute("qtyList", qtyList);
 		return "category";
 	}
 
@@ -328,9 +324,6 @@ public class MainController {
 	@GetMapping("/newitems")
 	public String showNewItems(Model model, @RequestParam(value = "addedUpc", defaultValue="") String addedUpc,
 										@RequestParam(value = "addedItemQty", defaultValue="0") String addedItemQty) {
-		model.addAttribute("navMenuItems", getNavMenuItems());
-		model.addAttribute("addedUpc", addedUpc);
-		model.addAttribute("addedItemQty", addedItemQty);
 		String cartAdjustments = "";
 		Customer customer = getLoggedInUser();
 		if (customer == null) {				// Can't view new items if not logged in, for now. Direct user to log in/sign up
@@ -347,6 +340,9 @@ public class MainController {
 				model.addAttribute("cartItems", cartItems);
 			}
 			model.addAttribute("cartAdjustments", cartAdjustments);
+			model.addAttribute("navMenuItems", getNavMenuItems());
+			model.addAttribute("addedUpc", addedUpc);
+			model.addAttribute("addedItemQty", addedItemQty);
 			model.addAttribute("itemList", itemList);
 		}
 		return "newitems";
@@ -362,7 +358,7 @@ public class MainController {
 		else {
 			referer = referer.substring( referer.indexOf('/', referer.indexOf('/')+2) );		// everything after root '/', including the /
 			referer = referer.substring(0, (referer.indexOf('?') != -1) ? referer.indexOf('?') : referer.length());	// remove the query string if exists
-			if (!referer.startsWith("/category")) return "redirect:"+referer;
+			if (!( referer.startsWith("/category") || referer.startsWith("/newitems") )) return "redirect:"+referer;
 		}
 
 		Customer customer = getLoggedInUser();

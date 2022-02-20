@@ -28,6 +28,10 @@
 				<c:if test = "${not empty customerCart}">
 				<div id="checkout-panel">
                     <h2>Check Out</h2>
+					<span style="color:blue;">
+						<br />Please be sure to please click the <b>Submit Order</b> button to finalize your order.
+						<br />You will receive an email confirmation. Once submitted, please contact me to set up meetup details.
+					</span>
 					<h4 class="checkoutHeader">Order Details</h4>
 					${empty cartAdjustments ? '' : '<div class="cartChangeMsg"><br/><span style="color:red;">'.concat(cartAdjustments).concat('</span></div>')}
 					<c:set var="cartTotal" value="${0}" />
@@ -65,8 +69,12 @@
 					</table>
 				</div>
 				<div id="customer-panel">
-                    <h4 class="checkoutHeader">Customer Details</h4>
 					<form:form method="POST" modelAttribute="customerInfo" class="form-signin" action="/confirmation">
+					<label for="submit"><form:button id="submit" name="submit" type="submit" class="btn btn-sm btn-primary btn-block highlighted">
+						Submit Order
+					</form:button></label>
+                    <h4 class="checkoutHeader">Customer Details</h4>
+					<span>(changes will be saved to profile)</span>
  					<table id="customer-table">
  						<tr>
  							<td></td>
@@ -96,7 +104,7 @@
  						</tr>
  						<tr>
  							<td colspan=2 class="customer_td_label">
- 								<label for="address">Meet-Up Address (Optional):<br/><span>(changes will be saved to profile)</span></label>
+ 								<label for="address">Meet-Up Address:</label>
  							</td>
  							<td colspan=2 class="customer_td_input">
 								<form:input path="address" id="address" type="text" class="text-field"></form:input>
@@ -120,7 +128,7 @@
 						</tr>
 						<tr>
 							<td colspan=2 class="customer_td_label">
-								<label for="paymentType">Payment Type (Optional):</label>
+								<label for="paymentType">Payment Type:</label>
 							</td>
 							<td colspan=2 class="customer_td_input">
 								<form:select path="preferredPayment" name="preferredPayment">
@@ -139,9 +147,6 @@
 							</td>
 						</tr>
 					</table>
-					<label for="submit"><form:button id="submit" name="submit" type="submit" class="btn btn-sm btn-primary btn-block highlighted">
-						Submit Order
-					</form:button></label>
 					</form:form>
 				</div>
 				</c:if>
