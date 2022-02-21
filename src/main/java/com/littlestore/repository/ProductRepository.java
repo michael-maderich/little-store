@@ -21,6 +21,9 @@ public interface ProductRepository extends CrudRepository<Product, String> {
 	@Query(value = "SELECT p FROM Product p WHERE p.currentPrice <= 1.00 AND p.stockQty > 0 ORDER BY p.categoryMain ASC, p.categorySpecific ASC, p.name ASC, p.options ASC")
 	public List<Product> getDollarItems();
 	
+	@Query(value = "SELECT p FROM Product p WHERE (p.description LIKE %:searchText% OR p.categoryMain LIKE %:searchText% OR p.categorySpecific LIKE %:searchText%) AND p.stockQty > 0 ORDER BY p.categoryMain ASC, p.categorySpecific ASC, p.name ASC, p.options ASC")
+	public List<Product> getSearchResults(String searchText);
+	
 	// Get list of Product Main Categories
 	@Query(value = "SELECT DISTINCT p.categoryMain FROM product p ORDER BY p.categoryMain", nativeQuery=true)
 	public List<String> findAllCategoryMainAsc();
@@ -46,7 +49,7 @@ public interface ProductRepository extends CrudRepository<Product, String> {
 	// Get list of Product Specific Categories that have stock, under the passed Main Category
 	@Query(value = "SELECT DISTINCT p.categorySpecific FROM product p WHERE p.stockQty !=0 "
 			+ "AND p.categoryMain = :mainCat ORDER BY p.categorySpecific", nativeQuery=true)
-public List<String> findAllCategorySpecificUnderMainWithStockAsc(@Param("mainCat") String categoryMain);
+	public List<String> findAllCategorySpecificUnderMainWithStockAsc(@Param("mainCat") String categoryMain);
 
 	public List<Product> findByCategorySpecific(String categoryName);
     

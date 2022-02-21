@@ -51,6 +51,10 @@ public class ProductService {
 		return repo.getDollarItems();
 	}
 	
+	public List<Product> getSearchResults(String searchText) {
+		return repo.getSearchResults(searchText);
+	}
+	
 	public List<String> listCategoryMain() {
 		return repo.findAllCategoryMainAsc();
 	}	 

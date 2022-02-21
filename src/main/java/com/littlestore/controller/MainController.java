@@ -248,7 +248,7 @@ public class MainController {
 
 	// Only need String likeName for Search, empty default returns all Products
 /*	@GetMapping({ "/productList" })
-		public String listProductHandler(Model model,
+		public String listProductHandler(Model model,			// Pagination - haha yeah, one day
 					@RequestParam(value = "name", defaultValue = "") String likeName,
 					@RequestParam(value = "page", defaultValue = "1") int page) {
 			final int maxResult = 5;
@@ -388,6 +388,32 @@ public class MainController {
 		return "dollarama";
 	}
 
+	@GetMapping("/search")
+	public String itemSearch(Model model, @RequestParam(value = "q", defaultValue="") String searchText,
+							@RequestParam(value = "addedUpc", defaultValue="") String addedUpc,
+							@RequestParam(value = "addedItemQty", defaultValue="0") String addedItemQty) {
+		List<Product> itemList = productService.getSearchResults(searchText);
+		String cartAdjustments = null;
+
+		Customer customer = getLoggedInUser();
+		if (customer != null) {										// If a User is logged in, get their cart, (or null if it doesn't exist)
+			Cart customerCart = cartService.findByCustomerEmail(customer.getEmail());
+			if (customerCart != null)
+			{		// If they have a cart, fill cartItems with their cart item quantities
+				cartAdjustments = updateCartChanges();
+				List<CartDetail> cartItems = customerCart.getCartItems();
+				model.addAttribute("cartItems", cartItems);
+			}
+		}
+		model.addAttribute("cartAdjustments", cartAdjustments);
+		model.addAttribute("navMenuItems", getNavMenuItems());
+		model.addAttribute("addedUpc", addedUpc);
+		model.addAttribute("addedItemQty", addedItemQty);
+		model.addAttribute("itemList", itemList);
+		model.addAttribute("searchText", searchText);
+		return "searchresults";
+	}
+
 	@GetMapping("/addToCart")
 	public String addItemsToCart(HttpServletRequest request, Model model,
 								@RequestParam(value = "upc", defaultValue="") String upc,
@@ -398,7 +424,9 @@ public class MainController {
 		else {
 			referer = referer.substring( referer.indexOf('/', referer.indexOf('/')+2) );		// everything after root '/', including the /
 			referer = referer.substring(0, (referer.indexOf('?') != -1) ? referer.indexOf('?') : referer.length());	// remove the query string if exists
-			if (!( referer.startsWith("/category") || referer.startsWith("/newitems") || referer.startsWith("/dollarama") )) return "redirect:"+referer;
+			if (!( referer.startsWith("/category") || referer.startsWith("/newitems")
+				|| referer.startsWith("/dollarama") || referer.startsWith("/search") ))
+				return "redirect:"+referer;
 		}
 
 		Customer customer = getLoggedInUser();

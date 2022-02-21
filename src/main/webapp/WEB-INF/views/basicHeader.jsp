@@ -7,7 +7,9 @@
 				Menu
 			</nav> -->
 			<nav>
-				<input type="text" placeholder=" Search (Out of Order)" disabled>
+			<form id="searchForm" method="GET" action="/search">
+				<input type="text" name="q" placeholder=" Search">
+			</form>
 			</nav>
  			<div id="action-icons">
 				<form id="logoutForm" method="POST" action="${contextPath}/logout">
