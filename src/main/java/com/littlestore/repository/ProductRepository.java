@@ -36,9 +36,9 @@ public interface ProductRepository extends CrudRepository<Product, String>, JpaS
 		
 //	public List<Product> findByCategoryMainOrderByDescription(String categoryName);
 	
-	public List<Product> findByCategoryMainOrderByCategorySpecificAscNameAscSizeAscOptionsAsc(String categoryName);
+	public List<Product> findByCategoryMainOrderByCategorySpecificAscNameAscSizeDescOptionsAsc(String categoryName);
     
-	public List<Product> findByCategoryMainAndStockQtyGreaterThanOrderByCategorySpecificAscNameAscSizeAscOptionsAsc(String categoryName, int minQty);
+	public List<Product> findByCategoryMainAndStockQtyGreaterThanOrderByCategorySpecificAscNameAscSizeDescOptionsAsc(String categoryName, int minQty);
     
 //	public List<String> findAllDistinctCategorySpecificGroupByCategoryMainOrderByCategorySpecific();
 	
@@ -54,7 +54,7 @@ public interface ProductRepository extends CrudRepository<Product, String>, JpaS
 
 	public List<Product> findByCategorySpecific(String categoryName);
     
-	public List<Product> findByCategorySpecificOrderByNameAscSizeAscOptionsAsc(String subCategoryName);
+	public List<Product> findByCategorySpecificOrderByNameAscSizeDescOptionsAsc(String subCategoryName);
 
-	public List<Product> findByCategorySpecificAndStockQtyGreaterThanOrderByNameAscSizeAscOptionsAsc(String subCategoryName, int minQty);
+	public List<Product> findByCategorySpecificAndStockQtyGreaterThanOrderByNameAscSizeDescOptionsAsc(String subCategoryName, int minQty);
 }

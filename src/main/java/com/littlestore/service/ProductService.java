@@ -87,12 +87,12 @@ public class ProductService {
 	}
 	
 	public List<Product> findByCategoryMainSorted(String categoryName) {
-		return repo.findByCategoryMainOrderByCategorySpecificAscNameAscSizeAscOptionsAsc(categoryName);
+		return repo.findByCategoryMainOrderByCategorySpecificAscNameAscSizeDescOptionsAsc(categoryName);
 //		return repo.findByCategoryMainOrderByDescription(categoryName);
 	}
 
 	public List<Product> findByCategoryMainMinQtySorted(String categoryName, int minQty) {
-		return repo.findByCategoryMainAndStockQtyGreaterThanOrderByCategorySpecificAscNameAscSizeAscOptionsAsc(categoryName, minQty);
+		return repo.findByCategoryMainAndStockQtyGreaterThanOrderByCategorySpecificAscNameAscSizeDescOptionsAsc(categoryName, minQty);
 	}
     
 	public List<String> listCategorySpecificUnderMain(String categoryMain) {
@@ -108,11 +108,11 @@ public class ProductService {
 	}
 	
 	public List<Product> findByCategorySpecificSorted(String subCategoryName) {
-		return repo.findByCategorySpecificOrderByNameAscSizeAscOptionsAsc(subCategoryName);		
+		return repo.findByCategorySpecificOrderByNameAscSizeDescOptionsAsc(subCategoryName);		
 	}
 	
 	public List<Product> findByCategorySpecificMinQtySorted(String subCategoryName, int minQty) {
-		return repo.findByCategorySpecificAndStockQtyGreaterThanOrderByNameAscSizeAscOptionsAsc(subCategoryName, minQty);
+		return repo.findByCategorySpecificAndStockQtyGreaterThanOrderByNameAscSizeDescOptionsAsc(subCategoryName, minQty);
 	}
 	
 	public List<ArrayList<ArrayList<ArrayList<Product>>>> findAllByCatAndSubcat() {
