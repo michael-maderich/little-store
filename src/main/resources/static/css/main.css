@@ -32,7 +32,7 @@ header {
 *,
 *::before,
 *::after {
-  box-sizing: initial;
+  box-sizing: content-box!;
 }
 
 #main-content {
