@@ -28,9 +28,16 @@ header {
 	padding:.75rem;
 	height:3.5rem;
 }
-/* #main-content {
+
+*,
+*::before,
+*::after {
+  box-sizing: initial;
+}
+
+#main-content {
 	height:100%;
-} */
+}
 #logoutbtn {
 	margin-left:.5rem;
 } 
