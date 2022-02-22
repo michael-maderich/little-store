@@ -1,9 +1,12 @@
 package com.littlestore.service;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,7 +57,23 @@ public class ProductService {
 	public List<Product> getSearchResults(String searchText) {
 		return repo.getSearchResults(searchText);
 	}
-	
+
+    public Stream<Product> findProductsContainingDesc(Collection<String> withDesc) {
+        Specification<Product> specifications = null;
+        for (String s : withDesc) {
+            if(specifications == null){
+                specifications = hasDescriptionLike(s);
+            }else{
+                specifications = specifications.or(hasDescriptionLike(s));
+            }
+        }
+        return repo.findAll(specifications).stream();
+    }
+
+    public static Specification<Product> hasDescriptionLike(String desc) {
+        return (root, query, builder) -> builder.like(root.get("description"), "%" + desc + "%");
+    }
+    
 	public List<String> listCategoryMain() {
 		return repo.findAllCategoryMainAsc();
 	}	 
