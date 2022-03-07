@@ -104,5 +104,4 @@ public class CartDetail implements Serializable, Comparable<CartDetail> {
 		return compare;
 	}
 	
-
 }

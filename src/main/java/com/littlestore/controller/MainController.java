@@ -624,36 +624,6 @@ public class MainController {
 		}
 	}
 
-/*	@PostMapping("/checkout")
-	public String orderFinalizationPage(Model model) {
-		Customer customer = getLoggedInUser();
-		if (customer == null) {				// Can't check out if not logged in, for now. Direct user to log in
-			model.addAttribute("navMenuItems", getNavMenuItems());
-			model.addAttribute("error", "Please log in to your account to check out.");
-			return "/login";
-		}
-		else {														// If a User is logged in, get their cart, (or null if it doesn't exist)
-			Cart customerCart = cartService.findByCustomerEmail(customer.getEmail());
-			if (customerCart == null) {			// If they don't have a cart, redirect to cart page but couldn't get here unless url typed/bookmarked
-				model.addAttribute("customer", customer);
-				model.addAttribute("customerCart", customerCart);
-				return "redirect:/cart";
-			}
-			// Reorganize cart so it's ordered by category/subcategory/name/options/size
-			List<CartDetail> cartItems = customerCart.getCartItems();
-			Collections.sort(cartItems);			// CartDetail entity contains compareTo() method
-			model.addAttribute("customerInfo", customer);
-			model.addAttribute("customerCart", customerCart);
-			model.addAttribute("listStates", listStates);
-			model.addAttribute("listPayTypes", listPayTypes);
-			return "checkout";
-		}
-	}*/
-
-	// Move cart to order in database and delete cart
-	// Remove sold items from inventory
-	// Send order via email
-	// Display confirmation (order details/customer info/etc again)
 	@PostMapping("/confirmation")
 	public String completeOrder(Model model, @ModelAttribute("customerInfo") Customer customerUpdates) {
 		
@@ -858,6 +828,188 @@ public class MainController {
 					 emailBody);
 			// Send order notification to my email
 			new SendSimpleEmail("scruffqpons@gmail.com", "New Order Received", emailBody);
+
+			
+			model.addAttribute("customerInfo", customer);
+			model.addAttribute("customerOrder", customerOrder);
+			model.addAttribute("listStates", listStates);
+			model.addAttribute("listPayTypes", listPayTypes);
+			return "confirmation";
+		}
+	}
+
+	@GetMapping("/confirmation/{email}/{orderNum}")
+	public String resendOrderConfirmation(Model model, @PathVariable(name="email") String email, @PathVariable(name="orderNum") String orderNum) {
+		Customer customer = customerService.findByEmail(email);
+		if (customer == null) {				// Can't complete order if not logged in, for now. Direct user to log in page
+			model.addAttribute("navMenuItems", getNavMenuItems());
+			model.addAttribute("error", "Please log in to access that page.");
+			return "/login";
+		}
+		else {
+			Order customerOrder = null;
+			try {
+				customerOrder = orderService.get(Integer.parseInt(orderNum));
+			}
+			catch (Exception e)
+			{
+				model.addAttribute("navMenuItems", getNavMenuItems());
+				model.addAttribute("error", "Please log in to access that page.");
+				return "/login";
+			}
+			
+			// Add each Cart Detail to Order Detail table
+			List<OrderDetail> orderItems = customerOrder.getOrderItems();
+			Collections.sort(orderItems);
+
+			// Craft order confirmation to be sent to customer's email address
+			String emailBody =
+			"<style>"+
+			"	@charset \"ISO-8859-1\";"+
+			"	#checkout-panel {padding-bottom:1em;}"+
+			"	#checkout-panel h2, #checkout-panel h4 {font-family: 'Gravitas One', Verdana, Geneva, Tahoma, sans-serif;}"+
+			"	#checkout-panel h4 {font-family: 'Inknut Antiqua', Verdana, Geneva, Tahoma, sans-serif;}"+
+			"	#checkout-table {margin:0 auto; margin-top:2em;}"+
+			"	.orderDetailHeader {margin-top:3em;}"+
+			"	.orderDetailHeader span {padding-left:1em; padding-right:1em;}"+
+			"	#checkout-table td, #checkout-table th {background-color:white; border:1px solid gray; padding-left:1em; padding-right:1em; padding-top:.5em; padding-bottom:.5em;}"+
+			"	#checkout-table img {height:2em;}"+
+			"	.checkout_image_panel {background-color:white;}"+
+			"	.checkout_subtotal_panel {font-weight:bold;}"+
+			"	.checkoutHeader {margin-top:2em; margin-bottom:1em;}"+
+			"	.checkoutHeader span {padding-left:1em; padding-right:1em;}"+
+			"	#customer-panel {padding-bottom:1em;}"+
+			"	#customer-panel h2, #customer-panel h4 {font-family: 'Gravitas One', Verdana, Geneva, Tahoma, sans-serif;}"+
+			"	#customer-panel h4 {font-family: 'Inknut Antiqua', Verdana, Geneva, Tahoma, sans-serif;}"+
+			"	#customer-table {margin:0 auto; margin-top:2em;}"+
+			"	#customer-table td {width:8em;}"+
+			"	#customer-panel input, #customer-panel select {margin-bottom:.5em; background-color:white; color:black;}"+
+			"	#customer-panel input::placeholder {color:black;}"+
+			"	.customer_td_label {text-align:right; padding-bottom:.5em; padding-right:.5em;}"+
+			"	.customer_td_input {text-align:left;}"+
+			"	.text-field {width:16em;}"+
+			"	#customer-panel p {margin-top:.75em; margin-bottom:.5em;}"+
+			"	#customer-panel p span {font-size:.75em;}"+
+			"	#city {width:13em;}"+
+			"</style>"+
+			"<div id='customer-panel'>\n"+
+			"	<h2>Thank You For Your Order!</h2>\n"+
+			"	<h4 class='checkoutHeader'>Customer Details</h4>\n"+
+			"	<table id='customer-table'>\n"+
+			"		<tr>\n"+
+			"			<td></td>\n"+
+			"			<td class='customer_td_label'>\n"+
+			"				<label for='email'>Name:</label>\n"+
+			"			</td>\n"+
+			"			<td colspan=2 class='customer_td_label'>\n"+
+			"				"+customer.getFirstName()+" "+customer.getLastName()+"\n"+
+			"			</td>\n"+
+			"			<td class='customer_td_label'>\n"+
+			"				<label for='email'>Email:</label>\n"+
+			"			</td>\n"+
+			"			<td colspan=2 class='customer_td_input'>\n"+
+			"				"+customer.getEmail()+"\n"+
+			"			</td>\n"+
+			"			<td class='customer_td_label'>\n"+
+			"				<label for='phone'>Phone:</label>\n"+
+			"			</td>\n"+
+			"			<td colspan=2 class='customer_td_input'>\n"+
+			"				"+( customer.getPhone() == null || customer.getPhone().isEmpty() ? "(None Supplied)" : customer.getPhone() ) + "\n"+
+			"			</td>\n"+
+			"		</tr>\n"+
+			"		<tr>\n"+
+			"			<td colspan=2 class='customer_td_label'>\n"+
+			"				<label for='address'>Meet-Up Address:</label>\n"+
+			"			</td>\n"+
+			"			<td colspan=2 class='customer_td_input'>\n"+
+			"				"+( customer.getAddress()==null || customer.getAddress().isEmpty() ? "TBD" : customer.getAddress() ) +"\n"+
+			"			</td>\n"+
+			"			<td class='customer_td_label'>\n"+
+			"				<label for='city'>City:</label>\n"+
+			"			</td>\n"+
+			"			<td colspan=2 class='customer_td_input'>\n"+
+			"				"+( customer.getCity()==null || customer.getCity().isEmpty() ? "TBD" : customer.getCity() ) +"\n"+
+			"			</td>\n"+
+			"			<td class='customer_td_label'>\n"+
+			"				<label for='state'>State:</label>\n"+
+			"			</td>\n"+
+			"			<td class='customer_td_input'>\n"+
+			"				"+listStates.get(customer.getState().ordinal())+"\n"+
+			"			</td>\n"+
+			"		</tr>\n"+
+			"		<tr>\n"+
+			"			<td colspan=2 class='customer_td_label'>\n"+
+			"				<label for='paymentType'>Payment Type:</label>\n"+
+			"			</td>\n"+
+			"			<td colspan=2 class='customer_td_input'>\n"+
+			"				"+listPayTypes.get(customer.getPreferredPayment().ordinal())+"\n"+
+			"			</td>\n"+
+			"			<td colspan=2 class='customer_td_label'>\n"+
+			"				<label for='paymentHandle'>Payment Handle:</label>\n"+
+			"			</td>\n"+
+			"			<td colspan=2 class='customer_td_input'>\n"+
+			"				"+customer.getPaymentHandle()+"\n"+
+			"			</td>\n"+
+			"		</tr>\n"+
+			"	</table>\n"+
+			"</div>\n"+
+			"<div id='checkout-panel'>\n"+
+			"	<h4 class='checkoutHeader'>Order Details</h4>\n"+
+			"	<div class='orderDetailHeader'><h4>\n"+
+			"		<span>Order #"+customerOrder.getOrderNum()+"</span>\n"+
+			"		<span>Order Date: "+
+			"			"+customerOrder.getOrderDateTime().format(DateTimeFormatter.ISO_LOCAL_DATE)+"\n"+
+			"		</span>\n"+
+			"		<span>Status: "+customerOrder.getStatus()+"</span>\n"+
+			"	</h4></div>\n"+
+			"	<table id='checkout-table'>\n"+
+			"		<thead>\n"+
+			"			<tr>\n"+
+			"				<th></th>\n"+
+			"				<th>Item</th>\n"+
+			"				<th>Scent/Style</th>\n"+
+			"				<th>Size</th>\n"+
+			"				<th>Quantity</th>\n"+
+			"				<th>Unit Price</th>\n"+
+			"				<th>Subtotal</th>\n"+
+			"			</tr>\n"+
+			"		</thead>\n"+
+			"		<tbody>\n";
+			double orderTotal = 0;
+			for (OrderDetail orderItem : customerOrder.getOrderItems()) {
+				emailBody +=
+			"			<tr>\n"+
+			"				<td class='checkout_image_panel' style='background-color:white;'>"+
+			"					<img style='height:2em;' src='"+orderItem.getProduct().getImage()+"' alt='"+orderItem.getProduct().getDescription()+"' />"+
+			"				</td>\n"+
+			"				<td>"+orderItem.getProduct().getName()+"</td>\n"+
+			"				<td>"+orderItem.getProduct().getOptions()+"</td>\n"+
+			"				<td>"+orderItem.getProduct().getSize()+"</td>\n"+
+			"				<td>"+orderItem.getQty()+"</td>\n"+
+			"				<td>"+String.format("$%,.2f", orderItem.getPrice())+"</td>\n"+
+			"				<td>"+String.format("$%,.2f", orderItem.getQty() * orderItem.getPrice())+"</td>\n"+
+			"			</tr>\n";
+				orderTotal += orderItem.getQty() * orderItem.getPrice();
+			}
+			emailBody +=
+			"		</tbody>\n"+
+			"		<tfoot>\n"+
+			"			<tr>\n"+
+			"				<td  colspan=6 style='text-align:right;' class='checkout_subtotal_panel'>Total:</td>\n"+
+			"				<td class='checkout_subtotal_panel'>"+String.format("$%,.2f", orderTotal)+"</td>\n"+
+			"			</tr>\n"+
+			"		</tfoot>\n"+
+			"	</table>\n"+
+			"</div>";
+			/*
+			 * new SendSimpleEmail(customer.getEmail(),
+			 * "Little Store Order #"+customerOrder.getOrderNum()+" Confirmation",
+			 * emailBody);
+			 */
+			// Send order notification to my email
+			new SendSimpleEmail("scruffqpons@gmail.com", "New Order Received", emailBody);
+			// Send order notification to printer
+//			new SendSimpleEmail("jamitinmybox@hpeprint.com", "New Order Received", emailBody);
 
 			
 			model.addAttribute("customerInfo", customer);

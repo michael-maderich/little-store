@@ -15,7 +15,7 @@ import javax.persistence.Table;
 @Entity
 @IdClass(OrderDetailId.class)
 @Table(name="orderDetail")
-public class OrderDetail implements Serializable {
+public class OrderDetail implements Serializable, Comparable<OrderDetail> {
 
 	private static final long serialVersionUID = 123453367890L;
 
@@ -86,6 +86,16 @@ public class OrderDetail implements Serializable {
 	}
 	public void setLineNumber(int lineNumber) {
 		this.lineNumber = lineNumber;
+	}
+	
+	@Override
+	public int compareTo(OrderDetail o) {		// Order by Main Category, Specific Category, name, size, options
+		int compare = getProduct().getCategoryMain().compareTo(o.getProduct().getCategoryMain());
+		if (compare == 0) compare = getProduct().getCategorySpecific().compareTo(o.getProduct().getCategorySpecific());
+		if (compare == 0) compare = getProduct().getName().compareTo(o.getProduct().getName());
+		if (compare == 0) compare = getProduct().getSize().compareTo(o.getProduct().getSize());
+		if (compare == 0) compare = getProduct().getOptions().compareTo(o.getProduct().getOptions());
+		return compare;
 	}
 	
 
