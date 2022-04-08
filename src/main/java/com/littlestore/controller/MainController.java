@@ -715,7 +715,7 @@ public class MainController {
 			"	#city {width:13em;}"+
 			"</style>"+
 			"<div id='customer-panel'>\n"+
-			"	<h2>Thank You For Your Order!</h2>\n"+
+			"	<h2>Thank You For Your Order at <a href=\"https://the-little-store.herokuapp.com/\" target=\"_new\">The Little Store</a>!</h2>\n"+
 			"	<h4 class='checkoutHeader'>Customer Details</h4>\n"+
 			"	<table id='customer-table'>\n"+
 			"		<tr>\n"+
@@ -809,7 +809,7 @@ public class MainController {
 			"				<td>"+orderItem.getProduct().getSize()+"</td>\n"+
 			"				<td>"+orderItem.getQty()+"</td>\n"+
 			"				<td>"+String.format("$%,.2f", orderItem.getPrice())+"</td>\n"+
-			"				<td>"+String.format("$%,.2f", orderItem.getQty() * orderItem.getPrice())+"</td>\n"+
+			"				<td align=\"center\">"+String.format("$%,.2f", orderItem.getQty() * orderItem.getPrice())+"</td>\n"+
 			"			</tr>\n";
 				orderTotal += orderItem.getQty() * orderItem.getPrice();
 			}
@@ -827,7 +827,9 @@ public class MainController {
 					 "Little Store Order #"+customerOrder.getOrderNum()+" Confirmation",
 					 emailBody);
 			// Send order notification to my email
-			new SendSimpleEmail("scruffqpons@gmail.com", "New Order Received", emailBody);
+			new SendSimpleEmail("thelittlestoregoods@gmail.com", "New Order Received", emailBody);
+			// Send order notification to printer
+			new SendSimpleEmail("jamitinmybox@hpeprint.com", "New Order Received", emailBody);
 
 			
 			model.addAttribute("customerInfo", customer);
@@ -841,9 +843,9 @@ public class MainController {
 	@GetMapping("/confirmation/{email}/{orderNum}")
 	public String resendOrderConfirmation(Model model, @PathVariable(name="email") String email, @PathVariable(name="orderNum") String orderNum) {
 		Customer customer = customerService.findByEmail(email);
-		if (customer == null) {				// Can't complete order if not logged in, for now. Direct user to log in page
+		if (customer == null) {				// Can't resend confirmation if user doesn't exist
 			model.addAttribute("navMenuItems", getNavMenuItems());
-			model.addAttribute("error", "Please log in to access that page.");
+			model.addAttribute("error", "User email not found.");
 			return "/login";
 		}
 		else {
@@ -854,7 +856,7 @@ public class MainController {
 			catch (Exception e)
 			{
 				model.addAttribute("navMenuItems", getNavMenuItems());
-				model.addAttribute("error", "Please log in to access that page.");
+				model.addAttribute("error", "Order number not found for user" + email + ".");
 				return "/login";
 			}
 			
@@ -893,7 +895,7 @@ public class MainController {
 			"	#city {width:13em;}"+
 			"</style>"+
 			"<div id='customer-panel'>\n"+
-			"	<h2>Thank You For Your Order!</h2>\n"+
+			"	<h2>Thank You For Your Order at <a href=\"https://the-little-store.herokuapp.com/\" target=\"_new\">The Little Store</a>!</h2>\n"+
 			"	<h4 class='checkoutHeader'>Customer Details</h4>\n"+
 			"	<table id='customer-table'>\n"+
 			"		<tr>\n"+
@@ -985,7 +987,7 @@ public class MainController {
 			"				<td>"+orderItem.getProduct().getName()+"</td>\n"+
 			"				<td>"+orderItem.getProduct().getOptions()+"</td>\n"+
 			"				<td>"+orderItem.getProduct().getSize()+"</td>\n"+
-			"				<td>"+orderItem.getQty()+"</td>\n"+
+			"				<td align=\"center\">"+orderItem.getQty()+"</td>\n"+
 			"				<td>"+String.format("$%,.2f", orderItem.getPrice())+"</td>\n"+
 			"				<td>"+String.format("$%,.2f", orderItem.getQty() * orderItem.getPrice())+"</td>\n"+
 			"			</tr>\n";
@@ -1005,9 +1007,9 @@ public class MainController {
 					 "Little Store Order #"+customerOrder.getOrderNum()+" Confirmation",
 					 emailBody);
 			// Send order notification to my email
-			new SendSimpleEmail("scruffqpons@gmail.com", "New Order Received", emailBody);
+			new SendSimpleEmail("thelittlestoregoods@gmail.com", "New Order Received", emailBody);
 			// Send order notification to printer
-			new SendSimpleEmail("jamitinmybox@hpeprint.com", "New Order Received", emailBody);
+//			new SendSimpleEmail("jamitinmybox@hpeprint.com", "New Order Received", emailBody);
 
 			
 			model.addAttribute("customerInfo", customer);

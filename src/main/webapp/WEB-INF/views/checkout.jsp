@@ -29,7 +29,7 @@
 				<div id="checkout-panel">
                     <h2>Check Out</h2>
 					<span style="color:blue;">
-						<br />Please be sure to please click the <b>Submit Order</b> button to finalize your order.
+						<br />Please be sure to click the <b>Submit Order</b> button to finalize your order.
 						<br />You will receive an email confirmation. Once submitted, please contact me to set up meetup details.
 					</span>
 					<h4 class="checkoutHeader">Order Details</h4>

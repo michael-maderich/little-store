@@ -47,11 +47,12 @@ nav {
 }
 #action-icons {
 	float:right;
+	padding-left:2rem;
+	padding-right:3rem;
 }
 #action-icons a {
-	padding-left:1rem;
-	padding-right:1rem;
-}
+	padding-left:2rem;
+	}
 /*#action-icons span, #action-icons i {
 	position:relative;
 	bottom:.3em;

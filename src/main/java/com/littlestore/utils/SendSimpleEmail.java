@@ -12,7 +12,7 @@ import javax.mail.internet.MimeMessage;
 
 public class SendSimpleEmail {
 	final String senderEmailId = "scruffqpons@gmail.com";
-	final String senderPassword = "***REMOVED***812";
+	final String senderPassword = "***REMOVED***812!";
 	final String emailSMTPserver = "smtp.gmail.com";
 
 	public SendSimpleEmail(String receiverEmail, String subject, String messageText) {	
