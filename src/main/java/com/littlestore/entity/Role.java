@@ -13,7 +13,7 @@ import javax.persistence.Table;
 public class Role {
 	
 	// Should we have a getter for this?
-	public enum Roles {OWNER, ADMIN, CUSTOMER};		// Enumeration aligns with Role ID: 0=OWNER, 1=ADMIN, 2=CUSTOMER
+	public enum Roles {ADMIN, OWNER, CUSTOMER};		// Enumeration aligns with Role ID: 0=ADMIN, 1=OWNER, 2=CUSTOMER
 	
     @Id
 	@Column(name="id", length=11, nullable=false, unique=true)

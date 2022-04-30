@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -12,6 +13,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import com.littlestore.entity.Role;
 
 // Handles Security Configuration. Pages and Requests must have valid permissions to load/function
 
@@ -30,22 +33,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		// Admin pages (manage inventory/customers/orders etc
-		http.authorizeRequests()
-			.antMatchers("/admin/**").hasAnyRole("OWNER", "ADMIN")//.access("hasAnyRole('OWNER','ADMIN')")
-//			.antMatchers("/user/**").hasAnyRole("OWNER", "ADMIN", "CUSTOMER")
-//			.antMatchers("/account/**").hasAnyRole("OWNER", "ADMIN", "CUSTOMER")
+		http.csrf().disable().authorizeRequests()
+			.antMatchers(HttpMethod.DELETE, "/admin/products/{productId}").hasAnyRole(Role.Roles.ADMIN.name(), Role.Roles.OWNER.name()) 	// Owner should be able to delete
+			.antMatchers(HttpMethod.PUT, "/admin/products/{productId}").hasAnyRole(Role.Roles.ADMIN.name(), Role.Roles.OWNER.name()) 		// Owner should be able to update
+			.antMatchers("/admin/products/add").hasAnyRole(Role.Roles.ADMIN.name(), Role.Roles.OWNER.name()) // Admin and Supervisor should be able to add product.
+			.antMatchers("/admin/**").hasAnyRole(Role.Roles.ADMIN.name(), Role.Roles.ADMIN.name())
+			.antMatchers("/admin").hasAnyRole(Role.Roles.ADMIN.name(), Role.Roles.ADMIN.name())
 			.antMatchers("/**").permitAll()
-
-/*		http
-			.authorizeRequests()
-			.antMatchers("/*", "/**").permitAll()
-//			.antMatchers("/resources/**", "/registration").permitAll()
-			.anyRequest().authenticated()*/
 			.and()
-		.formLogin()
-			.loginPage("/login").permitAll()
+			.formLogin()
+				.loginPage("/login").permitAll()
+				.and()
+			.logout().permitAll()
 			.and()
-		.logout().permitAll();
+			.httpBasic();
 
 /*			.antMatchers("/**").hasRole("USER").and().formLogin();
 			.antMatchers("/**").permitAll()

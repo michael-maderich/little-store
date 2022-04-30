@@ -126,7 +126,7 @@ public class MainController {
 	@GetMapping("/{nonsense}")
 	public String badUrl(Model model) {
 		model.addAttribute("navMenuItems", getNavMenuItems());
-		return "/index";
+		return "redirect:/";
 	}
 	
 	// Mapping to root/home/index page
@@ -1020,6 +1020,17 @@ public class MainController {
 		}
 	}
 
+	
+	
+	
+	@GetMapping("/admin")
+	public String adminMainPage(Model model)
+	{
+		return "admin";
+	}
+	
+	
+	
 
 /*	@RequestMapping({ "/buyProduct" })
 	public String listProductHandler(HttpServletRequest request, Model model, //
