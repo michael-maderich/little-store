@@ -48,8 +48,8 @@
 								<td class="product_info">${item.name}</td>
 								<td class="product_info">${item.options}</td>
 								<td class="product_info">${item.size}</td>
-								<td class="product_info">${item.onSale eq false ? '<span style="color:green">':''}<fmt:formatNumber value = "${item.currentPrice}" type = "currency" />${item.onSale eq false ? '</span>':''}
-														${item.onSale eq false ? '<br /><span style="text-decoration:line-through">':'<span visible="false"'}<fmt:formatNumber value = "${item.basePrice}" type = "currency" />${item.onSale eq false ? '</span>':'</span>'}</td>
+								<td class="product_info">${item.onSale eq true ? '<span style="color:green">':''}<fmt:formatNumber value = "${item.currentPrice}" type = "currency" />${item.onSale eq true ? '</span>':''}
+														${item.onSale eq true ? '<br /><span style="text-decoration:line-through">':'<span visible="false"'}<fmt:formatNumber value = "${item.basePrice}" type = "currency" />${item.onSale eq true ? '</span>':'</span>'}</td>
 								<td class="product_info">${(item.purchaseLimit != 0 and item.purchaseLimit < item.stockQty) ? item.purchaseLimit : item.stockQty}</td>
 								<td class="customerQty product_info">
 									<input type="hidden" id="upc${item.upc}" name="upc" value="${item.upc}" />
