@@ -141,7 +141,7 @@ public class MainController {
 		if (error != null) model.addAttribute("error", "Your username and/or password is invalid.");
 		if (logout != null) model.addAttribute("message", "You have been logged out successfully.");
 		model.addAttribute("navMenuItems", getNavMenuItems());
-		if (getLoggedInUser() != null) return "/index";				// If user is logged in, redirect to newitems page
+		if (getLoggedInUser() != null) return "/newitems";				// If user is logged in, redirect to newitems page
 		else return "/login";											// Otherwise, submit POST request to login page (handled by Spring Security)
 	}
 
@@ -177,6 +177,20 @@ public class MainController {
 			model.addAttribute("listStates", listStates);
 			return "/account";
 		}
+	}
+
+	// Page for password reset request
+	@GetMapping("/forgotPassword")
+	public String forgotPassword(Model model) {
+		model.addAttribute("navMenuItems", getNavMenuItems());
+		return "/forgotPassword";
+	}
+	
+	// Page for password reset request confirmation
+	@GetMapping("/passwordReset")
+	public String passwordReset(Model model) {
+		model.addAttribute("navMenuItems", getNavMenuItems());
+		return "/passwordReset";
 	}
 	
 	// Page for user to view/edit Profile, view Order History, and other functions TBD
@@ -386,6 +400,29 @@ public class MainController {
 		model.addAttribute("addedItemQty", addedItemQty);
 		model.addAttribute("itemList", itemList);
 		return "dollarama";
+	}
+
+	@GetMapping("/sale")
+	public String showSaleItems(Model model, @RequestParam(value = "addedUpc", defaultValue="") String addedUpc,
+										@RequestParam(value = "addedItemQty", defaultValue="0") String addedItemQty) {
+		String cartAdjustments = "";
+		Customer customer = getLoggedInUser();
+		if (customer != null) {										// If a User is logged in, get their cart, (or null if it doesn't exist)
+			Cart customerCart = cartService.findByCustomerEmail(customer.getEmail());
+			if (customerCart != null)
+			{		// If they have a cart, fill cartItems with their cart item quantities
+				cartAdjustments = updateCartChanges();
+				List<CartDetail> cartItems = customerCart.getCartItems();
+				model.addAttribute("cartItems", cartItems);
+			}
+		}
+		List<Product> itemList = productService.getSaleItems();
+		model.addAttribute("cartAdjustments", cartAdjustments);
+		model.addAttribute("navMenuItems", getNavMenuItems());
+		model.addAttribute("addedUpc", addedUpc);
+		model.addAttribute("addedItemQty", addedItemQty);
+		model.addAttribute("itemList", itemList);
+		return "sale";
 	}
 
 	@GetMapping("/search")
@@ -856,7 +893,7 @@ public class MainController {
 			catch (Exception e)
 			{
 				model.addAttribute("navMenuItems", getNavMenuItems());
-				model.addAttribute("error", "Order number not found for user" + email + ".");
+				model.addAttribute("error", "Order number not found for user " + email + ".");
 				return "/login";
 			}
 			

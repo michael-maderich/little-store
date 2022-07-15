@@ -9,8 +9,8 @@
 <html lang="en">
 	<head>
 <jsp:include page="headElement.jsp">
-	<jsp:param name="title" value="The Little Store - New Items" />
-	<jsp:param name="page" value="newitems" />
+	<jsp:param name="title" value="The Little Store - Sale Items" />
+	<jsp:param name="page" value="sale" />
 </jsp:include>
 	</head>
 	<body>
@@ -24,8 +24,8 @@
 </jsp:include>
  			<div id="center-content">
 				<div id="product-panel">
-					<h2>New Items Since Your Last Visit</h2>
-					${empty itemList ? '<div class="newItemsHeader"><br><h4>No New Items :(</h4></div>' : ''}
+					<h2>Discounted Items</h2>
+					${empty itemList ? '<div class="itemsHeader"><br><h4>No Discounted Items :(</h4></div>' : ''}
 					${empty cartAdjustments ? '' : '<div class="cartChangeMsg"><br/><span style="color:red;">'.concat(cartAdjustments).concat('</span></div>')}
 				<c:if test = "${not empty itemList}">
 					<table id="product-table">
