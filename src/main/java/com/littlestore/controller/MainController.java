@@ -462,7 +462,7 @@ public class MainController {
 			referer = referer.substring( referer.indexOf('/', referer.indexOf('/')+2) );		// everything after root '/', including the /
 			referer = referer.substring(0, (referer.indexOf('?') != -1) ? referer.indexOf('?') : referer.length());	// remove the query string if exists
 			if (!( referer.startsWith("/category") || referer.startsWith("/newitems")
-				|| referer.startsWith("/dollarama") || referer.startsWith("/search") ))
+				|| referer.startsWith("/dollarama") || referer.startsWith("/search") || referer.startsWith("/sale") ))
 				return "redirect:"+referer;
 		}
 
