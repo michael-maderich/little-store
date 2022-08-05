@@ -453,6 +453,7 @@ public class MainController {
 
 	@GetMapping("/addToCart")
 	public String addItemsToCart(HttpServletRequest request, Model model,
+								@RequestParam(value = "q", defaultValue="") String searchText,
 								@RequestParam(value = "upc", defaultValue="") String upc,
 								@RequestParam(value = "itemQty", defaultValue="0") String itemQty) {
 
@@ -525,7 +526,9 @@ public class MainController {
 			/* System.out.println(customerCart); */
 
 			model.addAttribute("customerCart", customerCart);
-			return "redirect:" + referer+"?addedUpc="+upc+"&addedItemQty="+addedItemQty;
+			model.addAttribute("searchText", searchText);
+			return !referer.startsWith("/search") ? "redirect:" + referer+"?addedUpc="+upc+"&addedItemQty="+addedItemQty
+												  : "redirect:" + referer + "?q=" + searchText +"&addedUpc="+upc+"&addedItemQty="+addedItemQty;
 		}
 	}
 

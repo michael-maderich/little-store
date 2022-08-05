@@ -58,6 +58,7 @@
 									</label>
 								</td>
  								<td class="button_panel product_info">
+									<input type="hidden" id="q" name="q" value="${searchText}" />
 									<button type="submit" class="btn btn-sm btn-primary btn-block" ${item.stockQty==0 ? 'disabled' : ''}>${item.stockQty==0 ? 'Out of Stock' : 'Add to Cart'}</button>
 								</td>
 								<c:if test = "${not empty cartItems}">
