@@ -92,21 +92,30 @@ public class MainController {
 		List<CartDetail> cartItems = new ArrayList<>(customerCart.getCartItems());
 		int i = 0;
 		while (i < cartItems.size()) {
-			Product checkedProduct = cartItems.get(i).getProduct();
+			Product checkedProduct = productService.get(cartItems.get(i).getProduct().getUpc());
 			int diff = cartItems.get(i).getQty() - checkedProduct.getStockQty();
 			if (diff > 0) {
-				cartItems.get(i).setQty(checkedProduct.getStockQty());	// Set cart qty to available qty
-				if (cartItems.get(i).getQty() == 0) {
-					CartDetail removedLineItem = cartDetailService.findLineByCartAndProduct(customerCart, checkedProduct);
+				if (checkedProduct.getStockQty() == 0) {
+					CartDetail removedLineItem = cartDetailService.findLineByCartAndProduct(customerCart, cartItems.get(i).getProduct());
 					cartItems.remove(removedLineItem);
 					cartDetailService.delete(removedLineItem);
-					Collections.sort(cartItems);			// CartDetail entity contains compareTo() method
+//					Collections.sort(cartItems);			// CartDetail entity contains compareTo() method
 					i--;		// Counteract i++ since list size has decreased
 				}
 				else {
+					cartItems.get(i).setQty(checkedProduct.getStockQty());	// Set cart qty to available qty
 					cartDetailService.save(cartItems.get(i));	// Will overwrite any previous cartDetail with same composite key (cartId/upc)
 				}
-				error += "Available qty of " + checkedProduct.getDescription() + " has changed. " + diff + " removed from cart.<br/>";
+				float cartPrice = cartItems.get(i).getPrice();
+				if (cartPrice != checkedProduct.getCurrentPrice()) {
+					error += (error.isEmpty() ? "Notice: " : "") + "The price of " + checkedProduct.getDescription() + " has changed from $"
+							+ String.format("%.2f", cartItems.get(i).getPrice()) + " to $" + String.format("%.2f", checkedProduct.getCurrentPrice())
+							+ "  since it was added to your cart.<br/>";
+					cartItems.get(i).setPrice(checkedProduct.getCurrentPrice());
+					cartDetailService.save(cartItems.get(i));	// Will overwrite any previous cartDetail with same composite key (cartId/upc)
+				}
+				error += (error.isEmpty() ? "Notice: " : "") + "The available qty of " + checkedProduct.getDescription() + " has changed. "
+						+ diff + (diff == 1 ? " was":" were") + " removed from your cart.<br/>";
 			}
 			i++;
 		}
@@ -132,6 +141,22 @@ public class MainController {
 	// Mapping to root/home/index page
 	@GetMapping({"/", "home", "/index"})
 	public String home(Model model) {
+		String cartAdjustments = null;
+		int cartTotalItemQty = 0;
+		Customer customer = getLoggedInUser();
+		if (customer != null) {										// If a User is logged in, get their cart, (or null if it doesn't exist)
+			Cart customerCart = cartService.findByCustomerEmail(customer.getEmail());
+			if (customerCart != null)
+			{		// If they have a cart, fill cartItems with their cart item quantities
+				cartAdjustments = updateCartChanges();
+				List<CartDetail> cartItems = customerCart.getCartItems();
+				for (CartDetail detail : cartItems) {
+					cartTotalItemQty += detail.getQty();
+				}
+				model.addAttribute("cartTotalItemQty", cartTotalItemQty);
+			}
+		}
+		model.addAttribute("cartAdjustments", cartAdjustments);
 		model.addAttribute("navMenuItems", getNavMenuItems());
 		return "/index";
 	}
@@ -205,6 +230,16 @@ public class MainController {
 			return "/login";
 		}
 		else {
+			int cartTotalItemQty = 0;
+			Cart customerCart = cartService.findByCustomerEmail(customer.getEmail());
+			if (customerCart != null)
+			{		// If they have a cart, fill cartItems with their cart item quantities
+				List<CartDetail> cartItems = customerCart.getCartItems();
+				for (CartDetail detail : cartItems) {
+					cartTotalItemQty += detail.getQty();
+				}
+				model.addAttribute("cartTotalItemQty", cartTotalItemQty);
+			}
 			model.addAttribute("customerForm", customer);
 			model.addAttribute("listStates", listStates);
 			return "/account";
@@ -235,6 +270,16 @@ public class MainController {
 			return "/login";
 		}
 		else {
+			int cartTotalItemQty = 0;
+			Cart customerCart = cartService.findByCustomerEmail(customer.getEmail());
+			if (customerCart != null)
+			{		// If they have a cart, fill cartItems with their cart item quantities
+				List<CartDetail> cartItems = customerCart.getCartItems();
+				for (CartDetail detail : cartItems) {
+					cartTotalItemQty += detail.getQty();
+				}
+				model.addAttribute("cartTotalItemQty", cartTotalItemQty);
+			}
 			model.addAttribute("customerForm", customer);
 			model.addAttribute("listStates", listStates);
 			return "/account";
@@ -251,6 +296,16 @@ public class MainController {
 			return "/login";
 		}
 		else {
+			int cartTotalItemQty = 0;
+			Cart customerCart = cartService.findByCustomerEmail(customer.getEmail());
+			if (customerCart != null)
+			{		// If they have a cart, fill cartItems with their cart item quantities
+				List<CartDetail> cartItems = customerCart.getCartItems();
+				for (CartDetail detail : cartItems) {
+					cartTotalItemQty += detail.getQty();
+				}
+				model.addAttribute("cartTotalItemQty", cartTotalItemQty);
+			}
 			model.addAttribute("customer", customer);
 			List<Order> orderList = orderService.findByCustomer(customer);
 			Collections.reverse(orderList);	// Show most recent order first
@@ -287,6 +342,7 @@ public class MainController {
 		List<Product> itemList = productService.findByCategoryMainMinQtySorted(categoryName, 0);
 //		List<Product> itemList = productService.findByCategoryMainSorted(categoryName);
 		String cartAdjustments = null;
+		int cartTotalItemQty = 0;
 		boolean goodLink = false;
 		for (Product p : itemList) if ( p.getCategoryMain().equals(categoryName) ) goodLink = true;
 		if (!goodLink) return "redirect:/";
@@ -298,6 +354,10 @@ public class MainController {
 			{		// If they have a cart, fill cartItems with their cart item quantities
 				cartAdjustments = updateCartChanges();
 				List<CartDetail> cartItems = customerCart.getCartItems();
+				for (CartDetail detail : cartItems) {
+					cartTotalItemQty += detail.getQty();
+				}
+				model.addAttribute("cartTotalItemQty", cartTotalItemQty);
 				model.addAttribute("cartItems", cartItems);
 			}
 		}
@@ -318,6 +378,7 @@ public class MainController {
 		List<Product> itemList = productService.findByCategorySpecificMinQtySorted(subCategoryName, 0);	// Filter out 0 qty items
 //		List<Product> itemList = productService.findByCategorySpecificSorted(subCategoryName);			// Shows 0 qty items
 		String cartAdjustments = null;
+		int cartTotalItemQty = 0;
 		boolean goodLink = false;
 		for (Product p : itemList) if ( p.getCategoryMain().equals(categoryName) 
 									&& p.getCategorySpecific().equals(subCategoryName) ) goodLink = true;
@@ -330,6 +391,10 @@ public class MainController {
 			{		// If they have a cart, fill cartItems with their cart item quantities
 				cartAdjustments = updateCartChanges();
 				List<CartDetail> cartItems = customerCart.getCartItems();
+				for (CartDetail detail : cartItems) {
+					cartTotalItemQty += detail.getQty();
+				}
+				model.addAttribute("cartTotalItemQty", cartTotalItemQty);
 				model.addAttribute("cartItems", cartItems);
 			}
 		}
@@ -356,9 +421,10 @@ public class MainController {
 	public String showNewItems(Model model, @RequestParam(value = "addedUpc", defaultValue="") String addedUpc,
 										@RequestParam(value = "addedItemQty", defaultValue="0") String addedItemQty) {
 		String cartAdjustments = "";
+		int cartTotalItemQty = 0;
 		Customer customer = getLoggedInUser();
 		if (customer == null) {				// Can't view new items if not logged in, for now. Direct user to log in/sign up
-			model.addAttribute("error", "You must be logged in to view new items.");
+			model.addAttribute("error", "Since items shown as new are based on your last order date, you must be logged in to view new items.");
 			return "/login";
 		}
 		else {										// If a User is logged in, get their cart, (or null if it doesn't exist)
@@ -368,6 +434,10 @@ public class MainController {
 			{		// If they have a cart, fill cartItems with their cart item quantities
 				cartAdjustments = updateCartChanges();
 				List<CartDetail> cartItems = customerCart.getCartItems();
+				for (CartDetail detail : cartItems) {
+					cartTotalItemQty += detail.getQty();
+				}
+				model.addAttribute("cartTotalItemQty", cartTotalItemQty);
 				model.addAttribute("cartItems", cartItems);
 			}
 			model.addAttribute("cartAdjustments", cartAdjustments);
@@ -383,6 +453,7 @@ public class MainController {
 	public String showDollarItems(Model model, @RequestParam(value = "addedUpc", defaultValue="") String addedUpc,
 										@RequestParam(value = "addedItemQty", defaultValue="0") String addedItemQty) {
 		String cartAdjustments = "";
+		int cartTotalItemQty = 0;
 		Customer customer = getLoggedInUser();
 		if (customer != null) {										// If a User is logged in, get their cart, (or null if it doesn't exist)
 			Cart customerCart = cartService.findByCustomerEmail(customer.getEmail());
@@ -390,6 +461,10 @@ public class MainController {
 			{		// If they have a cart, fill cartItems with their cart item quantities
 				cartAdjustments = updateCartChanges();
 				List<CartDetail> cartItems = customerCart.getCartItems();
+				for (CartDetail detail : cartItems) {
+					cartTotalItemQty += detail.getQty();
+				}
+				model.addAttribute("cartTotalItemQty", cartTotalItemQty);
 				model.addAttribute("cartItems", cartItems);
 			}
 		}
@@ -406,6 +481,7 @@ public class MainController {
 	public String showSaleItems(Model model, @RequestParam(value = "addedUpc", defaultValue="") String addedUpc,
 										@RequestParam(value = "addedItemQty", defaultValue="0") String addedItemQty) {
 		String cartAdjustments = "";
+		int cartTotalItemQty = 0;
 		Customer customer = getLoggedInUser();
 		if (customer != null) {										// If a User is logged in, get their cart, (or null if it doesn't exist)
 			Cart customerCart = cartService.findByCustomerEmail(customer.getEmail());
@@ -413,6 +489,10 @@ public class MainController {
 			{		// If they have a cart, fill cartItems with their cart item quantities
 				cartAdjustments = updateCartChanges();
 				List<CartDetail> cartItems = customerCart.getCartItems();
+				for (CartDetail detail : cartItems) {
+					cartTotalItemQty += detail.getQty();
+				}
+				model.addAttribute("cartTotalItemQty", cartTotalItemQty);
 				model.addAttribute("cartItems", cartItems);
 			}
 		}
@@ -431,6 +511,7 @@ public class MainController {
 							@RequestParam(value = "addedItemQty", defaultValue="0") String addedItemQty) {
 		List<Product> itemList = productService.getSearchResults(searchText);
 		String cartAdjustments = null;
+		int cartTotalItemQty = 0;
 
 		Customer customer = getLoggedInUser();
 		if (customer != null) {										// If a User is logged in, get their cart, (or null if it doesn't exist)
@@ -439,6 +520,10 @@ public class MainController {
 			{		// If they have a cart, fill cartItems with their cart item quantities
 				cartAdjustments = updateCartChanges();
 				List<CartDetail> cartItems = customerCart.getCartItems();
+				for (CartDetail detail : cartItems) {
+					cartTotalItemQty += detail.getQty();
+				}
+				model.addAttribute("cartTotalItemQty", cartTotalItemQty);
 				model.addAttribute("cartItems", cartItems);
 			}
 		}
@@ -457,6 +542,8 @@ public class MainController {
 								@RequestParam(value = "upc", defaultValue="") String upc,
 								@RequestParam(value = "itemQty", defaultValue="0") String itemQty) {
 
+		int cartTotalItemQty = 0;
+		
 		String referer = request.getHeader("Referer");						// http://localhost:8080/xxxxxx - we just want the "xxxxxx"
 		if (referer==null) return "redirect:/index";					// If page request didn't come from product page, reject and return to cart
 		else {
@@ -525,6 +612,10 @@ public class MainController {
 //			purchasedProduct.setStockQty(purchasedProduct.getStockQty()-addedItemQty);	// Remove items in carts from available qty
 			/* System.out.println(customerCart); */
 
+			for (CartDetail detail : cartItems) {
+				cartTotalItemQty += detail.getQty();
+			}
+			model.addAttribute("cartTotalItemQty", cartTotalItemQty);
 			model.addAttribute("customerCart", customerCart);
 			model.addAttribute("searchText", searchText);
 			return !referer.startsWith("/search") ? "redirect:" + referer+"?addedUpc="+upc+"&addedItemQty="+addedItemQty
@@ -536,6 +627,7 @@ public class MainController {
 	public String cart(Model model) {
 		String cartAdjustments;
 		Cart customerCart;
+		int cartTotalItemQty = 0;
 		Customer customer = getLoggedInUser();
 		if (customer == null) {				// Can't view cart if not logged in, for now. Direct user to log in/sign up
 			model.addAttribute("error", "You must be logged in to view your cart.");
@@ -553,6 +645,10 @@ public class MainController {
 			List<CartDetail> cartItems = customerCart.getCartItems();
 			Collections.sort(cartItems);			// CartDetail entity contains compareTo() method
 			customerCart.setCartItems(cartItems);
+			for (CartDetail detail : cartItems) {
+				cartTotalItemQty += detail.getQty();
+			}
+			model.addAttribute("cartTotalItemQty", cartTotalItemQty);
 			model.addAttribute("customer", customer);
 			model.addAttribute("customerCart", customerCart);
 			model.addAttribute("cartAdjustments", cartAdjustments);
@@ -566,6 +662,7 @@ public class MainController {
 
 		Customer customer = getLoggedInUser();
 		Cart customerCart;
+		int cartTotalItemQty = 0;
 		Product removedProduct;
 		try {	// This block only necessary if bad query string, which would only happen if url entered manually
 			removedProduct = productService.get(upc);
@@ -600,6 +697,10 @@ public class MainController {
 //			removedProduct.setStockQty(removedProduct.getStockQty() + removedLineItem.getQty());	// Return deleted items back to available stock
 /**/		System.out.println(customerCart);
 
+			for (CartDetail detail : cartItems) {
+				cartTotalItemQty += detail.getQty();
+			}
+			model.addAttribute("cartTotalItemQty", cartTotalItemQty);
 			model.addAttribute("customer", customer);
 			model.addAttribute("customerCart", customerCart);	
 			return "/cart";
@@ -630,6 +731,7 @@ public class MainController {
 			List<CartDetail> cartItems = new ArrayList<>(customerCart.getCartItems());
 			for (CartDetail item : cartItems) cartDetailService.delete(item);
 			cartService.delete(customerCart);
+			model.addAttribute("cartTotalItemQty", 0);
 			model.addAttribute("customer", customer);
 			return "redirect:/cart";
 		}

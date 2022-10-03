@@ -20,6 +20,6 @@
 				</c:if>
 					<a href="${pageContext.request.userPrincipal.name != null ? '/account' : '/login'}">
 						<i class="fas fa-user-alt" title="${pageContext.request.userPrincipal.name != null ? 'Account' : 'Sign Up/Login'}"></i></a>
-					<a href="/cart"><i class="fas fa-shopping-cart" title="Shopping Cart"></i></a>
+					<a href="/cart"><i class="fas fa-shopping-cart" title="Shopping Cart"></i> ${cartTotalItemQty > 0 ? '('.concat(cartTotalItemQty).concat(')') : ''}</a>
 				</form>				
 			</div>
