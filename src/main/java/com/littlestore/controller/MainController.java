@@ -582,7 +582,7 @@ public class MainController {
 				cartService.save(customerCart);					// New cart needs to be saved before items can be added because of Foreign Key relationship
 			}
 			List<CartDetail> cartItems = new ArrayList<>(customerCart.getCartItems());
-			int lineNum = 1;
+			int lineNum = 0;
 			for (CartDetail item : cartItems) {
 				if (item.getProduct().getUpc() == upc) {		// One or more of this item is already in the cart, so just increase qty
 					purchasedQty += item.getQty();				// Add qty already in cart to amount added to cart

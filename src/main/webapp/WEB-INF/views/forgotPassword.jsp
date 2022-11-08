@@ -36,7 +36,7 @@
                     </form>
                 </div>
                 <div id="bottom-img-content">
-                    <img src="https://azcdn.messenger.pgsitecore.com/en-us/-/media/Febreze/Images/Products/product_primary_images/One%20and%20Done%20Project/US_DT_PDP_WAX_AprilFresh.png" alt="Tide Detergent" width=200em; />
+                    <img src="https://www.suave.com/sk-eu/content/dam/brands/suave/united_states_ofamerica/1319751-079400459534.png.rendition.767.767.png" alt="Suave Kids Silly Apple 3-in-1 Shampoo + Conditioner + Body Wash 18 fl oz" width=400em; />
                 </div>
             </div>
         </div>

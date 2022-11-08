@@ -39,9 +39,10 @@
 	                        </label>
 						</div>
                     </form>
+                    <p>Forgot Password? Click <a href="/forgotPassword">here</a></p>
                 </div>
                 <div id="bottom-img-content">
-                    <img src="https://azcdn.messenger.pgsitecore.com/en-us/-/media/Febreze/Images/Products/product_primary_images/One%20and%20Done%20Project/US_DT_PDP_WAX_AprilFresh.png" alt="Tide Detergent" width=200em; />
+                    <img src="https://asset-americas.unileversolutions.com/content/dam/unilever/dove/united_states_of_america/pack_shot/011111012080.01-31728480-png.png.ulenscale.490x490.png" alt="Dove Men+Care Fresh Soap" width=400em; />
                 </div>
             </div>
         </div>

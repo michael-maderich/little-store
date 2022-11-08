@@ -20,11 +20,11 @@
 	        <jsp:include page="sideNav.jsp"></jsp:include>
 			<div id="left-img-content">
 				<div class="image-buffer"></div>
-				<img src="https://azcdn.messenger.pgsitecore.com/en-us/-/media/Febreze/Images/Products/product_primary_images/November%202020%20Updates/PDP_DT_AE_GAIN_HoneyBerryHula.png" alt="Febreze Air Honey Berry Hula" />
+				<img src="https://asset-americas.unileversolutions.com/content/dam/unilever/dove/united_states_of_america/pack_shot/011111017061-2270321-png.png.ulenscale.490x490.png" alt="Dove Men+Care Body Wash Blue Eucalyptus + Birch Relaxing Micromoisture Body +Face Wash 18 fl oz" />
 			</div>
 			<div id="right-img-content">
 				<div class="image-buffer"></div>
-				<img src="https://azcdn.messenger.pgsitecore.com/en-us/-/media/Febreze/Images/Products/product_primary_images/February%202021%20Updates/US_DT_PDP_AIR_UNS_Fresh.png" alt="Febreze Air Unstopables Fresh Scent" />
+				<img src="https://www.dove.com/content/dam/unilever/dove/canada/pack_shot/011111121140-1773965-png.png" alt="Dove Women Body Wash Purifying Detox with Green Clay 22 fl oz" />
 			</div>
 			<div id="center-content">
 				<div id="registration-panel">
