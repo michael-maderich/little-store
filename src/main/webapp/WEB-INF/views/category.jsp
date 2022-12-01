@@ -31,7 +31,7 @@
 						<thead>
 							<tr>
 								<th>(Click to<br /> Enlarge)</th>
-								<th>Item</th>
+								<th>Brand</th>
 								<th>Scent/Style</th>
 								<th>Size</th>
 								<th>Price</th>
