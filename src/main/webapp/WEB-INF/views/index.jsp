@@ -31,7 +31,8 @@
 						</tr>
 					</table>
 				</div>
-				<img src="images/Main_BG.jpg" alt="Stockpile Photo" />
+				<a href="/category/Christmas%20Shop" title="Christmas Shop"><img src="https://scontent-lga3-1.xx.fbcdn.net/v/t39.30808-6/317681968_10229362818512720_266396512975389182_n.jpg?stp=cp6_dst-jpg&_nc_cat=103&ccb=1-7&_nc_sid=8bfeb9&_nc_ohc=SrFaZsm_RmoAX_uaofZ&_nc_ht=scontent-lga3-1.xx&oh=00_AfAGReC9La25BxdXMdbBM24_k81TO0CLFv7HAg9aXWgjng&oe=638E3A6E" alt="Christmas Shop" /></a>
+				<!--img src="images/Main_BG.jpg" alt="Stockpile Photo" /-->
 			</div>
 		</div>
 		<footer>
