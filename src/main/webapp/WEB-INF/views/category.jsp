@@ -27,6 +27,7 @@
 					<h2>${categoryName}</h2>
 					${subCategoryName != null? '<h4>'.concat(subCategoryName).concat('</h4>') : ''}
 					${empty cartAdjustments ? '' : '<div class="cartChangeMsg"><br/><span style="color:red;">'.concat(cartAdjustments).concat('</span></div>')}
+					${(categoryName eq 'Christmas Shop') ? '<div class="cartChangeMsg"><br/><span style="color:blue;">New items are being added daily all month. Please check back for the latest inventory!</span></div>' : ''}
 					<table id="product-table">
 						<thead>
 							<tr>
