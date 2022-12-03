@@ -339,8 +339,8 @@ public class MainController {
 	public String listItemsInCategory(Model model, @PathVariable(name="categoryName") String categoryName,
 										@RequestParam(value = "addedUpc", defaultValue="") String addedUpc,
 										@RequestParam(value = "addedItemQty", defaultValue="0") String addedItemQty) {
-		List<Product> itemList = productService.findByCategoryMainMinQtySorted(categoryName, 0);
-//		List<Product> itemList = productService.findByCategoryMainSorted(categoryName);
+		List<Product> itemList = !categoryName.equalsIgnoreCase("Christmas Shop") ?  productService.findByCategoryMainMinQtySorted(categoryName, 0)
+/*		List<Product> itemList = */								: productService.findByCategoryMainSorted(categoryName);
 		String cartAdjustments = null;
 		int cartTotalItemQty = 0;
 		boolean goodLink = false;
