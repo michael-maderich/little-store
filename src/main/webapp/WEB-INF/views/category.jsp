@@ -30,7 +30,7 @@
 					<table id="product-table">
 						<thead>
 							<tr>
-								<th>(Click to<br /> Enlarge)</th>
+								<th>(Click Image<br />to Enlarge)</th>
 								<th>Brand</th>
 								<th>Scent/Style</th>
 								<th>Size</th>
@@ -44,7 +44,7 @@
 						<c:forEach items="${itemList}" var="item">
 						<form action="/addToCart" method="GET">
 							<tr ${item.stockQty==0 ? 'class="inactive"' : ''}>
-								<td class="product_image_panel product_info"><a href="${item.image}" target="_blank"><img src="${item.image}" alt="${item.description}" title="${item.description}" /></a></td>
+								<td class="product_image_panel product_info"><a href="${item.image} "><!--target="_blank"--><img src="${item.image}" alt="${item.description}" title="${item.description}" /></a></td>
 								<td class="product_info">${item.name}</td>
 								<td class="product_info">${item.options}</td>
 								<td class="product_info">${item.size}</td>
@@ -58,7 +58,7 @@
 									</label>
 								</td>
 								<td class="button_panel product_info">
-									<button type="submit" class="btn btn-sm btn-primary btn-block" ${item.stockQty==0 ? 'disabled' : ''}>${item.stockQty==0 ? 'Out of Stock' : 'Add to Cart'}</button>
+									<button type="submit" class="btn btn-sm btn-primary btn-block" ${item.stockQty==0 ? 'disabled' : ''}>${item.stockQty==0 ? 'Sold Out' : 'Add to Cart'}</button>
 								</td>
 								<c:if test = "${not empty cartItems}">
 								<td class="transparent-td">
