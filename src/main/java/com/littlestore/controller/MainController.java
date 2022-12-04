@@ -339,8 +339,9 @@ public class MainController {
 	public String listItemsInCategory(Model model, @PathVariable(name="categoryName") String categoryName,
 										@RequestParam(value = "addedUpc", defaultValue="") String addedUpc,
 										@RequestParam(value = "addedItemQty", defaultValue="0") String addedItemQty) {
-		List<Product> itemList = !categoryName.equalsIgnoreCase("Christmas Shop") ?  productService.findByCategoryMainMinQtySorted(categoryName, 0)
-/*		List<Product> itemList = */								: productService.findByCategoryMainSorted(categoryName);
+		List<Product> itemList = !(categoryName.equalsIgnoreCase("Christmas Shop"))// || categoryName.equalsIgnoreCase("Laundry"))
+													?  productService.findByCategoryMainMinQtySorted(categoryName, 0)
+/*		List<Product> itemList = */					: productService.findByCategoryMainSorted(categoryName);
 		String cartAdjustments = null;
 		int cartTotalItemQty = 0;
 		boolean goodLink = false;
@@ -375,8 +376,9 @@ public class MainController {
 										@PathVariable(name="subCategoryName") String subCategoryName, Model model,
 										@RequestParam(value = "addedUpc", defaultValue="") String addedUpc,
 										@RequestParam(value = "addedItemQty", defaultValue="0") String addedItemQty) {
-		List<Product> itemList = productService.findByCategorySpecificMinQtySorted(subCategoryName, 0);	// Filter out 0 qty items
-//		List<Product> itemList = productService.findByCategorySpecificSorted(subCategoryName);			// Shows 0 qty items
+		List<Product> itemList = !(categoryName.equalsIgnoreCase("Christmas Shop"))// || categoryName.equalsIgnoreCase("Laundry"))
+									? productService.findByCategorySpecificMinQtySorted(subCategoryName, 0)	// Filter out 0 qty items
+/*		List<Product> itemList = */	: productService.findByCategorySpecificSorted(subCategoryName);			// Shows 0 qty items
 		String cartAdjustments = null;
 		int cartTotalItemQty = 0;
 		boolean goodLink = false;
@@ -559,7 +561,6 @@ public class MainController {
 		Product purchasedProduct;
 		int purchasedQty = Integer.parseInt(itemQty);		// Can't throw exception because referrer string format already checked
 		int addedItemQty = purchasedQty;
-		if (addedItemQty == 0) return "redirect:"+referer;	// 0 is a valid qty option, but we don't want to add that to the cart
 		try {												// Irrelevant since referrer string checked, but maybe missed something
 			purchasedProduct = productService.get(upc);
 		}
@@ -573,6 +574,7 @@ public class MainController {
 			return "/login";
 		}
 		else {													// If a User is logged in, get their cart, (or null if it doesn't exist)
+			if (addedItemQty == 0) return "redirect:"+referer;	// 0 is a valid qty option, but we don't want to add that to the cart
 			customerCart = cartService.findByCustomerEmail(customer.getEmail());
 			if (customerCart == null) {							// If they don't have a cart started, start a new one
 				customerCart = new Cart();

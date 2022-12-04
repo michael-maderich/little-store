@@ -82,7 +82,7 @@
 								<td>
 								<form action="${cartTotal!=0 ? '/checkout' : '/'}"><!-- method="POST" modelAttribute="customerCart"-->
 									<button type="submit" class="btn btn-sm btn-primary btn-block highlighted">
-										${cartTotal!=0 ? 'Check Out' : 'Continue Shopping'}
+										${cartTotal!=0 ? 'Proceed to<br />Check Out' : 'Continue Shopping'}
 									</button>
 								</form>
 								</td>
