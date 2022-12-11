@@ -81,8 +81,8 @@
 								<td class="cart_subtotal_panel"><fmt:formatNumber value = "${cartTotal}" type = "currency" /></td>
 								<td>
 								<form action="${cartTotal!=0 ? '/checkout' : '/'}"><!-- method="POST" modelAttribute="customerCart"-->
-									<button type="submit" class="btn btn-sm btn-primary btn-block highlighted">
-										${cartTotal!=0 ? 'Proceed to<br />Check Out' : 'Continue Shopping'}
+									<button type="submit" class="btn btn-sm btn-primary btn-block highlighted" ${cartTotal < 20 ? 'disabled' : ''}>
+										${cartTotal==0 ? 'Continue Shopping' : cartTotal < 20 ? '$20 Order<br />Minimum' : 'Proceed to<br />Check Out'}
 									</button>
 								</form>
 								</td>
