@@ -16,6 +16,8 @@ public interface CustomerRepository extends CrudRepository<Customer, Integer> {
 
 	public Customer findByEmail(String email);
     
+	@Query(value = "UPDATE Customer c SET password=:newPassword WHERE id=:custId")
+	public void updatePassword(@Param("custId") int custId, @Param("newPassword") String newPassword);
 /*    @Query(value = "SELECT c FROM Customer c JOIN c.salesRep s ON "
     			+ "c.salesRep_id = s.id WHERE s.name LIKE '%' || :keyword || '%'"
     			+ " OR c.name LIKE '%' || :keyword || '%'"

@@ -175,7 +175,7 @@ public class MainController {
 		model.addAttribute("navMenuItems", getNavMenuItems());
 
 		if (getLoggedInUser() != null) return "redirect:/account";		// If user is already signed in, redirect to account page.
-		else {															// Otherwise, submit post request to signup page with Customer info
+		else {
 			model.addAttribute("customerForm", new Customer());
 			model.addAttribute("listStates", listStates);
 			return "/signup";
@@ -211,13 +211,59 @@ public class MainController {
 		return "/forgotPassword";
 	}
 	
-	// Page for password reset request confirmation
+	// Page to change user password
 	@GetMapping("/passwordReset")
-	public String passwordReset(Model model) {
+	public String passwordReset(Model model, @RequestParam(value = "code", defaultValue="") String code) {
 		model.addAttribute("navMenuItems", getNavMenuItems());
-		return "/passwordReset";
+
+		if (getLoggedInUser() != null) return "redirect:/account";		// If user is already signed in, redirect to account page.
+		else {
+//			Customer customer = customerService.findByEmail(code);
+			for (Customer customer : customerService.listAll())
+			{
+				if (customerService.emailCodeMatches(customer, code))
+//				if (customer != null)
+				{
+					customer.setPassword(null);
+					model.addAttribute("customerForm", customer);
+					model.addAttribute("listStates", listStates);
+					return "/passwordReset";
+				}
+			}
+			return "redirect:/login";
+		}
 	}
 	
+	// When password reset form is submitted, the page sends a POST request to itself.
+	// The user info submitted is validated and return back to signup page if there are errors.
+	// If the info submitted is valid, persist the customer data to the database
+	@PostMapping("/passwordReset")
+	public String resetPassword(Model model, @ModelAttribute("customerForm") Customer customerForm, BindingResult bindingResult) {
+		model.addAttribute("navMenuItems", getNavMenuItems());
+
+		customerFormValidator.validatePasswordReset(customerForm, bindingResult);
+		if (bindingResult.hasErrors()) {
+			model.addAttribute("listStates", listStates);	// States enum value list needs to be sent to signup page every time. I'm sure there's a better way to do this
+			return "/passwordReset";
+		}
+		else {
+			Customer customer = customerService.findByEmail(customerForm.getEmail());
+			customer.setPassword(customerService.encrypt(customerForm.getPassword()));
+			customerService.update(customer);
+			securityService.autoLogin(customerForm.getEmail(), customerForm.getPasswordConfirm());
+			model.addAttribute("listStates", listStates);
+			model.addAttribute("message", "Your password has been successfully changed. Please log in with your new password.");
+			return "/login";
+		}
+	}
+
+	@GetMapping("/encode/{email}")
+	public String encodeText(Model model, @PathVariable(name="email") String email) {
+		String encodedText = customerService.encrypt(email);
+		model.addAttribute("encodedText", encodedText);
+		return "/encode";
+	}
+
 	// Page for user to view/edit Profile, view Order History, and other functions TBD
 	@GetMapping("/account")
 	public String accountPage(Model model) {

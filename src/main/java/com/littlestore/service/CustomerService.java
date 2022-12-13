@@ -37,12 +37,26 @@ public class CustomerService {
 		customer.setRole(userRoles);			// Customer role
         customerRepository.save(customer);
     }
+	 
+    public boolean emailCodeMatches(Customer customer, String emailHash) {
+		return bCryptPasswordEncoder.matches(customer.getEmail(), emailHash);
+    }
      
     @Transactional(rollbackFor = Exception.class)
     public void update(Customer customer) {	// Update user (don't re-encrypt password)
         customerRepository.save(customer);
     }
      
+    @Transactional(rollbackFor = Exception.class)
+    public void updatePassword(int custId, String newPassword) {
+    	customerRepository.updatePassword(custId, newPassword);
+    }
+
+    public String encrypt(String word)
+    {
+    	return bCryptPasswordEncoder.encode(word);
+    }
+    
     public List<Customer> listAll() {
         return (List<Customer>) customerRepository.findAll();
     }
