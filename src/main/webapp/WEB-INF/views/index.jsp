@@ -31,8 +31,8 @@
 						</tr>
 					</table>
 				</div>
-				<a href="/category/Christmas%20Shop" title="Christmas Shop"><img src="https://i.postimg.cc/qkJD61bd/nutcracker.jpg" width="30rem" alt="Christmas Shop" /></a>
-				<!--img src="images/Main_BG.jpg" alt="Stockpile Photo" /-->
+				<!--a href="/category/Christmas%20Shop" title="Christmas Shop"><img src="https://i.postimg.cc/qkJD61bd/nutcracker.jpg" width="30rem" alt="Christmas Shop" /></a-->
+				<img src="images/Main_BG.jpg" alt="Stockpile Photo" />
 			</div>
 		</div>
 		<footer>
