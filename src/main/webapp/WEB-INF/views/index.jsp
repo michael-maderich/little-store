@@ -32,7 +32,8 @@
 					</table>
 				</div>
 				<!--a href="/category/Christmas%20Shop" title="Christmas Shop"><img src="https://i.postimg.cc/qkJD61bd/nutcracker.jpg" width="30rem" alt="Christmas Shop" /></a-->
-				<img src="images/Main_BG.jpg" alt="Stockpile Photo" />
+				<img src="https://i.postimg.cc/CLCyK295/CF55-C8-D0-39-FB-4906-AC3-C-B82-E42-EA7-C85.jpg" alt="Happy Valentine's Day!" title="Happy Valentine's Day!" />
+				<!--img src="images/Main_BG.jpg" alt="Stockpile Photo" /-->
 			</div>
 		</div>
 		<footer>
