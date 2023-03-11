@@ -69,8 +69,8 @@
 					</table>
 				</div>
 				<div id="customer-panel">
-					<form:form method="POST" modelAttribute="customerInfo" class="form-signin" action="/confirmation">
-					<label for="submit"><form:button id="submit" name="submit" type="submit" class="btn btn-sm btn-primary btn-block highlighted">
+					<form:form id="orderForm" method="POST" modelAttribute="customerInfo" class="form-signin" action="/confirmation">
+					<label for="submitBtn"><form:button id="submitBtn" name="submitBtn" type="submit" class="btn btn-sm btn-primary btn-block highlighted" onclick="submitForm()">
 						Submit Order
 					</form:button></label>
                     <h4 class="checkoutHeader">Customer Details</h4>
