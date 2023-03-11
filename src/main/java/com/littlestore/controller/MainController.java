@@ -143,6 +143,7 @@ public class MainController {
 	public String home(Model model) {
 		String cartAdjustments = null;
 		int cartTotalItemQty = 0;
+		float cartTotalItemCost = 0.0f;
 		Customer customer = getLoggedInUser();
 		if (customer != null) {										// If a User is logged in, get their cart, (or null if it doesn't exist)
 			Cart customerCart = cartService.findByCustomerEmail(customer.getEmail());
@@ -152,8 +153,10 @@ public class MainController {
 				List<CartDetail> cartItems = customerCart.getCartItems();
 				for (CartDetail detail : cartItems) {
 					cartTotalItemQty += detail.getQty();
+					cartTotalItemCost += detail.getQty() * detail.getPrice();
 				}
 				model.addAttribute("cartTotalItemQty", cartTotalItemQty);
+				model.addAttribute("cartTotalItemCost", cartTotalItemCost);
 			}
 		}
 		model.addAttribute("cartAdjustments", cartAdjustments);
@@ -277,14 +280,17 @@ public class MainController {
 		}
 		else {
 			int cartTotalItemQty = 0;
+			float cartTotalItemCost = 0.0f;
 			Cart customerCart = cartService.findByCustomerEmail(customer.getEmail());
 			if (customerCart != null)
 			{		// If they have a cart, fill cartItems with their cart item quantities
 				List<CartDetail> cartItems = customerCart.getCartItems();
 				for (CartDetail detail : cartItems) {
 					cartTotalItemQty += detail.getQty();
+					cartTotalItemCost += detail.getQty() * detail.getPrice();
 				}
 				model.addAttribute("cartTotalItemQty", cartTotalItemQty);
+				model.addAttribute("cartTotalItemCost", cartTotalItemCost);
 			}
 			model.addAttribute("customerForm", customer);
 			model.addAttribute("listStates", listStates);
@@ -317,14 +323,17 @@ public class MainController {
 		}
 		else {
 			int cartTotalItemQty = 0;
+			float cartTotalItemCost = 0.0f;
 			Cart customerCart = cartService.findByCustomerEmail(customer.getEmail());
 			if (customerCart != null)
 			{		// If they have a cart, fill cartItems with their cart item quantities
 				List<CartDetail> cartItems = customerCart.getCartItems();
 				for (CartDetail detail : cartItems) {
 					cartTotalItemQty += detail.getQty();
+					cartTotalItemCost += detail.getQty() * detail.getPrice();
 				}
 				model.addAttribute("cartTotalItemQty", cartTotalItemQty);
+				model.addAttribute("cartTotalItemCost", cartTotalItemCost);
 			}
 			model.addAttribute("customerForm", customer);
 			model.addAttribute("listStates", listStates);
@@ -343,14 +352,17 @@ public class MainController {
 		}
 		else {
 			int cartTotalItemQty = 0;
+			float cartTotalItemCost = 0.0f;
 			Cart customerCart = cartService.findByCustomerEmail(customer.getEmail());
 			if (customerCart != null)
 			{		// If they have a cart, fill cartItems with their cart item quantities
 				List<CartDetail> cartItems = customerCart.getCartItems();
 				for (CartDetail detail : cartItems) {
 					cartTotalItemQty += detail.getQty();
+					cartTotalItemCost += detail.getQty() * detail.getPrice();
 				}
 				model.addAttribute("cartTotalItemQty", cartTotalItemQty);
+				model.addAttribute("cartTotalItemCost", cartTotalItemCost);
 			}
 			model.addAttribute("customer", customer);
 			List<Order> orderList = orderService.findByCustomer(customer);
@@ -390,6 +402,7 @@ public class MainController {
 /*		List<Product> itemList = */					: productService.findByCategoryMainSorted(categoryName);
 		String cartAdjustments = null;
 		int cartTotalItemQty = 0;
+		float cartTotalItemCost = 0.0f;
 		boolean goodLink = false;
 		for (Product p : itemList) if ( p.getCategoryMain().equals(categoryName) ) goodLink = true;
 		if (!goodLink) return "redirect:/";
@@ -403,8 +416,10 @@ public class MainController {
 				List<CartDetail> cartItems = customerCart.getCartItems();
 				for (CartDetail detail : cartItems) {
 					cartTotalItemQty += detail.getQty();
+					cartTotalItemCost += detail.getQty() * detail.getPrice();
 				}
 				model.addAttribute("cartTotalItemQty", cartTotalItemQty);
+				model.addAttribute("cartTotalItemCost", cartTotalItemCost);
 				model.addAttribute("cartItems", cartItems);
 			}
 		}
@@ -427,6 +442,7 @@ public class MainController {
 /*		List<Product> itemList = */	: productService.findByCategorySpecificSorted(subCategoryName);			// Shows 0 qty items
 		String cartAdjustments = null;
 		int cartTotalItemQty = 0;
+		float cartTotalItemCost = 0.0f;
 		boolean goodLink = false;
 		for (Product p : itemList) if ( p.getCategoryMain().equals(categoryName) 
 									&& p.getCategorySpecific().equals(subCategoryName) ) goodLink = true;
@@ -441,8 +457,10 @@ public class MainController {
 				List<CartDetail> cartItems = customerCart.getCartItems();
 				for (CartDetail detail : cartItems) {
 					cartTotalItemQty += detail.getQty();
+					cartTotalItemCost += detail.getQty() * detail.getPrice();
 				}
 				model.addAttribute("cartTotalItemQty", cartTotalItemQty);
+				model.addAttribute("cartTotalItemCost", cartTotalItemCost);
 				model.addAttribute("cartItems", cartItems);
 			}
 		}
@@ -470,6 +488,7 @@ public class MainController {
 										@RequestParam(value = "addedItemQty", defaultValue="0") String addedItemQty) {
 		String cartAdjustments = "";
 		int cartTotalItemQty = 0;
+		float cartTotalItemCost = 0.0f;
 		Customer customer = getLoggedInUser();
 		if (customer == null) {				// Can't view new items if not logged in, for now. Direct user to log in/sign up
 			model.addAttribute("error", "Since items shown as new are based on your last order date, you must be logged in to view new items.");
@@ -484,8 +503,10 @@ public class MainController {
 				List<CartDetail> cartItems = customerCart.getCartItems();
 				for (CartDetail detail : cartItems) {
 					cartTotalItemQty += detail.getQty();
+					cartTotalItemCost += detail.getQty() * detail.getPrice();
 				}
 				model.addAttribute("cartTotalItemQty", cartTotalItemQty);
+				model.addAttribute("cartTotalItemCost", cartTotalItemCost);
 				model.addAttribute("cartItems", cartItems);
 			}
 			model.addAttribute("cartAdjustments", cartAdjustments);
@@ -502,6 +523,7 @@ public class MainController {
 										@RequestParam(value = "addedItemQty", defaultValue="0") String addedItemQty) {
 		String cartAdjustments = "";
 		int cartTotalItemQty = 0;
+		float cartTotalItemCost = 0.0f;
 		Customer customer = getLoggedInUser();
 		if (customer != null) {										// If a User is logged in, get their cart, (or null if it doesn't exist)
 			Cart customerCart = cartService.findByCustomerEmail(customer.getEmail());
@@ -511,8 +533,10 @@ public class MainController {
 				List<CartDetail> cartItems = customerCart.getCartItems();
 				for (CartDetail detail : cartItems) {
 					cartTotalItemQty += detail.getQty();
+					cartTotalItemCost += detail.getQty() * detail.getPrice();
 				}
 				model.addAttribute("cartTotalItemQty", cartTotalItemQty);
+				model.addAttribute("cartTotalItemCost", cartTotalItemCost);
 				model.addAttribute("cartItems", cartItems);
 			}
 		}
@@ -530,6 +554,7 @@ public class MainController {
 										@RequestParam(value = "addedItemQty", defaultValue="0") String addedItemQty) {
 		String cartAdjustments = "";
 		int cartTotalItemQty = 0;
+		float cartTotalItemCost = 0.0f;
 		Customer customer = getLoggedInUser();
 		if (customer != null) {										// If a User is logged in, get their cart, (or null if it doesn't exist)
 			Cart customerCart = cartService.findByCustomerEmail(customer.getEmail());
@@ -539,8 +564,10 @@ public class MainController {
 				List<CartDetail> cartItems = customerCart.getCartItems();
 				for (CartDetail detail : cartItems) {
 					cartTotalItemQty += detail.getQty();
+					cartTotalItemCost += detail.getQty() * detail.getPrice();
 				}
 				model.addAttribute("cartTotalItemQty", cartTotalItemQty);
+				model.addAttribute("cartTotalItemCost", cartTotalItemCost);
 				model.addAttribute("cartItems", cartItems);
 			}
 		}
@@ -560,6 +587,7 @@ public class MainController {
 		List<Product> itemList = productService.getSearchResults(searchText);
 		String cartAdjustments = null;
 		int cartTotalItemQty = 0;
+		float cartTotalItemCost = 0.0f;
 
 		Customer customer = getLoggedInUser();
 		if (customer != null) {										// If a User is logged in, get their cart, (or null if it doesn't exist)
@@ -570,8 +598,10 @@ public class MainController {
 				List<CartDetail> cartItems = customerCart.getCartItems();
 				for (CartDetail detail : cartItems) {
 					cartTotalItemQty += detail.getQty();
+					cartTotalItemCost += detail.getQty() * detail.getPrice();
 				}
 				model.addAttribute("cartTotalItemQty", cartTotalItemQty);
+				model.addAttribute("cartTotalItemCost", cartTotalItemCost);
 				model.addAttribute("cartItems", cartItems);
 			}
 		}
@@ -591,6 +621,7 @@ public class MainController {
 								@RequestParam(value = "itemQty", defaultValue="0") String itemQty) {
 
 		int cartTotalItemQty = 0;
+		float cartTotalItemCost = 0.0f;
 		
 		String referer = request.getHeader("Referer");						// http://localhost:8080/xxxxxx - we just want the "xxxxxx"
 		if (referer==null) return "redirect:/index";					// If page request didn't come from product page, reject and return to cart
@@ -662,8 +693,10 @@ public class MainController {
 
 			for (CartDetail detail : cartItems) {
 				cartTotalItemQty += detail.getQty();
+				cartTotalItemCost += detail.getQty() * detail.getPrice();
 			}
 			model.addAttribute("cartTotalItemQty", cartTotalItemQty);
+			model.addAttribute("cartTotalItemCost", cartTotalItemCost);
 			model.addAttribute("customerCart", customerCart);
 			model.addAttribute("searchText", searchText);
 			return !referer.startsWith("/search") ? "redirect:" + referer+"?addedUpc="+upc+"&addedItemQty="+addedItemQty
@@ -676,6 +709,7 @@ public class MainController {
 		String cartAdjustments;
 		Cart customerCart;
 		int cartTotalItemQty = 0;
+		float cartTotalItemCost = 0.0f;
 		Customer customer = getLoggedInUser();
 		if (customer == null) {				// Can't view cart if not logged in, for now. Direct user to log in/sign up
 			model.addAttribute("error", "You must be logged in to view your cart.");
@@ -695,8 +729,10 @@ public class MainController {
 			customerCart.setCartItems(cartItems);
 			for (CartDetail detail : cartItems) {
 				cartTotalItemQty += detail.getQty();
+				cartTotalItemCost += detail.getQty() * detail.getPrice();
 			}
 			model.addAttribute("cartTotalItemQty", cartTotalItemQty);
+			model.addAttribute("cartTotalItemCost", cartTotalItemCost);
 			model.addAttribute("customer", customer);
 			model.addAttribute("customerCart", customerCart);
 			model.addAttribute("cartAdjustments", cartAdjustments);
@@ -711,6 +747,7 @@ public class MainController {
 		Customer customer = getLoggedInUser();
 		Cart customerCart;
 		int cartTotalItemQty = 0;
+		float cartTotalItemCost = 0.0f;
 		Product removedProduct;
 		try {	// This block only necessary if bad query string, which would only happen if url entered manually
 			removedProduct = productService.get(upc);
@@ -747,8 +784,10 @@ public class MainController {
 
 			for (CartDetail detail : cartItems) {
 				cartTotalItemQty += detail.getQty();
+				cartTotalItemCost += detail.getQty() * detail.getPrice();
 			}
 			model.addAttribute("cartTotalItemQty", cartTotalItemQty);
+			model.addAttribute("cartTotalItemCost", cartTotalItemCost);
 			model.addAttribute("customer", customer);
 			model.addAttribute("customerCart", customerCart);	
 			return "/cart";
