@@ -55,10 +55,10 @@
 						<tbody><c:forEach items="${customerCart.cartItems}" var="cartItem">
 						<form action="/removeFromCart" method="GET">
 							<tr>
-								<td class="cart_image_panel"><img src="${cartItem.product.image}" alt="${cartItem.product.description}" /></td>
-								<td>${cartItem.product.name}</td>
-								<td>${cartItem.product.options}</td>
-								<td>${cartItem.product.size}</td>
+								<td class="cart_image_panel"><a href="/category/${cartItem.product.categoryMain}/${cartItem.product.categorySpecific}/#${cartItem.product.upc}"><img src="${cartItem.product.image}" alt="${cartItem.product.description}" /></a></td>
+								<td><a href="/category/${cartItem.product.categoryMain}/${cartItem.product.categorySpecific}/#${cartItem.product.upc}">${cartItem.product.name}</a></td>
+								<td><a href="/category/${cartItem.product.categoryMain}/${cartItem.product.categorySpecific}/#${cartItem.product.upc}">${cartItem.product.options}</a></td>
+								<td><a href="/category/${cartItem.product.categoryMain}/${cartItem.product.categorySpecific}/#${cartItem.product.upc}">${cartItem.product.size}</a></td>
 								<td>${cartItem.qty}</td>
 								<td><fmt:formatNumber value = "${cartItem.price}" type = "currency" /></td>
 								<td><fmt:formatNumber value = "${cartItem.qty * cartItem.price}" type = "currency" /></td>

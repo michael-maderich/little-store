@@ -48,3 +48,6 @@
 	width:7rem;
 	max-width:15rem;
 }
+.addBtns {
+	visibility: hidden;
+}

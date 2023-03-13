@@ -44,7 +44,7 @@
 						<tbody>
 						<c:forEach items="${itemList}" var="item">
 						<form action="/addToCart" method="GET">
-							<tr ${item.stockQty==0 ? 'class="inactive"' : ''}>
+							<tr id="${item.upc}" class="itemRow${item.stockQty==0 ? ' inactive' : ''}">
 								<td class="product_image_panel product_info"><a href="${item.image} "><!--target="_blank"--><img src="${item.image}" alt="${item.description}" title="${item.description}" /></a></td>
 								<td class="product_info">${item.name}</td>
 								<td class="product_info">${item.options}</td>
@@ -55,11 +55,11 @@
 								<td class="customerQty product_info">
 									<input type="hidden" id="upc${item.upc}" name="upc" value="${item.upc}" />
 									<label for="itemQty">
-										<input type="number" id="itemQty${item.upc}" name="itemQty" min="0" max="${(item.purchaseLimit != 0 and item.purchaseLimit < item.stockQty) ? item.purchaseLimit : item.stockQty}" step="1" value="0" ${item.stockQty==0 ? 'disabled' : ''} />
+										<input id="itemQty${item.upc}" type="number" class="qtyInput" name="itemQty" min="0" max="${(item.purchaseLimit != 0 and item.purchaseLimit < item.stockQty) ? item.purchaseLimit : item.stockQty}" step="1" value="0" ${item.stockQty==0 ? 'disabled style="visibility:hidden"' : ''} onInput="updateRows('${item.upc}')" />
 									</label>
 								</td>
 								<td class="button_panel product_info">
-									<button type="submit" class="btn btn-sm btn-primary btn-block" ${item.stockQty==0 ? 'disabled' : ''}>${item.stockQty==0 ? 'Sold Out' : 'Add to Cart'}</button>
+									<button id="addBtn${item.upc}" type="submit" class="addBtns btn btn-sm btn-primary btn-block" ${item.stockQty==0 ? 'disabled' : 'style="visibility:hidden"'}>${item.stockQty==0 ? 'Sold Out' : 'Add to Cart'}</button>
 								</td>
 								<c:if test = "${not empty cartItems}">
 								<td class="transparent-td">
