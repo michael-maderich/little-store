@@ -37,8 +37,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			.antMatchers(HttpMethod.DELETE, "/admin/products/{productId}").hasAnyRole(Role.Roles.ADMIN.name(), Role.Roles.OWNER.name()) 	// Owner should be able to delete
 			.antMatchers(HttpMethod.PUT, "/admin/products/{productId}").hasAnyRole(Role.Roles.ADMIN.name(), Role.Roles.OWNER.name()) 		// Owner should be able to update
 			.antMatchers("/admin/products/add").hasAnyRole(Role.Roles.ADMIN.name(), Role.Roles.OWNER.name()) // Admin and Supervisor should be able to add product.
-			.antMatchers("/admin/**").hasAnyRole(Role.Roles.ADMIN.name(), Role.Roles.ADMIN.name())
-			.antMatchers("/admin").hasAnyRole(Role.Roles.ADMIN.name(), Role.Roles.ADMIN.name())
+			.antMatchers("/admin/**").hasAnyRole(Role.Roles.ADMIN.name(), Role.Roles.OWNER.name())
+			.antMatchers("/admin").hasAnyRole(Role.Roles.ADMIN.name(), Role.Roles.OWNER.name())
 			.antMatchers("/**").permitAll()
 			.and()
 			.formLogin()

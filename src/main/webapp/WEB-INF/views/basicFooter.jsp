@@ -1,4 +1,4 @@
 			<div class="footer-container">
 				<span>&copy;<%=com.littlestore.utils.Utils.currentYear()%>
-				<a href="https://github.com/michael-maderich" target="_blank">Michael Maderich</a></span>
+				<a href="${copyrightUrl}" target="_blank">${copyrightName}</a></span>
 			</div>
