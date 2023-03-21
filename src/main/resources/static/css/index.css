@@ -13,11 +13,11 @@
 			font-family: 'Gravitas One', Verdana, Geneva, Tahoma, sans-serif;
 			margin: 4em;
 		}
-		header {
+/*		header {
 			background-color:#66FF66;
-		}
+		}*/
 		#side-nav {
-			background-color:#66FF66;
-			height:180%;
+/*			background-color:#66FF66;*/
+			height:100%;
 		}
-body {background-color:#99FF99;}
+/*body {background-color:#99FF99;}*/

@@ -7,10 +7,10 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<jsp:include page="headElement.jsp">
-			<jsp:param name="title" value="The Little Store - Home" />
-			<jsp:param name="page" value="index" />
-		</jsp:include>
+<jsp:include page="headElement.jsp">
+	<jsp:param name="title" value="The Little Store - Home" />
+	<jsp:param name="page" value="index" />
+</jsp:include>
 	</head>
 	<body>
 		<header>

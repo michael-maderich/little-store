@@ -25,6 +25,10 @@ public class GeneralData implements Serializable {
 	@Column(name="generalValue", length=255, nullable=false)
 	private String generalValue;
 	
+	@Basic
+	@Column(name="category", length=50, nullable=true)
+	private String category;
+	
 	public GeneralData() {
 	}
 
@@ -55,9 +59,16 @@ public class GeneralData implements Serializable {
 		this.generalValue = generalValue;
 	}
 
+	public String getCategory() {
+		return category;
+	}
+	public void setCategory(String category) {
+		this.category = category;
+	}
+
 	@Override
 	public String toString() {
-		return "GeneralData [generalData=ID " + generalId + ": " + generalName + " - " + generalValue + "]";
+		return "GeneralData [generalData=ID " + generalId + ": (" + category + ") " + generalName + " - " + generalValue + "]";
 	}
 
 	@Override

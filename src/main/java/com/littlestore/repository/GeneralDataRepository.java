@@ -1,5 +1,7 @@
 package com.littlestore.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -11,4 +13,8 @@ public interface GeneralDataRepository extends CrudRepository<GeneralData, Integ
 
 	@Query(value = "SELECT p.generalValue FROM GeneralData p WHERE p.generalName = :generalName")
     public String getGeneralValue(@Param("generalName") String generalName);
+	
+	public List<GeneralData> findAll();
+	
+	public List<GeneralData> findAllByCategory(String category);
 }

@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -65,6 +66,19 @@ public class MainController {
 
 	private List<String> listPayTypes = Stream.of(Customer.PaymentMethods.values()).map(Enum::name).collect(Collectors.toList());
 	
+	public List<GeneralData> getGeneralDataByCategory(String category) {
+		return generalDataService.getListByCategory(category);
+	}
+
+	public HashMap<String, String> getGeneralDataCategoryMap(String category) {
+		List<GeneralData> categoryItems = generalDataService.getListByCategory(category);
+		HashMap<String, String> generalDataMap = new HashMap<String, String>();
+		for (GeneralData item : categoryItems) {
+			generalDataMap.put(getGeneralDataString(item.getGeneralName()), item.getGeneralValue());
+		}
+		return generalDataMap;
+	}
+
 	private String getGeneralDataString(String generalName) {
 		return generalDataService.getGeneralData(generalName);
 	}
@@ -167,7 +181,7 @@ public class MainController {
 		model.addAttribute("navMenuItems", getNavMenuItems());
 		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
-		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
+		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
 		return "redirect:/";
 	}
 	
@@ -196,6 +210,8 @@ public class MainController {
 		model.addAttribute("navMenuItems", getNavMenuItems());
 		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
+		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
+		model.addAttribute("indexStyle", getGeneralDataString("indexStyle"));
 		return "/index";
 	}
 
@@ -206,6 +222,7 @@ public class MainController {
 		model.addAttribute("navMenuItems", getNavMenuItems());
 		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
+		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
 		if (getLoggedInUser() != null) return "/newitems";				// If user is logged in, redirect to newitems page
 		else return "/login";											// Otherwise, submit POST request to login page (handled by Spring Security)
 	}
@@ -215,6 +232,7 @@ public class MainController {
 		model.addAttribute("navMenuItems", getNavMenuItems());
 		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
+		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
 
 		if (getLoggedInUser() != null) return "redirect:/account";		// If user is already signed in, redirect to account page.
 		else {
@@ -232,6 +250,7 @@ public class MainController {
 		model.addAttribute("navMenuItems", getNavMenuItems());
 		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
+		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
 
 		customerFormValidator.validate(customerForm, bindingResult);
 		if (bindingResult.hasErrors()) {
@@ -254,6 +273,7 @@ public class MainController {
 		model.addAttribute("navMenuItems", getNavMenuItems());
 		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
+		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
 		return "/forgotPassword";
 	}
 	
@@ -263,6 +283,7 @@ public class MainController {
 		model.addAttribute("navMenuItems", getNavMenuItems());
 		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
+		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
 
 		if (getLoggedInUser() != null) return "redirect:/account";		// If user is already signed in, redirect to account page.
 		else {
@@ -290,6 +311,7 @@ public class MainController {
 		model.addAttribute("navMenuItems", getNavMenuItems());
 		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
+		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
 
 		customerFormValidator.validatePasswordReset(customerForm, bindingResult);
 		if (bindingResult.hasErrors()) {
@@ -320,6 +342,7 @@ public class MainController {
 //		model.addAttribute("navMenuItems", getNavMenuItems());
 		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
+		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
 
 		Customer customer = getLoggedInUser();
 		if (customer == null) {
@@ -366,6 +389,7 @@ public class MainController {
 		model.addAttribute("navMenuItems", getNavMenuItems());
 		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
+		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
 		Customer customer = getLoggedInUser();
 		if (customer == null) {				// Can't view orders if not logged in, for now. Direct user to log in/sign up
 			model.addAttribute("error", "You must be logged in to edit your account details.");
@@ -397,6 +421,7 @@ public class MainController {
 		model.addAttribute("navMenuItems", getNavMenuItems());
 		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
+		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
 		Customer customer = getLoggedInUser();
 		if (customer == null) {				// Can't view orders if not logged in, for now. Direct user to log in/sign up
 			model.addAttribute("error", "You must be logged in to view your orders.");
@@ -480,6 +505,7 @@ public class MainController {
 		model.addAttribute("navSubMenuItems", getNavSubMenuItems(categoryName));
 		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
+		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
 		model.addAttribute("addedUpc", addedUpc);
 		model.addAttribute("addedItemQty", addedItemQty);
 		model.addAttribute("itemList", itemList);
@@ -524,6 +550,7 @@ public class MainController {
 		model.addAttribute("navSubMenuItems", getNavSubMenuItems(categoryName));
 		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
+		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
 		model.addAttribute("addedUpc", addedUpc);
 		model.addAttribute("addedItemQty", addedItemQty);
 		model.addAttribute("itemList", itemList);
@@ -538,12 +565,18 @@ public class MainController {
 		model.addAttribute("navMenuItems", getNavMenuItems());
 		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
+		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
 		return "images";
 	}
 	
 	@GetMapping("/newitems")
 	public String showNewItems(Model model, @RequestParam(value = "addedUpc", defaultValue="") String addedUpc,
 										@RequestParam(value = "addedItemQty", defaultValue="0") String addedItemQty) {
+		model.addAttribute("navMenuItems", getNavMenuItems());
+		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
+		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
+		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
+
 		String cartAdjustments = "";
 		int cartTotalItemQty = 0;
 		float cartTotalItemCost = 0.0f;
@@ -568,9 +601,6 @@ public class MainController {
 				model.addAttribute("cartItems", cartItems);
 			}
 			model.addAttribute("cartAdjustments", cartAdjustments);
-			model.addAttribute("navMenuItems", getNavMenuItems());
-			model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
-			model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
 			model.addAttribute("addedUpc", addedUpc);
 			model.addAttribute("addedItemQty", addedItemQty);
 			model.addAttribute("itemList", itemList);
@@ -605,6 +635,7 @@ public class MainController {
 		model.addAttribute("navMenuItems", getNavMenuItems());
 		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
+		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
 		model.addAttribute("addedUpc", addedUpc);
 		model.addAttribute("addedItemQty", addedItemQty);
 		model.addAttribute("itemList", itemList);
@@ -638,6 +669,7 @@ public class MainController {
 		model.addAttribute("navMenuItems", getNavMenuItems());
 		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
+		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
 		model.addAttribute("addedUpc", addedUpc);
 		model.addAttribute("addedItemQty", addedItemQty);
 		model.addAttribute("itemList", itemList);
@@ -673,6 +705,7 @@ public class MainController {
 		model.addAttribute("navMenuItems", getNavMenuItems());
 		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
+		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
 		model.addAttribute("addedUpc", addedUpc);
 		model.addAttribute("addedItemQty", addedItemQty);
 		model.addAttribute("itemList", itemList);
@@ -715,6 +748,7 @@ public class MainController {
 			model.addAttribute("navMenuItems", getNavMenuItems());
 			model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 			model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
+			model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
 			model.addAttribute("error", "You must be logged in to add items to your cart.");
 			return "/login";
 		}
@@ -784,6 +818,7 @@ public class MainController {
 			model.addAttribute("navMenuItems", getNavMenuItems());
 			model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 			model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
+			model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
 			return "redirect:/login";
 		}
 		else {										// If a User is logged in, get their cart, (or null if it doesn't exist)
@@ -829,6 +864,7 @@ public class MainController {
 			model.addAttribute("navMenuItems", getNavMenuItems());
 			model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 			model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
+			model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
 			model.addAttribute("error", "You must be logged in to edit your cart.");
 			return "/login";
 		}
@@ -883,6 +919,7 @@ public class MainController {
 			model.addAttribute("navMenuItems", getNavMenuItems());
 			model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 			model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
+			model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
 			model.addAttribute("error", "You must be logged in to edit your cart.");
 			return "/login";
 		}
@@ -906,6 +943,7 @@ public class MainController {
 			model.addAttribute("navMenuItems", getNavMenuItems());
 			model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 			model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
+			model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
 			model.addAttribute("error", "Please log in to your account to check out.");
 			return "/login";
 		}
@@ -937,6 +975,7 @@ public class MainController {
 			model.addAttribute("navMenuItems", getNavMenuItems());
 			model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 			model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
+			model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
 			model.addAttribute("error", "Please log in to your account to check out.");
 			return "/login";
 		}
@@ -1154,6 +1193,7 @@ public class MainController {
 			model.addAttribute("navMenuItems", getNavMenuItems());
 			model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 			model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
+			model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
 			model.addAttribute("error", "User email not found.");
 			return "/login";
 		}
@@ -1167,6 +1207,7 @@ public class MainController {
 				model.addAttribute("navMenuItems", getNavMenuItems());
 				model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 				model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
+				model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
 				model.addAttribute("error", "Order number not found for user " + email + ".");
 				return "/login";
 			}
