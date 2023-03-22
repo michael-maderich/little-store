@@ -8,6 +8,6 @@
 		<script src="https://kit.fontawesome.com/5910fe5993.js"></script>
 		<script src="${contextPath}/js/bootstrap.min.js"></script>
 		<script src="${contextPath}/js/${param.page}.js" async="true"></script>
-		<link rel="shortcut icon" type="image/jpg" href="${contextPath}/images/favicon.jpg"/>l
+		<link rel="shortcut icon" type="image/jpg" href="${contextPath}/images/favicon.jpg"/>
 		<style>${param.page eq 'index' ? indexStyle : mainStyle}
 		</style>

@@ -808,6 +808,10 @@ public class MainController {
 
 	@GetMapping("/cart")
 	public String cart(Model model) {
+		model.addAttribute("navMenuItems", getNavMenuItems());
+		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
+		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
+		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
 		String cartAdjustments;
 		Cart customerCart;
 		int cartTotalItemQty = 0;
@@ -815,10 +819,6 @@ public class MainController {
 		Customer customer = getLoggedInUser();
 		if (customer == null) {				// Can't view cart if not logged in, for now. Direct user to log in/sign up
 			model.addAttribute("error", "You must be logged in to view your cart.");
-			model.addAttribute("navMenuItems", getNavMenuItems());
-			model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
-			model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
-			model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
 			return "redirect:/login";
 		}
 		else {										// If a User is logged in, get their cart, (or null if it doesn't exist)
@@ -937,13 +937,13 @@ public class MainController {
 
 	@GetMapping("/checkout")
 	public String orderFinalizationPage(Model model) {
+		model.addAttribute("navMenuItems", getNavMenuItems());
+		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
+		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
+		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
 		String cartAdjustments = "";
 		Customer customer = getLoggedInUser();
 		if (customer == null) {				// Can't check out if not logged in, for now. Direct user to log in
-			model.addAttribute("navMenuItems", getNavMenuItems());
-			model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
-			model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
-			model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
 			model.addAttribute("error", "Please log in to your account to check out.");
 			return "/login";
 		}
@@ -969,13 +969,13 @@ public class MainController {
 
 	@PostMapping("/confirmation")
 	public String completeOrder(Model model, @ModelAttribute("customerInfo") Customer customerUpdates) {
+		model.addAttribute("navMenuItems", getNavMenuItems());
+		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
+		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
+		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
 		
 		Customer customer = getLoggedInUser();
 		if (customer == null) {				// Can't complete order if not logged in, for now. Direct user to log in page
-			model.addAttribute("navMenuItems", getNavMenuItems());
-			model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
-			model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
-			model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
 			model.addAttribute("error", "Please log in to your account to check out.");
 			return "/login";
 		}

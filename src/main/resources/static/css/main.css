@@ -61,7 +61,7 @@ nav {
 
 #side-nav {
 	float:left;
-	height:100%;
+	min-height:100%;
 	width:8rem;
 /*	background-color:#87CEEB;/*skyblue;*/
 	min-width:8rem;
