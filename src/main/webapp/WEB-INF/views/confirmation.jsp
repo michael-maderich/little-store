@@ -29,6 +29,8 @@
 				<c:if test = "${not empty customerOrder}">
 				<div id="customer-panel">
                     <h2>Thank You For Your Order!</h2>
+					<span style="color:blue;">		<!-- Replace this with payment options - table ? -->
+					</span>
                     <h4 class="checkoutHeader">Customer Details</h4>
  					<table id="customer-table">
  						<tr>

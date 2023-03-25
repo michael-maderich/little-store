@@ -26,49 +26,13 @@
             </div>
 			<div id="center-content">
 				<c:if test = "${not empty customerCart}">
-				<div id="checkout-panel">
+				<div id="customer-panel">
                     <h2>Check Out</h2>
 					<span style="color:blue;">
 						<br />Please be sure to click the <b>Submit Order</b> button to finalize your order.
-						<br />You will receive an email confirmation. Once submitted, please contact me to set up meetup details.
+						<br />You may make updates to the Meet-up address and other options below.
+						<br />Email confirmations are currently not working. Once submitted, please contact me about your order to set up meetup details.
 					</span>
-					<h4 class="checkoutHeader">Order Details</h4>
-					${empty cartAdjustments ? '' : '<div class="cartChangeMsg"><br/><span style="color:red;">'.concat(cartAdjustments).concat('</span></div>')}
-					<c:set var="cartTotal" value="${0}" />
-					<table id="checkout-table">
-						<thead>
-							<tr>
-								<th></th>
-								<th>Item</th>
-								<th>Scent/Style</th>
-								<th>Size</th>
-								<th>Quantity</th>
-								<th>Unit Price</th>
-								<th>Subtotal</th>
-							</tr>
-						</thead>
-						<tbody>
-						<c:forEach items="${customerCart.cartItems}" var="cartItem">
-							<tr>
-								<td class="checkout_image_panel"><img src="${cartItem.product.image}" alt="${cartItem.product.description}" /></td>
-								<td>${cartItem.product.name}</td>
-								<td>${cartItem.product.options}</td>
-								<td>${cartItem.product.size}</td>
-								<td>${cartItem.qty}</td>
-								<td><fmt:formatNumber value = "${cartItem.price}" type = "currency" /></td>
-								<td><fmt:formatNumber value = "${cartItem.qty * cartItem.price}" type = "currency" /></td>
-							</tr>
-							<c:set var="cartTotal" value="${cartTotal + cartItem.qty * cartItem.price}" />
-						</c:forEach></tbody>
-						<tfoot>
-							<tr>
-								<td  colspan=6 style="text-align:right;" class="checkout_subtotal_panel">Total:</td>
-								<td class="checkout_subtotal_panel"><fmt:formatNumber value = "${cartTotal}" type = "currency" /></td>
-							</tr>
-						</tfoot>
-					</table>
-				</div>
-				<div id="customer-panel">
 					<form:form id="orderForm" method="POST" modelAttribute="customerInfo" class="form-signin" action="/confirmation">
 					<label for="submitBtn"><form:button id="submitBtn" name="submitBtn" type="submit" class="btn btn-sm btn-primary btn-block highlighted" onclick="submitForm()">
 						Submit Order
@@ -130,7 +94,7 @@
 							<td colspan=2 class="customer_td_label">
 								<label for="paymentType">Payment Type:</label>
 							</td>
-							<td colspan=2 class="customer_td_input">
+							<td colspan=1 class="customer_td_input">
 								<form:select path="preferredPayment" name="preferredPayment">
 									<c:forEach items="${listPayTypes}" var="paymentType">
 									<option value="${paymentType}" ${paymentType==customerInfo.preferredPayment ? 'selected' : ''}>
@@ -148,6 +112,43 @@
 						</tr>
 					</table>
 					</form:form>
+				</div>
+				<div id="checkout-panel">
+					<h4 class="checkoutHeader">Order Details</h4>
+					${empty cartAdjustments ? '' : '<div class="cartChangeMsg"><br/><span style="color:red;">'.concat(cartAdjustments).concat('</span></div>')}
+					<c:set var="cartTotal" value="${0}" />
+					<table id="checkout-table">
+						<thead>
+							<tr>
+								<th></th>
+								<th>Item</th>
+								<th>Scent/Style</th>
+								<th>Size</th>
+								<th>Quantity</th>
+								<th>Unit Price</th>
+								<th>Subtotal</th>
+							</tr>
+						</thead>
+						<tbody>
+						<c:forEach items="${customerCart.cartItems}" var="cartItem">
+							<tr>
+								<td class="checkout_image_panel"><img src="${cartItem.product.image}" alt="${cartItem.product.description}" /></td>
+								<td>${cartItem.product.name}</td>
+								<td>${cartItem.product.options}</td>
+								<td>${cartItem.product.size}</td>
+								<td>${cartItem.qty}</td>
+								<td><fmt:formatNumber value = "${cartItem.price}" type = "currency" /></td>
+								<td><fmt:formatNumber value = "${cartItem.qty * cartItem.price}" type = "currency" /></td>
+							</tr>
+							<c:set var="cartTotal" value="${cartTotal + cartItem.qty * cartItem.price}" />
+						</c:forEach></tbody>
+						<tfoot>
+							<tr>
+								<td  colspan=6 style="text-align:right;" class="checkout_subtotal_panel">Total:</td>
+								<td class="checkout_subtotal_panel"><fmt:formatNumber value = "${cartTotal}" type = "currency" /></td>
+							</tr>
+						</tfoot>
+					</table>
 				</div>
 				</c:if>
 			</div>

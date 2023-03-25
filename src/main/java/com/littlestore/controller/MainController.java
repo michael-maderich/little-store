@@ -126,6 +126,8 @@ public class MainController {
 		else return null;
 	}
 	
+	// Possibly update with optional argument that indicates link was /addtoCart and change message appropriately
+	// to indicate something like "Available quantity changed to x. x added to cart." Something like that
 	private String updateCartChanges() {
 		String error = "";
 		Customer customer = getLoggedInUser();
@@ -1188,12 +1190,12 @@ public class MainController {
 
 	@GetMapping("/confirmation/{email}/{orderNum}")
 	public String resendOrderConfirmation(Model model, @PathVariable(name="email") String email, @PathVariable(name="orderNum") String orderNum) {
+		model.addAttribute("navMenuItems", getNavMenuItems());
+		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
+		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
+		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
 		Customer customer = customerService.findByEmail(email);
 		if (customer == null) {				// Can't resend confirmation if user doesn't exist
-			model.addAttribute("navMenuItems", getNavMenuItems());
-			model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
-			model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
-			model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
 			model.addAttribute("error", "User email not found.");
 			return "/login";
 		}
@@ -1204,10 +1206,6 @@ public class MainController {
 			}
 			catch (Exception e)
 			{
-				model.addAttribute("navMenuItems", getNavMenuItems());
-				model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
-				model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
-				model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
 				model.addAttribute("error", "Order number not found for user " + email + ".");
 				return "/login";
 			}
