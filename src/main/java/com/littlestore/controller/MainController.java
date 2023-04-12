@@ -107,14 +107,31 @@ public class MainController {
 		return generalDouble;
 	}
 	
+	public HashMap<String, String> getPaymentInfo() {
+		List<GeneralData> paymentItems = generalDataService.getListByCategory("paymentInfo");
+		HashMap<String, String> paymentDataMap = new HashMap<String, String>();
+		for (GeneralData item : paymentItems) {
+			paymentDataMap.put(getGeneralDataString(item.getGeneralName()), item.getGeneralValue());
+		}
+		return paymentDataMap;
+	}
+
 	private	List<String> getNavMenuItems() {
-//		return productService.listCategoryMain();
-		return productService.listCategoryMainWithStock();
+		if (getGeneralDataInteger("showOosEverywhere") == 1) {
+			return productService.listCategoryMain();
+		}
+		else {
+			return productService.listCategoryMainWithStock();
+		}
 	}
 
 	private List<String> getNavSubMenuItems(String categoryName) {
-//		return productService.listCategorySpecificUnderMain(categoryName);
-		return productService.listCategorySpecificUnderMainWithStock(categoryName);
+		if (getGeneralDataInteger("showOosEverywhere") == 1) {
+			return productService.listCategorySpecificUnderMain(categoryName);
+		}
+		else {
+			return productService.listCategorySpecificUnderMainWithStock(categoryName);
+		}
 	}
 	
 	private Customer getLoggedInUser() {
@@ -205,7 +222,9 @@ public class MainController {
 					cartTotalItemCost += detail.getQty() * detail.getPrice();
 				}
 				model.addAttribute("cartTotalItemQty", cartTotalItemQty);
+				model.addAttribute("showItemQtyInHeader", getGeneralDataInteger("showItemQtyInHeader"));
 				model.addAttribute("cartTotalItemCost", cartTotalItemCost);
+				model.addAttribute("showTotalInHeader", getGeneralDataInteger("showTotalInHeader"));
 			}
 		}
 		model.addAttribute("cartAdjustments", cartAdjustments);
@@ -214,6 +233,11 @@ public class MainController {
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
 		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
 		model.addAttribute("indexStyle", getGeneralDataString("indexStyle"));
+		model.addAttribute("indexBgImageSrcDefault", getGeneralDataString("indexBgImageSrcDefault"));
+		model.addAttribute("indexBgImageSrc", getGeneralDataString("indexBgImageSrc"));
+		model.addAttribute("indexBgImageAltText", getGeneralDataString("indexBgImageAltText"));
+		model.addAttribute("indexBgImageTooltip", getGeneralDataString("indexBgImageTooltip"));
+		model.addAttribute("indexBgImageHyperlink", getGeneralDataString("indexBgImageHyperlink"));
 		return "/index";
 	}
 
@@ -364,7 +388,9 @@ public class MainController {
 					cartTotalItemCost += detail.getQty() * detail.getPrice();
 				}
 				model.addAttribute("cartTotalItemQty", cartTotalItemQty);
+				model.addAttribute("showItemQtyInHeader", getGeneralDataInteger("showItemQtyInHeader"));
 				model.addAttribute("cartTotalItemCost", cartTotalItemCost);
+				model.addAttribute("showTotalInHeader", getGeneralDataInteger("showTotalInHeader"));
 			}
 			model.addAttribute("customerForm", customer);
 			model.addAttribute("listStates", listStates);
@@ -409,7 +435,9 @@ public class MainController {
 					cartTotalItemCost += detail.getQty() * detail.getPrice();
 				}
 				model.addAttribute("cartTotalItemQty", cartTotalItemQty);
+				model.addAttribute("showItemQtyInHeader", getGeneralDataInteger("showItemQtyInHeader"));
 				model.addAttribute("cartTotalItemCost", cartTotalItemCost);
+				model.addAttribute("showTotalInHeader", getGeneralDataInteger("showTotalInHeader"));
 			}
 			model.addAttribute("customerForm", customer);
 			model.addAttribute("listStates", listStates);
@@ -441,7 +469,9 @@ public class MainController {
 					cartTotalItemCost += detail.getQty() * detail.getPrice();
 				}
 				model.addAttribute("cartTotalItemQty", cartTotalItemQty);
+				model.addAttribute("showItemQtyInHeader", getGeneralDataInteger("showItemQtyInHeader"));
 				model.addAttribute("cartTotalItemCost", cartTotalItemCost);
+				model.addAttribute("showTotalInHeader", getGeneralDataInteger("showTotalInHeader"));
 			}
 			model.addAttribute("customer", customer);
 			List<Order> orderList = orderService.findByCustomer(customer);
@@ -498,7 +528,9 @@ public class MainController {
 					cartTotalItemCost += detail.getQty() * detail.getPrice();
 				}
 				model.addAttribute("cartTotalItemQty", cartTotalItemQty);
+				model.addAttribute("showItemQtyInHeader", getGeneralDataInteger("showItemQtyInHeader"));
 				model.addAttribute("cartTotalItemCost", cartTotalItemCost);
+				model.addAttribute("showTotalInHeader", getGeneralDataInteger("showTotalInHeader"));
 				model.addAttribute("cartItems", cartItems);
 			}
 		}
@@ -542,7 +574,9 @@ public class MainController {
 					cartTotalItemCost += detail.getQty() * detail.getPrice();
 				}
 				model.addAttribute("cartTotalItemQty", cartTotalItemQty);
+				model.addAttribute("showItemQtyInHeader", getGeneralDataInteger("showItemQtyInHeader"));
 				model.addAttribute("cartTotalItemCost", cartTotalItemCost);
+				model.addAttribute("showTotalInHeader", getGeneralDataInteger("showTotalInHeader"));
 				model.addAttribute("cartItems", cartItems);
 			}
 		}
@@ -599,7 +633,9 @@ public class MainController {
 					cartTotalItemCost += detail.getQty() * detail.getPrice();
 				}
 				model.addAttribute("cartTotalItemQty", cartTotalItemQty);
+				model.addAttribute("showItemQtyInHeader", getGeneralDataInteger("showItemQtyInHeader"));
 				model.addAttribute("cartTotalItemCost", cartTotalItemCost);
+				model.addAttribute("showTotalInHeader", getGeneralDataInteger("showTotalInHeader"));
 				model.addAttribute("cartItems", cartItems);
 			}
 			model.addAttribute("cartAdjustments", cartAdjustments);
@@ -628,7 +664,9 @@ public class MainController {
 					cartTotalItemCost += detail.getQty() * detail.getPrice();
 				}
 				model.addAttribute("cartTotalItemQty", cartTotalItemQty);
+				model.addAttribute("showItemQtyInHeader", getGeneralDataInteger("showItemQtyInHeader"));
 				model.addAttribute("cartTotalItemCost", cartTotalItemCost);
+				model.addAttribute("showTotalInHeader", getGeneralDataInteger("showTotalInHeader"));
 				model.addAttribute("cartItems", cartItems);
 			}
 		}
@@ -662,7 +700,9 @@ public class MainController {
 					cartTotalItemCost += detail.getQty() * detail.getPrice();
 				}
 				model.addAttribute("cartTotalItemQty", cartTotalItemQty);
+				model.addAttribute("showItemQtyInHeader", getGeneralDataInteger("showItemQtyInHeader"));
 				model.addAttribute("cartTotalItemCost", cartTotalItemCost);
+				model.addAttribute("showTotalInHeader", getGeneralDataInteger("showTotalInHeader"));
 				model.addAttribute("cartItems", cartItems);
 			}
 		}
@@ -699,7 +739,9 @@ public class MainController {
 					cartTotalItemCost += detail.getQty() * detail.getPrice();
 				}
 				model.addAttribute("cartTotalItemQty", cartTotalItemQty);
+				model.addAttribute("showItemQtyInHeader", getGeneralDataInteger("showItemQtyInHeader"));
 				model.addAttribute("cartTotalItemCost", cartTotalItemCost);
+				model.addAttribute("showTotalInHeader", getGeneralDataInteger("showTotalInHeader"));
 				model.addAttribute("cartItems", cartItems);
 			}
 		}
@@ -800,7 +842,9 @@ public class MainController {
 				cartTotalItemCost += detail.getQty() * detail.getPrice();
 			}
 			model.addAttribute("cartTotalItemQty", cartTotalItemQty);
+			model.addAttribute("showItemQtyInHeader", getGeneralDataInteger("showItemQtyInHeader"));
 			model.addAttribute("cartTotalItemCost", cartTotalItemCost);
+			model.addAttribute("showTotalInHeader", getGeneralDataInteger("showTotalInHeader"));
 			model.addAttribute("customerCart", customerCart);
 			model.addAttribute("searchText", searchText);
 			return !referer.startsWith("/search") ? "redirect:" + referer+"?addedUpc="+upc+"&addedItemQty="+addedItemQty
@@ -839,7 +883,9 @@ public class MainController {
 				cartTotalItemCost += detail.getQty() * detail.getPrice();
 			}
 			model.addAttribute("cartTotalItemQty", cartTotalItemQty);
+			model.addAttribute("showItemQtyInHeader", getGeneralDataInteger("showItemQtyInHeader"));
 			model.addAttribute("cartTotalItemCost", cartTotalItemCost);
+			model.addAttribute("showTotalInHeader", getGeneralDataInteger("showTotalInHeader"));
 			model.addAttribute("customer", customer);
 			model.addAttribute("customerCart", customerCart);
 			model.addAttribute("cartAdjustments", cartAdjustments);
@@ -850,6 +896,11 @@ public class MainController {
 	@GetMapping("/removeFromCart")
 	public String removeItemsFromCart(Model model,
 								@RequestParam(value = "upc", defaultValue="") String upc) {
+
+		model.addAttribute("navMenuItems", getNavMenuItems());
+		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
+		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
+		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
 
 		Customer customer = getLoggedInUser();
 		Cart customerCart;
@@ -863,10 +914,6 @@ public class MainController {
 			return "redirect:/cart";
 		}
 		if (customer == null) {		// Can't edit cart if not logged in, but also can't get here since can't access cart, either, unless url typed
-			model.addAttribute("navMenuItems", getNavMenuItems());
-			model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
-			model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
-			model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
 			model.addAttribute("error", "You must be logged in to edit your cart.");
 			return "/login";
 		}
@@ -897,7 +944,9 @@ public class MainController {
 				cartTotalItemCost += detail.getQty() * detail.getPrice();
 			}
 			model.addAttribute("cartTotalItemQty", cartTotalItemQty);
+			model.addAttribute("showItemQtyInHeader", getGeneralDataInteger("showItemQtyInHeader"));
 			model.addAttribute("cartTotalItemCost", cartTotalItemCost);
+			model.addAttribute("showTotalInHeader", getGeneralDataInteger("showTotalInHeader"));
 			model.addAttribute("customer", customer);
 			model.addAttribute("customerCart", customerCart);	
 			return "/cart";
@@ -932,6 +981,9 @@ public class MainController {
 			for (CartDetail item : cartItems) cartDetailService.delete(item);
 			cartService.delete(customerCart);
 			model.addAttribute("cartTotalItemQty", 0);
+			model.addAttribute("showItemQtyInHeader", getGeneralDataInteger("showItemQtyInHeader"));
+			model.addAttribute("cartTotalItemCost", 0);
+			model.addAttribute("showTotalInHeader", getGeneralDataInteger("showTotalInHeader"));
 			model.addAttribute("customer", customer);
 			return "redirect:/cart";
 		}
@@ -1175,9 +1227,9 @@ public class MainController {
 					 "Little Store Order #"+customerOrder.getOrderNum()+" Confirmation",
 					 emailBody);
 			// Send order notification to my email
-			new SendSimpleEmail("thelittlestoregoods@gmail.com", "New Order Received", emailBody);
+			new SendSimpleEmail(getGeneralDataString("receiverEmail"), "New Order Received", emailBody);
 			// Send order notification to printer
-			new SendSimpleEmail("jamitinmybox@hpeprint.com", "New Order Received", emailBody);
+//			new SendSimpleEmail("jamitinmybox@hpeprint.com", "New Order Received", emailBody);
 
 			
 			model.addAttribute("customerInfo", customer);
@@ -1357,7 +1409,7 @@ public class MainController {
 					 "Little Store Order #"+customerOrder.getOrderNum()+" Confirmation",
 					 emailBody);
 			// Send order notification to my email
-			new SendSimpleEmail("thelittlestoregoods@gmail.com", "New Order Received", emailBody);
+			new SendSimpleEmail(getGeneralDataString("receiverEmail"), "New Order Received", emailBody);
 			// Send order notification to printer
 //			new SendSimpleEmail("jamitinmybox@hpeprint.com", "New Order Received", emailBody);
 

@@ -29,14 +29,83 @@
 				<c:if test = "${not empty customerOrder}">
 				<div id="customer-panel">
                     <h2>Thank You For Your Order!</h2>
-					<span style="color:blue;">		<!-- Replace this with payment options - table ? -->
-					</span>
+                    <h4 class="checkoutHeader">Payment Options</h4>
+ 					<table id="customer-table">
+ 						<tr>
+							<td class="checkout_image_panel"><img src="${orderItem.product.image}" alt="${orderItem.product.description}" /></td>
+ 							<td class="customer_td_label">
+ 								<label for="name">Cash App:</label>
+ 							</td>
+ 							<td class="customer_td_input">
+								placeholder=" ${customerInfo.firstName} ${customerInfo.lastName}" class="info-field" disabled></input>
+ 							</td>
+							<td>${orderItem.product.name}</td>
+							<td>${orderItem.product.options}</td>
+ 							<td class="customer_td_label">
+ 								<label for="email">Email:</label>
+ 							</td>
+ 							<td colspan=2 class="customer_td_input">
+								<input name="email" id="email" type="email"
+								placeholder=" ${customerInfo.email}" class="info-field" disabled></input>
+							</td>
+							<td class="customer_td_label">
+ 								<label for="phone">Phone:</label>
+ 							</td>
+ 							<td colspan=2 class="customer_td_input">
+								<input name="phone" id="phone" type="text"
+								placeholder=" ${not empty customerInfo.phone ? customerInfo.phone : '(None Supplied)'}" class="info-field" disabled></input>
+							</td>
+ 						</tr>
+ 						<tr>
+ 							<td colspan=2 class="customer_td_label">
+ 								<label for="address">Meet-Up Address:</label>
+ 							</td>
+ 							<td colspan=2 class="customer_td_input">
+								<input name="address" id="address" type="text" placeholder=" ${customerInfo.address}" class="text-field" disabled></input>
+							</td>
+ 							<td class="customer_td_label">
+ 								<label for="city">City:</label>
+ 							</td>
+ 							<td colspan=2 class="customer_td_input">
+								<input name="city" id="city" type="text" placeholder=" ${customerInfo.city}" class="text-field" disabled></input>
+							</td>
+ 							<td class="customer_td_label">
+								<label for="state">State:</label>
+ 							</td>
+ 							<td class="customer_td_input">
+ 							<c:forEach items="${listStates}" var="st">
+								<c:if test="${st==customerInfo.state}">
+									<input name="state" id="state" type="text" placeholder=" ${st}" class="text-field" disabled></input>
+								</c:if>
+							</c:forEach>
+							</td>
+							<td></td>
+						</tr>
+						<tr>
+							<td colspan=2 class="customer_td_label">
+								<label for="paymentType">Payment Type:</label>
+							</td>
+							<td colspan=2 class="customer_td_input">
+ 							<c:forEach items="${listPayTypes}" var="payType">
+								<c:if test="${payType==customerInfo.preferredPayment}">
+									<input name="paymentType" id="paymentType" type="text" placeholder=" ${payType}" class="text-field" disabled>
+								</c:if>
+							</c:forEach>
+							</td>
+							<td colspan=2 class="customer_td_label">
+								<label for="paymentHandle">Payment Handle:</label>
+							</td>
+							<td colspan=2 class="customer_td_input">
+								<input type="text" id="paymentHandle" name="paymentHandle" placeholder=" ${customerInfo.paymentHandle}" class="text-field" disabled/>
+							</td>
+						</tr>
+					</table>
                     <h4 class="checkoutHeader">Customer Details</h4>
  					<table id="customer-table">
  						<tr>
  							<td></td>
  							<td class="customer_td_label">
- 								<label for="email">Name:</label>
+ 								<label for="name">Name:</label>
  							</td>
  							<td colspan=2 class="customer_td_input">
 								<input id="customerName" name="customerName" type="text"
@@ -144,6 +213,77 @@
 								<td class="checkout_subtotal_panel"><fmt:formatNumber value = "${orderTotal}" type = "currency" /></td>
 							</tr>
 						</tfoot>
+					</table>
+				</div>
+				<div id="payment-panel">
+					<h4 class="orderDetailHeader"></h4>
+					<table>
+ 						<tr>
+ 							<td class="customer_td_label">
+ 								<label for="name"></label>
+ 							</td>
+ 							<td class="customer_td_input">
+								<input id="customerName" name="customerName" type="text"
+								placeholder=" ${customerInfo.firstName} ${customerInfo.lastName}" class="info-field" disabled></input>
+ 							</td>
+ 							<td class="customer_td_label">
+ 								<label for="email">Email:</label>
+ 							</td>
+ 							<td colspan=2 class="customer_td_input">
+								<input name="email" id="email" type="email"
+								placeholder=" ${customerInfo.email}" class="info-field" disabled></input>
+							</td>
+							<td class="customer_td_label">
+ 								<label for="phone">Phone:</label>
+ 							</td>
+ 							<td colspan=2 class="customer_td_input">
+								<input name="phone" id="phone" type="text"
+								placeholder=" ${not empty customerInfo.phone ? customerInfo.phone : '(None Supplied)'}" class="info-field" disabled></input>
+							</td>
+ 						</tr>
+ 						<tr>
+ 							<td colspan=2 class="customer_td_label">
+ 								<label for="address">Meet-Up Address:</label>
+ 							</td>
+ 							<td colspan=2 class="customer_td_input">
+								<input name="address" id="address" type="text" placeholder=" ${customerInfo.address}" class="text-field" disabled></input>
+							</td>
+ 							<td class="customer_td_label">
+ 								<label for="city">City:</label>
+ 							</td>
+ 							<td colspan=2 class="customer_td_input">
+								<input name="city" id="city" type="text" placeholder=" ${customerInfo.city}" class="text-field" disabled></input>
+							</td>
+ 							<td class="customer_td_label">
+								<label for="state">State:</label>
+ 							</td>
+ 							<td class="customer_td_input">
+ 							<c:forEach items="${listStates}" var="st">
+								<c:if test="${st==customerInfo.state}">
+									<input name="state" id="state" type="text" placeholder=" ${st}" class="text-field" disabled></input>
+								</c:if>
+							</c:forEach>
+							</td>
+							<td></td>
+						</tr>
+						<tr>
+							<td colspan=2 class="customer_td_label">
+								<label for="paymentType">Payment Type:</label>
+							</td>
+							<td colspan=2 class="customer_td_input">
+ 							<c:forEach items="${listPayTypes}" var="payType">
+								<c:if test="${payType==customerInfo.preferredPayment}">
+									<input name="paymentType" id="paymentType" type="text" placeholder=" ${payType}" class="text-field" disabled>
+								</c:if>
+							</c:forEach>
+							</td>
+							<td colspan=2 class="customer_td_label">
+								<label for="paymentHandle">Payment Handle:</label>
+							</td>
+							<td colspan=2 class="customer_td_input">
+								<input type="text" id="paymentHandle" name="paymentHandle" placeholder=" ${customerInfo.paymentHandle}" class="text-field" disabled/>
+							</td>
+						</tr>
 					</table>
 				</div>
 				</c:if>

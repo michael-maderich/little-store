@@ -20,8 +20,14 @@
 					<input type="submit" id="logoutbtn" name="logoutbtn" value="Sign Out" class="btn btn-sm btn-primary btn-block" />
 				</c:if>
 					<a href="${pageContext.request.userPrincipal.name != null ? '/account' : '/login'}">
-						<i class="fas fa-user-alt" title="${pageContext.request.userPrincipal.name != null ? 'Account' : 'Sign Up/Login'}"></i></a>
-					<!--a href="/cart"><i class="fas fa-shopping-cart" title="Shopping Cart"></i> ${cartTotalItemQty > 0 ? '('.concat(cartTotalItemQty).concat(')') : ''}</a-->
-					<a href="/cart"><i class="fas fa-shopping-cart" title="Shopping Cart"></i> ${cartTotalItemCost > 0 ? '(' : ''}<fmt:formatNumber value = "${cartTotalItemCost}" type = "currency" />${cartTotalItemCost > 0 ? ')' : ''}</a>
+						<i class="fas fa-user-alt" title="${pageContext.request.userPrincipal.name != null ? 'Account' : 'Sign Up/Login'}"></i>
+					</a>
+					<a href="/cart">
+						<i class="fas fa-shopping-cart" title="Shopping Cart"></i>
+						<c:if test = "${(showTotalInHeader eq 1) and (cartTotalItemCost > 0)}">
+						<fmt:formatNumber value = "${cartTotalItemCost}" type = "currency" />
+						</c:if>
+						${(showItemQtyInHeader eq 1) and (cartTotalItemQty > 0) ? ' ('.concat(cartTotalItemQty).concat(')') : ''}
+					</a>
 				</form>
 			</div>

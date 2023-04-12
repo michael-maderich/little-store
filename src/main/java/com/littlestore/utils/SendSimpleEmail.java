@@ -17,11 +17,16 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import com.littlestore.service.GeneralDataService;
+
 public class SendSimpleEmail {
-	final String senderEmailId = "thelittlestoregoods@gmail.com";
+	@Autowired private GeneralDataService generalDataService;
+	final String senderEmailId = generalDataService.getGeneralData("senderEmail");
 	final String emailSMTPserver = "smtp.gmail.com";
 	String TOKEN_URL = "https://www.googleapis.com/oauth2/v4/token";
 	String oauthClientId = "***REMOVED***";

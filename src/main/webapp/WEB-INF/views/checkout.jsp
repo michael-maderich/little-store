@@ -43,7 +43,7 @@
  						<tr>
  							<td></td>
  							<td class="customer_td_label">
- 								<label for="email">Name:</label>
+ 								<label for="name">Name:</label>
  							</td>
  							<td colspan=2 class="customer_td_input">
 								<input id="customerName" name="customerName" type="text"
