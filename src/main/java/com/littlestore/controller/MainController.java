@@ -1405,11 +1405,11 @@ public class MainController {
 			"		</tfoot>\n"+
 			"	</table>\n"+
 			"</div>";
-			new SendSimpleEmail(customer.getEmail(), 
-					 "Little Store Order #"+customerOrder.getOrderNum()+" Confirmation",
-					 emailBody);
+//			new SendSimpleEmail(customer.getEmail(), 
+//					 "Little Store Order #"+customerOrder.getOrderNum()+" Confirmation",
+//					 emailBody);
 			// Send order notification to my email
-			new SendSimpleEmail(getGeneralDataString("receiverEmail"), "New Order Received", emailBody);
+//			new SendSimpleEmail(getGeneralDataString("receiverEmail"), "New Order Received", emailBody);
 			// Send order notification to printer
 //			new SendSimpleEmail("jamitinmybox@hpeprint.com", "New Order Received", emailBody);
 
