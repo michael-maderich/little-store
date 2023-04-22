@@ -37,6 +37,7 @@
  								<label for="name">Cash App:</label>
  							</td>
  							<td class="customer_td_input">
+								<input name="customerInfo" id="customerInfo" type="text"
 								placeholder=" ${customerInfo.firstName} ${customerInfo.lastName}" class="info-field" disabled></input>
  							</td>
 							<td>${orderItem.product.name}</td>
