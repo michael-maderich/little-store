@@ -46,8 +46,9 @@
 <c:forEach items="${customerOrder.orderItems}" var="orderItem">
 	<c:set var="paymentTotal" value="${paymentTotal + orderItem.qty * orderItem.price}" />
 </c:forEach>
+<c:set var="pmtLinkVal"><fmt:formatNumber type="number" minFractionDigits="2" maxFractionDigits="2" value="${paymentTotal}"/></c:set>
  							<td class="payment_td_value">
-	 							<a href="http://paypal.me/${payHandlePayPalMe}/${paymentTotal}" target="_new">
+	 							<a href="http://paypal.me/${payHandlePayPalMe}/${pmtLinkVal}" target="_new">
 									${payHandlePayPal}
 								</a>
  							</td>
