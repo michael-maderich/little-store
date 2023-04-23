@@ -1223,11 +1223,11 @@ public class MainController {
 			"		</tfoot>\n"+
 			"	</table>\n"+
 			"</div>";
-			new SendSimpleEmail(customer.getEmail(), 
-					 "Little Store Order #"+customerOrder.getOrderNum()+" Confirmation",
-					 emailBody);
+//			new SendSimpleEmail(customer.getEmail(), 
+//					 "Little Store Order #"+customerOrder.getOrderNum()+" Confirmation",
+//					 emailBody);
 			// Send order notification to my email
-			new SendSimpleEmail(getGeneralDataString("receiverEmail"), "New Order Received", emailBody);
+//			new SendSimpleEmail(getGeneralDataString("receiverEmail"), "New Order Received", emailBody);
 			// Send order notification to printer
 //			new SendSimpleEmail("jamitinmybox@hpeprint.com", "New Order Received", emailBody);
 
@@ -1236,6 +1236,12 @@ public class MainController {
 			model.addAttribute("customerOrder", customerOrder);
 			model.addAttribute("listStates", listStates);
 			model.addAttribute("listPayTypes", listPayTypes);
+			// These should be a list like listPayTypes so that they can be variable
+			model.addAttribute("payHandleCashApp", getGeneralDataString("payHandleCashApp"));
+			model.addAttribute("payHandlePayPal", getGeneralDataString("payHandlePayPal"));
+			model.addAttribute("payHandleVenmo", getGeneralDataString("payHandleVenmo"));
+			model.addAttribute("payHandleZelle", getGeneralDataString("payHandleZelle"));
+			model.addAttribute("payHandlePayPalMe", getGeneralDataString("payHandlePayPalMe"));
 			return "confirmation";
 		}
 	}
@@ -1418,6 +1424,11 @@ public class MainController {
 			model.addAttribute("customerOrder", customerOrder);
 			model.addAttribute("listStates", listStates);
 			model.addAttribute("listPayTypes", listPayTypes);
+			model.addAttribute("payHandleCashApp", getGeneralDataString("payHandleCashApp"));
+			model.addAttribute("payHandlePayPal", getGeneralDataString("payHandlePayPal"));
+			model.addAttribute("payHandleVenmo", getGeneralDataString("payHandleVenmo"));
+			model.addAttribute("payHandleZelle", getGeneralDataString("payHandleZelle"));
+			model.addAttribute("payHandlePayPalMe", getGeneralDataString("payHandlePayPalMe"));
 			return "confirmation";
 		}
 	}

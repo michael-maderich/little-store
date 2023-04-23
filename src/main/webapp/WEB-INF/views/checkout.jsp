@@ -30,7 +30,7 @@
                     <h2>Check Out</h2>
 					<span style="color:blue;">
 						<br />Please be sure to click the <b>Submit Order</b> button to finalize your order.
-						<br />You may make updates to the Meet-up address and other options below.
+						<br />You may make updates to the meet-up location and other options below.
 						<br />Email confirmations are currently not working. Once submitted, please contact me about your order to set up meetup details.
 					</span>
 					<form:form id="orderForm" method="POST" modelAttribute="customerInfo" class="form-signin" action="/confirmation">
@@ -62,16 +62,16 @@
  							</td>
  							<td colspan=2 class="customer_td_input">
 								<form:input path="phone" id="phone" type="text"
-								placeholder=" (Or Other Contact)"
+								placeholder=" (Or other contact)"
 								value=" ${not empty customerInfo.phone ? customerInfo.phone.trim() : ''}" class="text-field"></form:input>
 							</td>
  						</tr>
  						<tr>
  							<td colspan=2 class="customer_td_label">
- 								<label for="address">Meet-Up Address:</label>
+ 								<label for="address">Meet-Up Location:</label>
  							</td>
  							<td colspan=2 class="customer_td_input">
-								<form:input path="address" id="address" type="text" class="text-field"></form:input>
+								<form:input path="address" id="address" type="text" class="text-field" placeholder="(Address, intersection, business, etc)"></form:input>
 							</td>
  							<td class="customer_td_label">
  								<label for="city">City:</label>
@@ -107,7 +107,7 @@
 								<label for="paymentHandle">Payment Handle:</label>
 							</td>
 							<td colspan=2 class="customer_td_input">
-								<form:input path="paymentHandle" type="text" id="paymentHandle" placeholder="$CashTag, @Venmo, etc" class="text-field"></form:input>
+								<form:input path="paymentHandle" type="text" id="paymentHandle" placeholder="$CashTag, @Venmo, etc (if relevant)" class="text-field"></form:input>
 							</td>
 						</tr>
 					</table>

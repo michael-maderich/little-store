@@ -65,6 +65,29 @@
 /*	border:1px solid black;*/
 }
 
+#payment-table {
+	margin:0 auto;
+	margin-top:2em;
+	background-color:white;
+}
+#payment-table td {
+	border:1px solid black;
+}
+.payment_td_label {
+	text-align:right;
+	width:10em;
+	padding-top:.5em;
+	padding-bottom:.5em;
+	padding-right:.5em;
+}
+.payment_td_value {
+	text-align:left;
+	width:14em;
+	padding-top:.5em;
+	padding-bottom:.5em;
+	padding-left: 1em;
+}
+
 button {margin-top: 1.5em;}
 
 #customer-panel input, #customer-panel select {
