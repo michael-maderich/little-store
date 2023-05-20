@@ -16,5 +16,5 @@ public interface GeneralDataRepository extends CrudRepository<GeneralData, Integ
 	
 	public List<GeneralData> findAll();
 	
-	public List<GeneralData> findAllByCategory(String category);
+	public List<GeneralData> findByGeneralCategory(String generalCategory);
 }

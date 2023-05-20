@@ -3,6 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix = "fmt" uri = "http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix = "func" uri = "http://java.sun.com/jsp/jstl/functions" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 
 <!DOCTYPE html>
@@ -30,43 +31,32 @@
 				<div id="customer-panel">
                     <h2>Thank You For Your Order!</h2>
                     <h4 class="checkoutHeader">Payment Options</h4>
-                    <h6>(You may pay ahead via any of the methods below or upon meet-up):</h6>
- 					<table id="payment-table">
- 						<tr>
- 							<td class="payment_td_label">
- 								<label for="name">Cash App:</label>
- 							</td>
- 							<td class="payment_td_value">
-								${payHandleCashApp}
- 							</td>
- 							<td class="payment_td_label">
- 								<label for="name">PayPal (click to pay):</label>
- 							</td>
+                    <h6>You may pay ahead via any of the methods below (click-to-pay if available) or upon meet-up:</h6>
 <c:set var="paymentTotal" value="${0}" />
 <c:forEach items="${customerOrder.orderItems}" var="orderItem">
 	<c:set var="paymentTotal" value="${paymentTotal + orderItem.qty * orderItem.price}" />
 </c:forEach>
 <c:set var="pmtLinkVal"><fmt:formatNumber type="number" minFractionDigits="2" maxFractionDigits="2" value="${paymentTotal}"/></c:set>
- 							<td class="payment_td_value">
-	 							<a href="http://paypal.me/${payHandlePayPalMe}/${pmtLinkVal}" target="_new">
-									${payHandlePayPal}
+ 					<table id="payment-table">
+<c:forEach items="${listPaymentInfo}" var="payMethod">
+<c:set var="link" value="${func:replace(payMethod.link, \"{%linkHandle}\", payMethod.linkHandle)}" />
+<c:set var="payLink" value="${func:replace(link, \"{%amount}\", pmtLinkVal)}" />
+						<tr>
+ 							<td class="payment_td_label" style="width:6em">
+ 								<label for="name">${payMethod.name}:</label>
+ 							</td>
+ 							<td class="payment_td_label" style="padding-left:.5em">
+								<c:if test="${payMethod.link == null}">
+								${payMethod.handle}
+								</c:if>
+								<c:if test="${payMethod.link != null}">
+	 							<a href="${payLink}" target="_new">
+									${payMethod.handle}
 								</a>
- 							</td>
- 						</tr>
- 						<tr>
- 							<td class="payment_td_label">
- 								<label for="name">Venmo:</label>
- 							</td>
- 							<td class="payment_td_value">
-								${payHandleVenmo}
- 							</td>
- 							<td class="payment_td_label">
- 								<label for="name">Zelle:</label>
- 							</td>
- 							<td class="payment_td_value">
-								${payHandleZelle}
+								</c:if>
  							</td>
 						</tr>
+</c:forEach>
 					</table>
                     <h4 class="checkoutHeader">Customer Details</h4>
  					<table id="customer-table">

@@ -8,10 +8,10 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="generaldata")
+@Table(name="generalData")
 public class GeneralData implements Serializable {
 
-	private static final long serialVersionUID = 1234567891L;
+	private static final long serialVersionUID = 1114567899L;
 
 	@Id
 	@Column(name="generalId", length=11, nullable=false, unique=true)
@@ -26,16 +26,17 @@ public class GeneralData implements Serializable {
 	private String generalValue;
 	
 	@Basic
-	@Column(name="category", length=50, nullable=true)
-	private String category;
+	@Column(name="generalCategory", length=50, nullable=false)
+	private String generalCategory;
 	
 	public GeneralData() {
 	}
 
-	public GeneralData(int generalId, String generalName, String generalValue) {
+	public GeneralData(int generalId, String generalName, String generalValue, String generalCategory) {
 		this.generalId = generalId;
 		this.generalName = generalName;
 		this.generalValue = generalValue;
+		this.generalCategory = generalCategory;
 	}
 
 	public int getGeneralId() {
@@ -59,22 +60,23 @@ public class GeneralData implements Serializable {
 		this.generalValue = generalValue;
 	}
 
-	public String getCategory() {
-		return category;
+	public String getGeneralCategory() {
+		return generalCategory;
 	}
-	public void setCategory(String category) {
-		this.category = category;
+	public void setGeneralCategory(String generalCategory) {
+		this.generalCategory = generalCategory;
 	}
 
 	@Override
 	public String toString() {
-		return "GeneralData [generalData=ID " + generalId + ": (" + category + ") " + generalName + " - " + generalValue + "]";
+		return "GeneralData [generalData=ID " + generalId + ": (" + generalCategory + ") " + generalName + " - " + generalValue + "]";
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + ((generalCategory == null) ? 0 : generalCategory.hashCode());
 		result = prime * result + generalId;
 		result = prime * result + ((generalName == null) ? 0 : generalName.hashCode());
 		result = prime * result + ((generalValue == null) ? 0 : generalValue.hashCode());
@@ -90,6 +92,11 @@ public class GeneralData implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		GeneralData other = (GeneralData) obj;
+		if (generalCategory == null) {
+			if (other.generalCategory != null)
+				return false;
+		} else if (!generalCategory.equals(other.generalCategory))
+			return false;
 		if (generalId != other.generalId)
 			return false;
 		if (generalName == null) {

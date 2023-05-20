@@ -23,7 +23,7 @@ public class Customer implements Serializable {
 	private static final long serialVersionUID = 12546552190L;
 
 	public enum States {DE, NJ, PA}
-	public enum PaymentMethods {CASH, CASHAPP, VENMO, PAYPAL, ZELLE, OTHER}
+	public enum PaymentMethods {CASH, CASHAPP, VENMO, PAYPAL, ZELLE, CHIME, OTHER}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

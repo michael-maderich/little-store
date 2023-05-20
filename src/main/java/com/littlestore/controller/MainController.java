@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -32,6 +33,7 @@ import com.littlestore.entity.Order;
 import com.littlestore.entity.OrderDetail;
 import com.littlestore.entity.Product;
 import com.littlestore.entity.GeneralData;
+import com.littlestore.entity.PaymentInfo;
 import com.littlestore.service.CartDetailService;
 //import com.littlestore.pagination.PaginationResult;
 import com.littlestore.service.CartService;
@@ -40,6 +42,7 @@ import com.littlestore.service.OrderDetailService;
 import com.littlestore.service.OrderService;
 import com.littlestore.service.ProductService;
 import com.littlestore.service.GeneralDataService;
+import com.littlestore.service.PaymentInfoService;
 import com.littlestore.service.SecurityService;
 import com.littlestore.validator.CustomerFormValidator;
 
@@ -59,22 +62,23 @@ public class MainController {
 	@Autowired private OrderService orderService;
 	@Autowired private OrderDetailService orderDetailService;
 	@Autowired private GeneralDataService generalDataService;
+	@Autowired private PaymentInfoService paymentInfoService;
 	@Autowired private SecurityService securityService;
 	@Autowired private CustomerFormValidator customerFormValidator;
 	
 	private List<String> listStates = Stream.of(Customer.States.values()).map(Enum::name).collect(Collectors.toList());
 
 	private List<String> listPayTypes = Stream.of(Customer.PaymentMethods.values()).map(Enum::name).collect(Collectors.toList());
-	
-	public List<GeneralData> getGeneralDataByCategory(String category) {
-		return generalDataService.getListByCategory(category);
+
+	private List<GeneralData> getGeneralDataByCategory(String category) {
+		return generalDataService.findByCategory(category);
 	}
 
-	public HashMap<String, String> getGeneralDataCategoryMap(String category) {
-		List<GeneralData> categoryItems = generalDataService.getListByCategory(category);
-		HashMap<String, String> generalDataMap = new HashMap<String, String>();
+	public Map<String, String> getGeneralDataCategoryMap(String category) {
+		List<GeneralData> categoryItems = getGeneralDataByCategory(category);
+		Map<String, String> generalDataMap = new HashMap<String, String>();
 		for (GeneralData item : categoryItems) {
-			generalDataMap.put(getGeneralDataString(item.getGeneralName()), item.getGeneralValue());
+			generalDataMap.put(item.getGeneralName(), item.getGeneralValue());
 		}
 		return generalDataMap;
 	}
@@ -95,26 +99,17 @@ public class MainController {
 		return generalInt;
 	}
 	
-	private double getGeneralDataDouble(String generalName) {
-		String generalValue =  getGeneralDataString(generalName);
-		double generalDouble = 0.0;
-		try {
-			generalDouble = Double.parseDouble(generalValue);
-		}
-		catch (NumberFormatException e) {
-			System.out.println(e.getMessage());
-		}
-		return generalDouble;
-	}
-	
-	public HashMap<String, String> getPaymentInfo() {
-		List<GeneralData> paymentItems = generalDataService.getListByCategory("paymentInfo");
-		HashMap<String, String> paymentDataMap = new HashMap<String, String>();
-		for (GeneralData item : paymentItems) {
-			paymentDataMap.put(getGeneralDataString(item.getGeneralName()), item.getGeneralValue());
-		}
-		return paymentDataMap;
-	}
+//	private double getGeneralDataDouble(String generalName) {
+//		String generalValue =  getGeneralDataString(generalName);
+//		double generalDouble = 0.0;
+//		try {
+//			generalDouble = Double.parseDouble(generalValue);
+//		}
+//		catch (NumberFormatException e) {
+//			System.out.println(e.getMessage());
+//		}
+//		return generalDouble;
+//	}
 
 	private	List<String> getNavMenuItems() {
 		if (getGeneralDataInteger("showOosEverywhere") == 1) {
@@ -143,6 +138,11 @@ public class MainController {
 		else return null;
 	}
 	
+	private List<PaymentInfo> listPaymentInfo() {
+		List<PaymentInfo> payTypes = paymentInfoService.listAll();
+		return payTypes;
+	}
+	
 	// Possibly update with optional argument that indicates link was /addtoCart and change message appropriately
 	// to indicate something like "Available quantity changed to x. x added to cart." Something like that
 	private String updateCartChanges() {
@@ -156,6 +156,18 @@ public class MainController {
 		int i = 0;
 		while (i < cartItems.size()) {
 			Product checkedProduct = productService.get(cartItems.get(i).getProduct().getUpc());
+
+			// Check for price differences
+			float cartPrice = cartItems.get(i).getPrice();
+			if (cartPrice != checkedProduct.getCurrentPrice()) {
+				error += (error.isEmpty() ? "Notice: " : "") + "The price of " + checkedProduct.getDescription() + " has changed from $"
+						+ String.format("%.2f", cartItems.get(i).getPrice()) + " to $" + String.format("%.2f", checkedProduct.getCurrentPrice())
+						+ "  since it was added to your cart.<br/>";
+				cartItems.get(i).setPrice(checkedProduct.getCurrentPrice());
+				cartDetailService.save(cartItems.get(i));	// Will overwrite any previous cartDetail with same composite key (cartId/upc)
+			}
+
+			// Check for stock availability changes
 			int diff = cartItems.get(i).getQty() - checkedProduct.getStockQty();
 			if (diff > 0) {
 				if (checkedProduct.getStockQty() == 0) {
@@ -167,14 +179,6 @@ public class MainController {
 				}
 				else {
 					cartItems.get(i).setQty(checkedProduct.getStockQty());	// Set cart qty to available qty
-					cartDetailService.save(cartItems.get(i));	// Will overwrite any previous cartDetail with same composite key (cartId/upc)
-				}
-				float cartPrice = cartItems.get(i).getPrice();
-				if (cartPrice != checkedProduct.getCurrentPrice()) {
-					error += (error.isEmpty() ? "Notice: " : "") + "The price of " + checkedProduct.getDescription() + " has changed from $"
-							+ String.format("%.2f", cartItems.get(i).getPrice()) + " to $" + String.format("%.2f", checkedProduct.getCurrentPrice())
-							+ "  since it was added to your cart.<br/>";
-					cartItems.get(i).setPrice(checkedProduct.getCurrentPrice());
 					cartDetailService.save(cartItems.get(i));	// Will overwrite any previous cartDetail with same composite key (cartId/upc)
 				}
 				error += (error.isEmpty() ? "Notice: " : "") + "The available qty of " + checkedProduct.getDescription() + " has changed. "
@@ -1236,12 +1240,7 @@ public class MainController {
 			model.addAttribute("customerOrder", customerOrder);
 			model.addAttribute("listStates", listStates);
 			model.addAttribute("listPayTypes", listPayTypes);
-			// These should be a list like listPayTypes so that they can be variable
-			model.addAttribute("payHandleCashApp", getGeneralDataString("payHandleCashApp"));
-			model.addAttribute("payHandlePayPal", getGeneralDataString("payHandlePayPal"));
-			model.addAttribute("payHandleVenmo", getGeneralDataString("payHandleVenmo"));
-			model.addAttribute("payHandleZelle", getGeneralDataString("payHandleZelle"));
-			model.addAttribute("payHandlePayPalMe", getGeneralDataString("payHandlePayPalMe"));
+			model.addAttribute("listPaymentInfo", listPaymentInfo());
 			return "confirmation";
 		}
 	}
@@ -1424,11 +1423,7 @@ public class MainController {
 			model.addAttribute("customerOrder", customerOrder);
 			model.addAttribute("listStates", listStates);
 			model.addAttribute("listPayTypes", listPayTypes);
-			model.addAttribute("payHandleCashApp", getGeneralDataString("payHandleCashApp"));
-			model.addAttribute("payHandlePayPal", getGeneralDataString("payHandlePayPal"));
-			model.addAttribute("payHandleVenmo", getGeneralDataString("payHandleVenmo"));
-			model.addAttribute("payHandleZelle", getGeneralDataString("payHandleZelle"));
-			model.addAttribute("payHandlePayPalMe", getGeneralDataString("payHandlePayPalMe"));
+			model.addAttribute("listPaymentInfo", listPaymentInfo());
 			return "confirmation";
 		}
 	}

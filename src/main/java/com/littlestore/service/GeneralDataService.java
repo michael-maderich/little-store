@@ -21,8 +21,8 @@ public class GeneralDataService {
 		return (List<GeneralData>) repo.findAll();
 	}
 
-	public List<GeneralData> getListByCategory(String category) {
-		return repo.findAllByCategory(category);
+	public List<GeneralData> findByCategory(String generalCategory) {
+		return repo.findByGeneralCategory(generalCategory);
 	}
 
 	public String getGeneralData(String generalName) {
