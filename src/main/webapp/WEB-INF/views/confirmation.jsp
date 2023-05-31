@@ -45,7 +45,7 @@
  							<td class="payment_td_label" style="width:6em">
  								<label for="name">${payMethod.name}:</label>
  							</td>
- 							<td class="payment_td_label" style="padding-left:.5em">
+ 							<td class="payment_td_value" style="padding-left:.5em">
 								<c:if test="${payMethod.link == null}">
 								${payMethod.handle}
 								</c:if>

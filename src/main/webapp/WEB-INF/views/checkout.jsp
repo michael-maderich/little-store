@@ -107,7 +107,7 @@
 								<label for="paymentHandle">Payment Handle:</label>
 							</td>
 							<td colspan=2 class="customer_td_input">
-								<form:input path="paymentHandle" type="text" id="paymentHandle" placeholder="$CashTag, @Venmo, etc (if relevant)" class="text-field"></form:input>
+								<form:input path="paymentHandle" type="text" id="paymentHandle" placeholder="$CashTag, @Venmo, etc (if paying ahead)" class="text-field"></form:input>
 							</td>
 						</tr>
 					</table>

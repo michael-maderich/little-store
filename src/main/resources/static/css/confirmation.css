@@ -68,10 +68,6 @@
 #payment-table {
 	margin:0 auto;
 	margin-top:2em;
-	background-color:white;
-}
-#payment-table td {
-	border:1px solid black;
 }
 .payment_td_label {
 	text-align:right;
@@ -92,7 +88,7 @@ button {margin-top: 1.5em;}
 
 #customer-panel input, #customer-panel select {
     margin-bottom:.5em;
-    background-color:white;
+/*    background-color:white;*/
     color:black;
 }
 #customer-panel input::placeholder {
@@ -117,3 +113,6 @@ button {margin-top: 1.5em;}
 	font-size:.75em;
 }
 #city {width:13em;}
+.info-field {
+    width:15rem;
+}
