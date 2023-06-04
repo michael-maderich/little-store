@@ -216,6 +216,9 @@ public class MainController {
 		float cartTotalItemCost = 0.0f;
 		Customer customer = getLoggedInUser();
 		if (customer != null) {										// If a User is logged in, get their cart, (or null if it doesn't exist)
+			customer.setLastVisited(LocalDateTime.now().minusHours(5));
+			customerService.update(customer);
+
 			Cart customerCart = cartService.findByCustomerEmail(customer.getEmail());
 			if (customerCart != null)
 			{		// If they have a cart, fill cartItems with their cart item quantities
@@ -1051,7 +1054,6 @@ public class MainController {
 			customer.setState(customerUpdates.getState());
 			customer.setPreferredPayment(customerUpdates.getPreferredPayment());
 			customer.setPaymentHandle(customerUpdates.getPaymentHandle().trim().isEmpty() ? null : customerUpdates.getPaymentHandle().trim());
-			customer.setLastVisited(LocalDateTime.now().minusHours(5));
 			customerService.update(customer);
 
 			// Convert cart to Order and delete Cart

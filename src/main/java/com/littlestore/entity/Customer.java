@@ -85,6 +85,10 @@ public class Customer implements Serializable {
 	@Column(name="accountCreated", nullable=false)
 	private LocalDateTime accountCreated;
 	
+	@Basic
+	@Column(name="emailSub", nullable=false, columnDefinition="boolean default true")	// Set to false if user account is deleted or disabled by admin
+	private Boolean emailSub;
+	
  /*   @ManyToMany 
     @JoinTable(name = "customer_role",
     	joinColumns = @JoinColumn(name = "customerId", referencedColumnName = "id"), 
@@ -96,9 +100,9 @@ public class Customer implements Serializable {
     public Customer() {
 	}
 
-	public Customer(int id, String email, String password, String firstName, String lastName, String phone,
-			String address, String city, States state, PaymentMethods preferredPayment, String paymentHandle,
-			Set<Role> role, Boolean isEnabled) {
+	public Customer(int id, String email, String password, String passwordConfirm, String firstName, String lastName,
+			String phone, String address, String city, States state, PaymentMethods preferredPayment, String paymentHandle,
+			Boolean isEnabled, LocalDateTime lastVisited, LocalDateTime accountCreated, Boolean emailSub, Set<Role> role) {
 		this.id = id;
 		this.email = email;
 		this.password = password;
@@ -110,10 +114,12 @@ public class Customer implements Serializable {
 		this.state = state;
 		this.preferredPayment = preferredPayment;
 		this.paymentHandle = paymentHandle;
-		this.role = role;
 		this.isEnabled = isEnabled;
+		this.lastVisited = lastVisited;
+		this.accountCreated = accountCreated;
+		this.emailSub = emailSub;
+		this.role = role;
 	}
-
 
 	public int getId() {
 		return id;
@@ -199,13 +205,6 @@ public class Customer implements Serializable {
 		this.paymentHandle = paymentHandle;
 	}
 
-	public Set<Role> getRole() {
-		return role;
-	}
-	public void setRole(Set<Role> role) {
-		this.role = (HashSet<Role>) role;
-	}
-
 	public Boolean getIsEnabled() {
 		return isEnabled;
 	}
@@ -217,7 +216,6 @@ public class Customer implements Serializable {
 	public LocalDateTime getLastVisited() {
 		return lastVisited;
 	}
-
 	public void setLastVisited(LocalDateTime lastVisited) {
 		this.lastVisited = lastVisited;
 	}
@@ -225,9 +223,22 @@ public class Customer implements Serializable {
 	public LocalDateTime getAccountCreated() {
 		return accountCreated;
 	}
-
 	public void setAccountCreated(LocalDateTime accountCreated) {
 		this.accountCreated = accountCreated;
+	}
+
+	public Boolean getEmailSub() {
+		return emailSub;
+	}
+	public void setEmailSub(Boolean emailSub) {
+		this.emailSub = emailSub;
+	}
+
+	public Set<Role> getRole() {
+		return role;
+	}
+	public void setRole(Set<Role> role) {
+		this.role = (HashSet<Role>) role;
 	}
 
 	@Override
@@ -239,20 +250,20 @@ public class Customer implements Serializable {
 				+ "]";
 	}
 
-	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + ((accountCreated == null) ? 0 : accountCreated.hashCode());
 		result = prime * result + ((address == null) ? 0 : address.hashCode());
 		result = prime * result + ((city == null) ? 0 : city.hashCode());
 		result = prime * result + ((email == null) ? 0 : email.hashCode());
+		result = prime * result + ((emailSub == null) ? 0 : emailSub.hashCode());
 		result = prime * result + ((firstName == null) ? 0 : firstName.hashCode());
 		result = prime * result + id;
 		result = prime * result + ((isEnabled == null) ? 0 : isEnabled.hashCode());
 		result = prime * result + ((lastName == null) ? 0 : lastName.hashCode());
-		result = prime * result + ((password == null) ? 0 : password.hashCode());
-		result = prime * result + ((passwordConfirm == null) ? 0 : passwordConfirm.hashCode());
+		result = prime * result + ((lastVisited == null) ? 0 : lastVisited.hashCode());
 		result = prime * result + ((paymentHandle == null) ? 0 : paymentHandle.hashCode());
 		result = prime * result + ((phone == null) ? 0 : phone.hashCode());
 		result = prime * result + ((preferredPayment == null) ? 0 : preferredPayment.hashCode());
@@ -265,11 +276,14 @@ public class Customer implements Serializable {
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
+		if (!(obj instanceof Customer))
 			return false;
 		Customer other = (Customer) obj;
+		if (accountCreated == null) {
+			if (other.accountCreated != null)
+				return false;
+		} else if (!accountCreated.equals(other.accountCreated))
+			return false;
 		if (address == null) {
 			if (other.address != null)
 				return false;
@@ -284,6 +298,11 @@ public class Customer implements Serializable {
 			if (other.email != null)
 				return false;
 		} else if (!email.equals(other.email))
+			return false;
+		if (emailSub == null) {
+			if (other.emailSub != null)
+				return false;
+		} else if (!emailSub.equals(other.emailSub))
 			return false;
 		if (firstName == null) {
 			if (other.firstName != null)
@@ -302,15 +321,10 @@ public class Customer implements Serializable {
 				return false;
 		} else if (!lastName.equals(other.lastName))
 			return false;
-		if (password == null) {
-			if (other.password != null)
+		if (lastVisited == null) {
+			if (other.lastVisited != null)
 				return false;
-		} else if (!password.equals(other.password))
-			return false;
-		if (passwordConfirm == null) {
-			if (other.passwordConfirm != null)
-				return false;
-		} else if (!passwordConfirm.equals(other.passwordConfirm))
+		} else if (!lastVisited.equals(other.lastVisited))
 			return false;
 		if (paymentHandle == null) {
 			if (other.paymentHandle != null)
@@ -322,20 +336,13 @@ public class Customer implements Serializable {
 				return false;
 		} else if (!phone.equals(other.phone))
 			return false;
-		if (preferredPayment == null) {
-			if (other.preferredPayment != null)
-				return false;
-		} else if (!preferredPayment.equals(other.preferredPayment))
+		if (preferredPayment != other.preferredPayment)
 			return false;
 		if (role == null) {
 			if (other.role != null)
 				return false;
-		} /*else {
-			for (Role r : role) {
-				if (!(other.role..contains(r)))
-					return false;
-			}
-		}*/
+		} else if (!role.equals(other.role))
+			return false;
 		if (state != other.state)
 			return false;
 		return true;
