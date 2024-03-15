@@ -24,7 +24,7 @@
  			<div id="center-content">
 				<div id="product-panel">
 					<h2>Search Results</h2>
-					<div class="itemsHeader"><br/><h4>${empty itemList ? 'No Results Found!' : '\"'.concat(searchText).concat('\"')}</h4></div>
+					<div class="itemsHeader"><br/><h4>${empty itemList ? '\"'.concat(searchText).concat('\"').concat('<br/>No Results Found!') : '\"'.concat(searchText).concat('\"')}</h4></div>
 					${empty cartAdjustments ? '' : '<div class="cartChangeMsg"><br/><span style="color:red;">'.concat(cartAdjustments).concat('</span></div>')}
 				<c:if test = "${not empty itemList}">
 					<table id="product-table">

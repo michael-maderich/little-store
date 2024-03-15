@@ -216,7 +216,7 @@ public class MainController {
 		float cartTotalItemCost = 0.0f;
 		Customer customer = getLoggedInUser();
 		if (customer != null) {										// If a User is logged in, get their cart, (or null if it doesn't exist)
-			customer.setLastVisited(LocalDateTime.now().minusHours(5));
+//			customer.setLastVisited(LocalDateTime.now().minusHours(5));
 			customerService.update(customer);
 
 			Cart customerCart = cartService.findByCustomerEmail(customer.getEmail());
@@ -729,6 +729,7 @@ public class MainController {
 	public String itemSearch(Model model, @RequestParam(value = "q", defaultValue="") String searchText,
 							@RequestParam(value = "addedUpc", defaultValue="") String addedUpc,
 							@RequestParam(value = "addedItemQty", defaultValue="0") String addedItemQty) {
+		searchText = searchText.trim();		// Remove outer whitespace from search query
 		List<Product> itemList = productService.getSearchResults(searchText);
 		String cartAdjustments = null;
 		int cartTotalItemQty = 0;
@@ -1237,6 +1238,8 @@ public class MainController {
 			// Send order notification to printer
 //			new SendSimpleEmail("jamitinmybox@hpeprint.com", "New Order Received", emailBody);
 
+			// Set last visited as last order time
+			customer.setLastVisited(LocalDateTime.now().minusHours(5));
 			
 			model.addAttribute("customerInfo", customer);
 			model.addAttribute("customerOrder", customerOrder);
