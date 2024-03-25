@@ -50,7 +50,7 @@
 								<td class="product_info">${item.options}</td>
 								<td class="product_info">${item.size}</td>
 								<td class="product_info">${item.currentPrice < item.basePrice ? '<span style="color:green">':''}<fmt:formatNumber value = "${item.currentPrice}" type = "currency" />${item.currentPrice < item.basePrice ? '</span>':''}
-														${item.currentPrice < item.basePrice ? '<br /><span style="text-decoration:line-through">':'<span visible="false"'}<fmt:formatNumber value = "${item.basePrice}" type = "currency" />${item.currentPrice < item.basePrice ? '</span>':'</span>'}</td>
+														 ${item.currentPrice < item.basePrice ? '<br /><span style="text-decoration:line-through">':'<span visible="false"'}<fmt:formatNumber value = "${item.basePrice}" type = "currency" />${item.currentPrice < item.basePrice ? '</span>':'</span>'}</td>
 								<td class="product_info">${(item.purchaseLimit != 0 and item.purchaseLimit < item.stockQty) ? item.purchaseLimit : item.stockQty}</td>
 								<td class="customerQty product_info">
 									<input type="hidden" id="upc${item.upc}" name="upc" value="${item.upc}" />

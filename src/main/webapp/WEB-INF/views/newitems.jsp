@@ -44,7 +44,7 @@
 						<tbody>
 						<c:forEach items="${itemList}" var="item">
 						<form action="/addToCart" method="GET">
-							<tr ${item.stockQty==0 ? 'class="inactive"' : ''}>
+							<tr id="${item.upc}" ${item.stockQty==0 ? 'class="inactive"' : ''}>
 								<td class="product_image_panel product_info"><a href="${item.image}" target="_new"><img src="${item.image}" alt="${item.description}" title="${item.description}" /></a></td>
 								<td class="product_info">${item.name}</td>
 								<td class="product_info">${item.options}</td>

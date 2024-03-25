@@ -99,17 +99,17 @@ public class MainController {
 		return generalInt;
 	}
 	
-//	private double getGeneralDataDouble(String generalName) {
-//		String generalValue =  getGeneralDataString(generalName);
-//		double generalDouble = 0.0;
-//		try {
-//			generalDouble = Double.parseDouble(generalValue);
-//		}
-//		catch (NumberFormatException e) {
-//			System.out.println(e.getMessage());
-//		}
-//		return generalDouble;
-//	}
+	private double getGeneralDataDouble(String generalName) {
+		String generalValue =  getGeneralDataString(generalName);
+		double generalDouble = 0.0;
+		try {
+			generalDouble = Double.parseDouble(generalValue);
+		}
+		catch (NumberFormatException e) {
+			System.out.println(e.getMessage());
+		}
+		return generalDouble;
+	}
 
 	private	List<String> getNavMenuItems() {
 		if (getGeneralDataInteger("showOosEverywhere") == 1) {
@@ -779,7 +779,7 @@ public class MainController {
 		else {
 			referer = referer.substring( referer.indexOf('/', referer.indexOf('/')+2) );		// everything after root '/', including the /
 			referer = referer.substring(0, (referer.indexOf('?') != -1) ? referer.indexOf('?') : referer.length());	// remove the query string if exists
-			if (!( referer.startsWith("/category") || referer.startsWith("/newitems")
+			if (!( referer.startsWith("/category") || referer.startsWith("/newitems") || referer.startsWith("/favorites")
 				|| referer.startsWith("/dollarama") || referer.startsWith("/search") || referer.startsWith("/sale") ))
 				return "redirect:"+referer;
 		}
@@ -855,8 +855,8 @@ public class MainController {
 			model.addAttribute("showTotalInHeader", getGeneralDataInteger("showTotalInHeader"));
 			model.addAttribute("customerCart", customerCart);
 			model.addAttribute("searchText", searchText);
-			return !referer.startsWith("/search") ? "redirect:" + referer+"?addedUpc="+upc+"&addedItemQty="+addedItemQty
-												  : "redirect:" + referer + "?q=" + searchText +"&addedUpc="+upc+"&addedItemQty="+addedItemQty;
+			return !referer.startsWith("/search") ? "redirect:" + referer + "?addedUpc=" + upc + "&addedItemQty=" + addedItemQty + "#" + upc
+												  : "redirect:" + referer + "?q=" + searchText + "&addedUpc=" + upc + "&addedItemQty=" + addedItemQty + "#" + upc;
 		}
 	}
 
@@ -866,6 +866,7 @@ public class MainController {
 		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
 		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
+		model.addAttribute("orderMinimum", getGeneralDataDouble("orderMinimum"));
 		String cartAdjustments;
 		Cart customerCart;
 		int cartTotalItemQty = 0;
