@@ -18,13 +18,10 @@
 <jsp:include page="basicHeader.jsp"></jsp:include>
 		</header>
 		<div id="main-content">
-            <div id="side-nav">
-                <ul class="nav flex-column">
-                    <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/account">My Account</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/index">Continue Shopping</a></li>
-                </ul>
-            </div>
+<jsp:include page="sideNav.jsp">
+	<jsp:param name="categoryName" value="${categoryName}" />
+	<jsp:param name="subCatName" value="${subCategoryName}" />
+</jsp:include>
 			<div id="center-content">
 				<div id="cart-panel">
                     <h2>Shopping Cart</h2>
