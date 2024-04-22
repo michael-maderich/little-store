@@ -79,7 +79,15 @@
 								<td>
 								<form action="${cartTotal!=0 ? '/checkout' : '/'}"><!-- method="POST" modelAttribute="customerCart"-->
 									<button type="submit" class="btn btn-sm btn-primary btn-block highlighted" ${cartTotal < orderMinimum ? 'disabled' : ''}>
-										${cartTotal==0 ? 'Continue Shopping' : cartTotal < orderMinimum ? '$20 Order<br />Minimum' : 'Proceed to<br />Check Out'}
+										<c:if test = "${cartTotal ==0}">
+										Continue Shopping
+										</c:if>
+										<c:if test = "${cartTotal < orderMinimum}">
+										<fmt:formatNumber value = "${orderMinimum}" type = "currency" /> Order<br />Minimum
+										</c:if>
+										<c:if test = "${cartTotal >= orderMinimum}">
+										Proceed to<br />Check Out
+										</c:if>
 									</button>
 								</form>
 								</td>

@@ -216,7 +216,7 @@ public class MainController {
 		float cartTotalItemCost = 0.0f;
 		Customer customer = getLoggedInUser();
 		if (customer != null) {										// If a User is logged in, get their cart, (or null if it doesn't exist)
-//			customer.setLastVisited(LocalDateTime.now().minusHours(5));
+			customer.setLastVisited(LocalDateTime.now().minusHours(5));
 			customerService.update(customer);
 
 			Cart customerCart = cartService.findByCustomerEmail(customer.getEmail());
@@ -867,11 +867,12 @@ public class MainController {
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
 		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
 		model.addAttribute("orderMinimum", getGeneralDataDouble("orderMinimum"));
+
+		Customer customer = getLoggedInUser();
 		String cartAdjustments;
 		Cart customerCart;
 		int cartTotalItemQty = 0;
 		float cartTotalItemCost = 0.0f;
-		Customer customer = getLoggedInUser();
 		if (customer == null) {				// Can't view cart if not logged in, for now. Direct user to log in/sign up
 			model.addAttribute("error", "You must be logged in to view your cart.");
 			return "redirect:/login";
@@ -883,6 +884,7 @@ public class MainController {
 				model.addAttribute("customerCart", null);
 				return "/cart";
 			}
+			// Update any items with stock or price changes
 			cartAdjustments = updateCartChanges();
 			List<CartDetail> cartItems = customerCart.getCartItems();
 			Collections.sort(cartItems);			// CartDetail entity contains compareTo() method
@@ -910,8 +912,10 @@ public class MainController {
 		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
 		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
+		model.addAttribute("orderMinimum", getGeneralDataDouble("orderMinimum"));
 
 		Customer customer = getLoggedInUser();
+		String cartAdjustments;
 		Cart customerCart;
 		int cartTotalItemQty = 0;
 		float cartTotalItemCost = 0.0f;
@@ -946,7 +950,13 @@ public class MainController {
 			if (cartItems.isEmpty()) cartService.delete(customerCart);	// If customer empties cart and comes back later, we want creation time to reset
 			else cartService.save(customerCart);
 //			removedProduct.setStockQty(removedProduct.getStockQty() + removedLineItem.getQty());	// Return deleted items back to available stock
-/**/		System.out.println(customerCart);
+/**/		System.out.println("Customer removed item from cart. " + customerCart);
+
+			// After removal, check remaining cart items for stock/price changes
+			cartAdjustments = updateCartChanges();
+			cartItems = customerCart.getCartItems();
+			Collections.sort(cartItems);			// CartDetail entity contains compareTo() method
+			customerCart.setCartItems(cartItems);
 
 			for (CartDetail detail : cartItems) {
 				cartTotalItemQty += detail.getQty();
@@ -957,7 +967,8 @@ public class MainController {
 			model.addAttribute("cartTotalItemCost", cartTotalItemCost);
 			model.addAttribute("showTotalInHeader", getGeneralDataInteger("showTotalInHeader"));
 			model.addAttribute("customer", customer);
-			model.addAttribute("customerCart", customerCart);	
+			model.addAttribute("customerCart", customerCart);
+			model.addAttribute("cartAdjustments", cartAdjustments);
 			return "/cart";
 		}
 	}
@@ -1056,6 +1067,7 @@ public class MainController {
 			customer.setState(customerUpdates.getState());
 			customer.setPreferredPayment(customerUpdates.getPreferredPayment());
 			customer.setPaymentHandle(customerUpdates.getPaymentHandle().trim().isEmpty() ? null : customerUpdates.getPaymentHandle().trim());
+			customer.setLastOrdered(LocalDateTime.now().minusHours(5));			// Set last order time for determining New Items
 			customerService.update(customer);
 
 			// Convert cart to Order and delete Cart
@@ -1076,6 +1088,8 @@ public class MainController {
 				OrderDetail lineItem = new OrderDetail();
 				lineItem.setOrder(customerOrder);
 				lineItem.setProduct(item.getProduct());		//(product);
+				lineItem.setDescription(item.getProduct().getDescription());
+				lineItem.setImage(item.getProduct().getImage());
 				lineItem.setQty(item.getQty());
 				lineItem.setPrice(item.getPrice());
 				lineItem.setLineNumber(lineNum++);
@@ -1238,9 +1252,6 @@ public class MainController {
 //			new SendSimpleEmail(getGeneralDataString("receiverEmail"), "New Order Received", emailBody);
 			// Send order notification to printer
 //			new SendSimpleEmail("jamitinmybox@hpeprint.com", "New Order Received", emailBody);
-
-			// Set last visited as last order time
-			customer.setLastVisited(LocalDateTime.now().minusHours(5));
 			
 			model.addAttribute("customerInfo", customer);
 			model.addAttribute("customerOrder", customerOrder);
@@ -1272,8 +1283,13 @@ public class MainController {
 				model.addAttribute("error", "Order number not found for user " + email + ".");
 				return "/login";
 			}
+
+			if (customerOrder.getCustomer().getId() != customer.getId()) {
+				model.addAttribute("error", "Order number not found for user " + email + ".");
+				return "/login";
+			}
 			
-			// Add each Cart Detail to Order Detail table
+			// Add each Order Detail to Order Detail table
 			List<OrderDetail> orderItems = customerOrder.getOrderItems();
 			Collections.sort(orderItems);
 

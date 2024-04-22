@@ -4,6 +4,8 @@
 	font-weight:bold;
 }
 
+#submitBtn {width: 12rem; height: 3.5rem; font-size: 1.5rem;}
+
 #checkout-panel {padding-bottom:1em;}
 #checkout-panel h2, #checkout-panel h4 {
 	font-family: 'Gravitas One', Verdana, Geneva, Tahoma, sans-serif;

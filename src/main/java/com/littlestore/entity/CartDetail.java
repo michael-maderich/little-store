@@ -103,5 +103,4 @@ public class CartDetail implements Serializable, Comparable<CartDetail> {
 		if (compare == 0) compare = getProduct().getOptions().compareTo(o.getProduct().getOptions());
 		return compare;
 	}
-	
 }

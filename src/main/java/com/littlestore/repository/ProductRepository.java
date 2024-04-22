@@ -16,7 +16,7 @@ public interface ProductRepository extends CrudRepository<Product, String>, JpaS
             + " OR p.description LIKE '%' || :keyword || '%'")
     public List<Product> findByName(@Param("keyword") String keyword);
 	
-	@Query(value = "SELECT p FROM Product p JOIN Customer c ON p.dateAdded > c.lastVisited WHERE c.id = :customerNum ORDER BY p.categoryMain ASC, p.categorySpecific ASC, p.name ASC, p.size DESC, p.options ASC")
+	@Query(value = "SELECT p FROM Product p JOIN Customer c ON p.dateAdded > c.lastOrdered WHERE c.id = :customerNum ORDER BY p.categoryMain ASC, p.categorySpecific ASC, p.name ASC, p.size DESC, p.options ASC")
 	public List<Product> getNewItems(@Param("customerNum") int customerNumber);
 	
 	@Query(value = "SELECT p FROM Product p WHERE p.currentPrice <= 1.00 AND p.stockQty > 0 ORDER BY p.categoryMain ASC, p.categorySpecific ASC, p.name ASC, p.size DESC, p.options ASC")

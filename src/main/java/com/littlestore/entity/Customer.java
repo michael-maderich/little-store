@@ -82,6 +82,10 @@ public class Customer implements Serializable {
 	private LocalDateTime lastVisited;
 	
 	@Basic
+	@Column(name="lastOrdered", nullable=true)
+	private LocalDateTime lastOrdered;
+	
+	@Basic
 	@Column(name="accountCreated", nullable=false)
 	private LocalDateTime accountCreated;
 	
@@ -102,7 +106,7 @@ public class Customer implements Serializable {
 
 	public Customer(int id, String email, String password, String passwordConfirm, String firstName, String lastName,
 			String phone, String address, String city, States state, PaymentMethods preferredPayment, String paymentHandle,
-			Boolean isEnabled, LocalDateTime lastVisited, LocalDateTime accountCreated, Boolean emailSub, Set<Role> role) {
+			Boolean isEnabled, LocalDateTime lastVisited, LocalDateTime lastOrdered, LocalDateTime accountCreated, Boolean emailSub, Set<Role> role) {
 		this.id = id;
 		this.email = email;
 		this.password = password;
@@ -116,6 +120,7 @@ public class Customer implements Serializable {
 		this.paymentHandle = paymentHandle;
 		this.isEnabled = isEnabled;
 		this.lastVisited = lastVisited;
+		this.lastOrdered = lastOrdered;
 		this.accountCreated = accountCreated;
 		this.emailSub = emailSub;
 		this.role = role;
@@ -220,6 +225,13 @@ public class Customer implements Serializable {
 		this.lastVisited = lastVisited;
 	}
 
+	public LocalDateTime getLastOrdered() {
+		return lastOrdered;
+	}
+	public void setLastOrdered(LocalDateTime lastOrdered) {
+		this.lastOrdered = lastOrdered;
+	}
+
 	public LocalDateTime getAccountCreated() {
 		return accountCreated;
 	}
@@ -264,6 +276,7 @@ public class Customer implements Serializable {
 		result = prime * result + ((isEnabled == null) ? 0 : isEnabled.hashCode());
 		result = prime * result + ((lastName == null) ? 0 : lastName.hashCode());
 		result = prime * result + ((lastVisited == null) ? 0 : lastVisited.hashCode());
+		result = prime * result + ((lastOrdered == null) ? 0 : lastOrdered.hashCode());
 		result = prime * result + ((paymentHandle == null) ? 0 : paymentHandle.hashCode());
 		result = prime * result + ((phone == null) ? 0 : phone.hashCode());
 		result = prime * result + ((preferredPayment == null) ? 0 : preferredPayment.hashCode());
@@ -325,6 +338,11 @@ public class Customer implements Serializable {
 			if (other.lastVisited != null)
 				return false;
 		} else if (!lastVisited.equals(other.lastVisited))
+			return false;
+		if (lastOrdered == null) {
+			if (other.lastOrdered != null)
+				return false;
+		} else if (!lastOrdered.equals(other.lastOrdered))
 			return false;
 		if (paymentHandle == null) {
 			if (other.paymentHandle != null)
