@@ -1098,6 +1098,7 @@ public class MainController {
 				lineItem.setDescription(item.getProduct().getDescription());
 				lineItem.setImage(item.getProduct().getImage());
 				lineItem.setQty(item.getQty());
+				lineItem.setQtyFulfilled(item.getQty());	// Set fulfilled qty to ordered qty by default
 				lineItem.setPrice(item.getPrice());
 				lineItem.setLineNumber(lineNum++);
 				orderItems.add(lineItem);
