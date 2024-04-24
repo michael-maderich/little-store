@@ -16,7 +16,7 @@ import java.util.Set;
 import java.util.HashSet;
 
 @Service
-public class UserDetailsServiceImpl implements UserDetailsService{
+public class UserDetailsServiceImpl implements UserDetailsService {
 
 	@Autowired
 	private CustomerService customerService;

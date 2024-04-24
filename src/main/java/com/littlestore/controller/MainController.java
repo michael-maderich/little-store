@@ -481,7 +481,14 @@ public class MainController {
 				model.addAttribute("showTotalInHeader", getGeneralDataInteger("showTotalInHeader"));
 			}
 			model.addAttribute("customer", customer);
+
 			List<Order> orderList = orderService.findByCustomer(customer);
+			for (Order order : orderList) {
+				List<OrderDetail> orderItems = new ArrayList<>(order.getOrderItems());
+				Collections.sort(orderItems);			// OrderDetail entity contains compareTo() method. List sorted for better order history display
+				order.setOrderItems(orderItems);
+//				orderService.save(order);
+			}
 			Collections.reverse(orderList);	// Show most recent order first
 			model.addAttribute("orderList", orderList);
 			return "/order";

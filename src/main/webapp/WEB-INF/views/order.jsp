@@ -29,7 +29,7 @@
 					<h2>Order History</h2>
 					${empty orderList ? '<div class="orderDetailHeader"><h4>No Orders to Display</h4></div>' : ''}
 				<c:if test = "${not empty orderList}">
-					<c:forEach items="${orderList}" var="order">	<c:set var="orderTotal" value="${0}" />
+					<c:forEach items="${orderList}" var="order">	<c:set var="orderTotal" value="${0}" />	<c:set var="orderFulfilledTotal" value="${0}" />
 					<div class="orderDetailHeader"><h4>
 						<span>Order #${order.orderNum}</span>
 						<span>Order Date:
@@ -56,10 +56,15 @@
 								<td>${orderItem.product.name}</td>
 								<td>${orderItem.product.options}</td>
 								<td>${orderItem.product.size}</td>
-								<td>${orderItem.qty}</td>
+								<td>${(orderItem.qtyFulfilled < orderItem.qty) ? '<span style=\"margin-left:0.25rem; margin-right:0.25rem; text-decoration: line-through; color:red\"> '.concat(orderItem.qty).concat(' </span> ').concat(orderItem.qtyFulfilled) : orderItem.qty}</td>
 								<td><fmt:formatNumber value = "${orderItem.price}" type = "currency" /></td>
-								<td><fmt:formatNumber value = "${orderItem.qty * orderItem.price}" type = "currency" /></td>
-							</tr><c:set var="orderTotal" value="${orderTotal + orderItem.qty * orderItem.price}" />
+								<td><c:if test = "${orderItem.qtyFulfilled < orderItem.qty}">
+									<span style="margin-left:0.25rem; margin-right:0.25rem; text-decoration: line-through; color:red">
+										<fmt:formatNumber value = "${orderItem.qty * orderItem.price}" type = "currency" /><br />
+									</span></c:if>
+									<fmt:formatNumber value = "${orderItem.qtyFulfilled * orderItem.price}" type = "currency" />
+								</td>
+							</tr><c:set var="orderTotal" value="${orderTotal + orderItem.qty * orderItem.price}" /><c:set var="orderFulfilledTotal" value="${orderFulfilledTotal + orderItem.qtyFulfilled * orderItem.price}" />
 						</c:forEach></tbody>
 						<tfoot>
 							<tr>
@@ -69,7 +74,14 @@
 								<td></td>
 								<td></td>
 								<td class="order_subtotal_panel">Total:</td>
-								<td class="order_subtotal_panel"><fmt:formatNumber value = "${orderTotal}" type = "currency" /></td>
+								<td class="order_subtotal_panel">
+									<c:if test = "${orderFulfilledTotal < orderTotal}">
+									<span style="margin-left:0.25rem; margin-right:0.25rem; text-decoration: line-through; color:red">
+										<fmt:formatNumber value = "${orderTotal}" type = "currency" /><br />
+									</span>
+									</c:if>
+									<fmt:formatNumber value = "${orderFulfilledTotal}" type = "currency" />
+								</td>
 						</tfoot>
 					</table>
 					</c:forEach>
