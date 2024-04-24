@@ -15,49 +15,11 @@
 </jsp:include>
 	</head>
 	<body>
-		<header>
-<jsp:include page="basicHeader.jsp"></jsp:include>
-		</header>
 		<div id="main-content">
-            <div id="side-nav">
-                <ul class="nav flex-column">
-                    <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/account">Go to Account</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/index">Continue Shopping</a></li>
-                </ul>
-            </div>
 			<div id="center-content">
 				<c:if test = "${not empty customerOrder}">
 				<div id="customer-panel">
                     <h2>Thank You For Your Order!</h2>
-                    <h4 class="checkoutHeader">Payment Options</h4>
-                    <h6>You may pay ahead via any of the methods below (click-to-pay if available) or upon meet-up:</h6>
-<c:set var="paymentTotal" value="${0}" />
-<c:forEach items="${customerOrder.orderItems}" var="orderItem">
-	<c:set var="paymentTotal" value="${paymentTotal + orderItem.qty * orderItem.price}" />
-</c:forEach>
-<c:set var="pmtLinkVal"><fmt:formatNumber type="number" minFractionDigits="2" maxFractionDigits="2" value="${paymentTotal}"/></c:set>
- 					<table id="payment-table">
-<c:forEach items="${listPaymentInfo}" var="payMethod">
-<c:set var="link" value="${func:replace(payMethod.link, \"{%linkHandle}\", payMethod.linkHandle)}" />
-<c:set var="payLink" value="${func:replace(link, \"{%amount}\", pmtLinkVal)}" />
-						<tr>
- 							<td class="payment_td_label" style="width:6em">
- 								<label for="name">${payMethod.name}:</label>
- 							</td>
- 							<td class="payment_td_value" style="padding-left:.5em">
-								<c:if test="${payMethod.link == null}">
-								${payMethod.handle}
-								</c:if>
-								<c:if test="${payMethod.link != null}">
-	 							<a href="${payLink}" target="_new">
-									${payMethod.handle}
-								</a>
-								</c:if>
- 							</td>
-						</tr>
-</c:forEach>
-					</table>
                     <h4 class="checkoutHeader">Customer Details</h4>
  					<table id="customer-table">
  						<tr>
@@ -152,23 +114,33 @@
 								<th>Subtotal</th>
 							</tr>
 						</thead>
-						<tbody>
-						<c:forEach items="${customerOrder.orderItems}" var="orderItem">
+						<tbody><c:forEach items="${customerOrder.orderItems}" var="orderItem">
 							<tr>
 								<td class="checkout_image_panel"><img src="${orderItem.product.image}" alt="${orderItem.product.description}" /></td>
 								<td>${orderItem.product.name}</td>
 								<td>${orderItem.product.options}</td>
 								<td>${orderItem.product.size}</td>
-								<td>${orderItem.qty}</td>
+								<td>${(orderItem.qtyFulfilled < orderItem.qty) ? '<span style=\"margin-left:0.25rem; margin-right:0.25rem; text-decoration: line-through; color:red\"> '.concat(orderItem.qty).concat(' </span> ').concat(orderItem.qtyFulfilled) : orderItem.qty}</td>
 								<td><fmt:formatNumber value = "${orderItem.price}" type = "currency" /></td>
-								<td><fmt:formatNumber value = "${orderItem.qty * orderItem.price}" type = "currency" /></td>
-							</tr>
-							<c:set var="orderTotal" value="${orderTotal + orderItem.qty * orderItem.price}" />
+								<td><c:if test = "${orderItem.qtyFulfilled < orderItem.qty}">
+									<span style="margin-left:0.25rem; margin-right:0.25rem; text-decoration: line-through; color:red">
+										<fmt:formatNumber value = "${orderItem.qty * orderItem.price}" type = "currency" /><br />
+									</span></c:if>
+									<fmt:formatNumber value = "${orderItem.qtyFulfilled * orderItem.price}" type = "currency" />
+								</td>
+							</tr><c:set var="orderTotal" value="${orderTotal + orderItem.qty * orderItem.price}" /><c:set var="orderFulfilledTotal" value="${orderFulfilledTotal + orderItem.qtyFulfilled * orderItem.price}" />
 						</c:forEach></tbody>
 						<tfoot>
 							<tr>
 								<td  colspan=6 style="text-align:right;" class="checkout_subtotal_panel">Total:</td>
-								<td class="checkout_subtotal_panel"><fmt:formatNumber value = "${orderTotal}" type = "currency" /></td>
+								<td class="checkout_subtotal_panel">
+									<c:if test = "${orderFulfilledTotal < orderTotal}">
+									<span style="margin-left:0.25rem; margin-right:0.25rem; text-decoration: line-through; color:red">
+										<fmt:formatNumber value = "${orderTotal}" type = "currency" /><br />
+									</span>
+									</c:if>
+									<fmt:formatNumber value = "${orderFulfilledTotal}" type = "currency" />
+								</td>
 							</tr>
 						</tfoot>
 					</table>
@@ -176,8 +148,5 @@
 				</c:if>
 			</div>
 		</div>
-        <footer>
-			<jsp:include page="basicFooter.jsp"></jsp:include>
-        </footer>
 	</body>
 </html>

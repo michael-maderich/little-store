@@ -152,8 +152,7 @@
 								<th>Subtotal</th>
 							</tr>
 						</thead>
-						<tbody>
-						<c:forEach items="${customerOrder.orderItems}" var="orderItem">
+						<tbody><c:forEach items="${customerOrder.orderItems}" var="orderItem">
 							<tr>
 								<td class="checkout_image_panel"><img src="${orderItem.product.image}" alt="${orderItem.product.description}" /></td>
 								<td>${orderItem.product.name}</td>

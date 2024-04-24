@@ -1269,7 +1269,7 @@ public class MainController {
 		}
 	}
 
-	@GetMapping("/confirmation/{email}/{orderNum}")
+	@GetMapping("/resendConfirmation/{email}/{orderNum}")
 	public String resendOrderConfirmation(Model model, @PathVariable(name="email") String email, @PathVariable(name="orderNum") String orderNum) {
 		model.addAttribute("navMenuItems", getNavMenuItems());
 		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
@@ -1457,7 +1457,45 @@ public class MainController {
 		}
 	}
 
-	
+	@GetMapping("/printOrder/{email}/{orderNum}")
+	public String printOrder(Model model, @PathVariable(name="email") String email, @PathVariable(name="orderNum") String orderNum) {
+		model.addAttribute("navMenuItems", getNavMenuItems());
+		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
+		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
+		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
+		Customer customer = customerService.findByEmail(email);
+		if (customer == null) {				// Can't print order if user doesn't exist
+			model.addAttribute("error", "User email not found.");
+			return "/login";
+		}
+		else {
+			Order customerOrder = null;
+			try {
+				customerOrder = orderService.get(Integer.parseInt(orderNum));
+			}
+			catch (Exception e)
+			{
+				model.addAttribute("error", "Order number not found for user " + email + ".");
+				return "/login";
+			}
+
+			if (customerOrder.getCustomer().getId() != customer.getId()) {
+				model.addAttribute("error", "Order number not found for user " + email + ".");
+				return "/login";
+			}
+			
+			// Add each Order Detail to Order Detail table
+			List<OrderDetail> orderItems = customerOrder.getOrderItems();
+			Collections.sort(orderItems);
+
+			model.addAttribute("customerInfo", customer);
+			model.addAttribute("customerOrder", customerOrder);
+			model.addAttribute("listStates", listStates);
+			model.addAttribute("listPayTypes", listPayTypes);
+			model.addAttribute("listPaymentInfo", listPaymentInfo());
+			return "printOrder";
+		}
+	}
 	
 	
 	@GetMapping("/admin")
