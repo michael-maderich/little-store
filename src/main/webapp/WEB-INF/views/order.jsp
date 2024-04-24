@@ -57,9 +57,9 @@
 								<td>${orderItem.product.name}</td>
 								<td>${orderItem.product.options}</td>
 								<td>${orderItem.product.size}</td>
-								<td>${(orderItem.qtyFulfilled < orderItem.qty) ? '<span style=\"margin-left:0.25rem; margin-right:0.25rem; text-decoration: line-through; color:red\"> '.concat(orderItem.qty).concat(' </span> ').concat(orderItem.qtyFulfilled) : orderItem.qty}</td>
+								<td>${(orderItem.qtyFulfilled != orderItem.qty) ? '<span style=\"margin-left:0.25rem; margin-right:0.25rem; text-decoration: line-through; color:red\"> '.concat(orderItem.qty).concat(' </span> ').concat(orderItem.qtyFulfilled) : orderItem.qty}</td>
 								<td><fmt:formatNumber value = "${orderItem.price}" type = "currency" /></td>
-								<td><c:if test = "${orderItem.qtyFulfilled < orderItem.qty}">
+								<td><c:if test = "${orderItem.qtyFulfilled != orderItem.qty}">
 									<span style="margin-left:0.25rem; margin-right:0.25rem; text-decoration: line-through; color:red">
 										<fmt:formatNumber value = "${orderItem.qty * orderItem.price}" type = "currency" /><br />
 									</span></c:if>
@@ -76,7 +76,7 @@
 								<td></td>
 								<td class="order_subtotal_panel">Total:</td>
 								<td class="order_subtotal_panel">
-									<c:if test = "${orderFulfilledTotal < orderTotal}">
+									<c:if test = "${orderFulfilledTotal != orderTotal}">
 									<span style="margin-left:0.25rem; margin-right:0.25rem; text-decoration: line-through; color:red">
 										<fmt:formatNumber value = "${orderTotal}" type = "currency" /><br />
 									</span>
