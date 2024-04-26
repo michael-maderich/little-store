@@ -18,24 +18,28 @@
 <jsp:include page="basicHeader.jsp"></jsp:include>
 		</header>
 		<div id="main-content">
-            <div id="side-nav">
-                <ul class="nav flex-column">
-                    <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/cart">Back to Cart</a></li>
-                </ul>
-            </div>
+<jsp:include page="sideNav.jsp">
+	<jsp:param name="categoryName" value="${categoryName}" />
+	<jsp:param name="subCatName" value="${subCategoryName}" />
+</jsp:include>
+<!--             <div id="side-nav"> -->
+<!--                 <ul class="nav flex-column"> -->
+<!--                     <li class="nav-item"><a class="nav-link" href="/">Home</a></li> -->
+<!--                     <li class="nav-item"><a class="nav-link" href="/cart">Back to Cart</a></li> -->
+<!--                 </ul> -->
+<!--             </div> -->
 			<div id="center-content">
 				<c:if test = "${not empty customerCart}">
 				<div id="customer-panel">
                     <h2>Check Out</h2>
 					<span style="color:blue;">
-						<br />Please be sure to click the <b>Submit Order</b> button to finalize your order.
+						<br />Please be sure to click the <b>Place Your Order</b> button to finalize your order.
 						<br />You may make updates to the meet-up location and other options below.
 						<br />Email confirmations are currently not working. Once submitted, please contact me about your order to set up meetup details.
 					</span>
 					<form:form id="orderForm" method="POST" modelAttribute="customerInfo" class="form-signin" action="/confirmation">
 					<label for="submitBtn"><form:button id="submitBtn" name="submitBtn" type="submit" class="btn btn-sm btn-primary btn-block highlighted" onclick="submitForm()">
-						Submit Order
+						PLACE YOUR ORDER
 					</form:button></label>
                     <h4 class="checkoutHeader">Customer Details</h4>
 					<span>(changes will be saved to profile)</span>

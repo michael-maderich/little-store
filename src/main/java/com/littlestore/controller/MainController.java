@@ -971,6 +971,7 @@ public class MainController {
 				cartTotalItemQty += detail.getQty();
 				cartTotalItemCost += detail.getQty() * detail.getPrice();
 			}
+
 			model.addAttribute("cartTotalItemQty", cartTotalItemQty);
 			model.addAttribute("showItemQtyInHeader", getGeneralDataInteger("showItemQtyInHeader"));
 			model.addAttribute("cartTotalItemCost", cartTotalItemCost);
@@ -1024,7 +1025,11 @@ public class MainController {
 		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
 		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
+
 		String cartAdjustments = "";
+		int cartTotalItemQty = 0;
+		float cartTotalItemCost = 0.0f;
+
 		Customer customer = getLoggedInUser();
 		if (customer == null) {				// Can't check out if not logged in, for now. Direct user to log in
 			model.addAttribute("error", "Please log in to your account to check out.");
@@ -1041,6 +1046,16 @@ public class MainController {
 			cartAdjustments = updateCartChanges();
 			List<CartDetail> cartItems = customerCart.getCartItems();
 			Collections.sort(cartItems);			// CartDetail entity contains compareTo() method
+
+			for (CartDetail detail : cartItems) {
+				cartTotalItemQty += detail.getQty();
+				cartTotalItemCost += detail.getQty() * detail.getPrice();
+			}
+
+			model.addAttribute("cartTotalItemQty", cartTotalItemQty);
+			model.addAttribute("showItemQtyInHeader", getGeneralDataInteger("showItemQtyInHeader"));
+			model.addAttribute("cartTotalItemCost", cartTotalItemCost);
+			model.addAttribute("showTotalInHeader", getGeneralDataInteger("showTotalInHeader"));
 			model.addAttribute("customerInfo", customer);
 			model.addAttribute("customerCart", customerCart);
 			model.addAttribute("cartAdjustments", cartAdjustments);
