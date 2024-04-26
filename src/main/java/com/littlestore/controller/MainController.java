@@ -66,6 +66,8 @@ public class MainController {
 	@Autowired private SecurityService securityService;
 	@Autowired private CustomerFormValidator customerFormValidator;
 	
+	private int hourDiffFromDb = 5;
+
 	private List<String> listStates = Stream.of(Customer.States.values()).map(Enum::name).collect(Collectors.toList());
 
 	private List<String> listPayTypes = Stream.of(Customer.PaymentMethods.values()).map(Enum::name).collect(Collectors.toList());
@@ -216,7 +218,7 @@ public class MainController {
 		float cartTotalItemCost = 0.0f;
 		Customer customer = getLoggedInUser();
 		if (customer != null) {										// If a User is logged in, get their cart, (or null if it doesn't exist)
-			customer.setLastVisited(LocalDateTime.now().minusHours(5));
+			customer.setLastVisited(LocalDateTime.now().minusHours(hourDiffFromDb));
 			customerService.update(customer);
 
 			Cart customerCart = cartService.findByCustomerEmail(customer.getEmail());
@@ -292,7 +294,7 @@ public class MainController {
 		}
 		else {
 			customerForm.setIsEnabled(true);
-			customerForm.setAccountCreated(LocalDateTime.now().minusHours(5));
+			customerForm.setAccountCreated(LocalDateTime.now().minusHours(hourDiffFromDb));
 			customerService.create(customerForm);
 			securityService.autoLogin(customerForm.getEmail(), customerForm.getPasswordConfirm());
 			model.addAttribute("listStates", listStates);
@@ -817,7 +819,7 @@ public class MainController {
 			if (customerCart == null) {							// If they don't have a cart started, start a new one
 				customerCart = new Cart();
 				customerCart.setCustomer(customer);
-				customerCart.setCartCreationDateTime(LocalDateTime.now().minusHours(5));
+				customerCart.setCartCreationDateTime(LocalDateTime.now().minusHours(hourDiffFromDb));
 				customerCart.setCartItems(new ArrayList<CartDetail>());
 				cartService.save(customerCart);					// New cart needs to be saved before items can be added because of Foreign Key relationship
 			}
@@ -1054,7 +1056,7 @@ public class MainController {
 		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
 		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
-		
+
 		Customer customer = getLoggedInUser();
 		if (customer == null) {				// Can't complete order if not logged in, for now. Direct user to log in page
 			model.addAttribute("error", "Please log in to your account to check out.");
@@ -1074,13 +1076,13 @@ public class MainController {
 			customer.setState(customerUpdates.getState());
 			customer.setPreferredPayment(customerUpdates.getPreferredPayment());
 			customer.setPaymentHandle(customerUpdates.getPaymentHandle().trim().isEmpty() ? null : customerUpdates.getPaymentHandle().trim());
-			customer.setLastOrdered(LocalDateTime.now().minusHours(5));			// Set last order time for determining New Items
+			customer.setLastOrdered(LocalDateTime.now().minusHours(hourDiffFromDb));			// Set last order time for determining New Items
 			customerService.update(customer);
 
 			// Convert cart to Order and delete Cart
 			Order customerOrder = new Order();
 			customerOrder.setCustomer(customer);
-			customerOrder.setOrderDateTime(LocalDateTime.now().minusHours(5));
+			customerOrder.setOrderDateTime(LocalDateTime.now().minusHours(hourDiffFromDb));
 			customerOrder.setReqDeliveryDateTime(null);
 			customerOrder.setStatus("Confirmed");	// Will need to update this later using enum
 			customerOrder.setComments(null);
@@ -1108,6 +1110,7 @@ public class MainController {
 				String upc = item.getProduct().getUpc();
 				Product product = productService.get(upc);
 				product.setStockQty(product.getStockQty()-item.getQty());
+				product.setDateLastSold(LocalDateTime.now().minusHours(hourDiffFromDb));
 				productService.save(product);
 			}
 			customerOrder.setOrderItems(orderItems);
@@ -1474,8 +1477,7 @@ public class MainController {
 			try {
 				customerOrder = orderService.get(Integer.parseInt(orderNum));
 			}
-			catch (Exception e)
-			{
+			catch (Exception e) {
 				model.addAttribute("error", "Order number not found for user " + email + ".");
 				return "/login";
 			}
@@ -1500,8 +1502,7 @@ public class MainController {
 	
 	
 	@GetMapping("/admin")
-	public String adminMainPage(Model model)
-	{
+	public String adminMainPage(Model model) {
 		return "admin";
 	}
 	

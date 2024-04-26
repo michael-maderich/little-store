@@ -74,6 +74,10 @@ public class Product implements Serializable {
 	@Column(name="dateAdded", nullable=false)
 	private LocalDateTime dateAdded;
 	
+	@Basic
+	@Column(name="dateLastSold", nullable=true)
+	private LocalDateTime dateLastSold;
+	
 	/*	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="creationDate", nullable=false)
 	private Date createDate*/
@@ -204,6 +208,13 @@ public class Product implements Serializable {
 	}
 	public void setDateAdded(LocalDateTime dateAdded) {
 		this.dateAdded = dateAdded;
+	}
+
+	public LocalDateTime getDateLastSold() {
+		return dateLastSold;
+	}
+	public void setDateLastSold(LocalDateTime dateLastSold) {
+		this.dateLastSold = dateLastSold;
 	}
 
 	@Override
