@@ -44,6 +44,12 @@
 						<c:forEach items="${itemList}" var="item">
 						<form action="/addToCart" method="GET">
 							<tr id="${item.upc}" ${item.stockQty==0 ? 'class="inactive"' : ''}>
+								<c:set var="qtyInCart" value="${0}" />
+								<c:forEach items="${cartItems}" var="cartItem">
+								<c:if test="${(cartItem.product.upc == item.upc) && (cartItem.qty != 0)}">
+									<c:set var="qtyInCart" value="${cartItem.qty}" />
+								</c:if>
+								</c:forEach>
 								<td class="product_image_panel product_info"><a href="${item.image}" target="_new"><img src="${item.image}" alt="${item.description}" title="${item.description}" /></a></td>
 								<td class="product_info">${item.name}</td>
 								<td class="product_info">${item.options}</td>
@@ -54,7 +60,7 @@
 								<td class="customerQty product_info">
 									<input type="hidden" id="upc${item.upc}" name="upc" value="${item.upc}" />
 									<label for="itemQty">
-										<input id="itemQty${item.upc}" type="number" class="qtyInput" name="itemQty" min="0" max="${(item.purchaseLimit != 0 and item.purchaseLimit < item.stockQty) ? item.purchaseLimit : item.stockQty}" step="1" value="0" ${item.stockQty==0 ? 'disabled style="visibility:hidden"' : ''} onInput="updateRows('${item.upc}')" />
+										<input id="itemQty${item.upc}" type="number" class="qtyInput" name="itemQty" min="0" max="${(item.purchaseLimit != 0 and item.purchaseLimit < item.stockQty) ? (item.purchaseLimit - qtyInCart) : (item.stockQty - qtyInCart)}" step="1" value="0" ${item.stockQty==0 ? 'disabled style="visibility:hidden"' : ''} onInput="updateRows('${item.upc}')" />
 									</label>
 								</td>
  								<td class="button_panel product_info">
@@ -63,9 +69,7 @@
 								</td>
 								<c:if test = "${not empty cartItems}">
 								<td class="transparent-td">
-								<c:forEach items="${cartItems}" var="cartItem">
-								<c:if test="${(cartItem.product.upc == item.upc) && (cartItem.qty != 0)}">(${cartItem.qty} in cart)</c:if>
-								</c:forEach>
+								<c:if test="${(qtyInCart > 0)}">(${qtyInCart} in cart)</c:if>
 								</td>
 								</c:if>
 								<span>

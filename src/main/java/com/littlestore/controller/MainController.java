@@ -515,7 +515,7 @@ public class MainController {
 	
 	@GetMapping("/category/")
 	public String categoryRootRedirect() {
-		return "redirect:/category/Laundry";
+		return "redirect:/index";
 	}
 	
 	@GetMapping("/category/{categoryName}")
@@ -523,7 +523,7 @@ public class MainController {
 										@RequestParam(value = "addedUpc", defaultValue="") String addedUpc,
 										@RequestParam(value = "addedItemQty", defaultValue="0") String addedItemQty) {
 		List<Product> itemList = !(categoryName.equalsIgnoreCase("Christmas Shop"))// || categoryName.equalsIgnoreCase("Laundry"))
-													?  productService.findByCategoryMainMinQtySorted(categoryName, 0)
+													? productService.findByCategoryMainMinQtySorted(categoryName, 0)
 /*		List<Product> itemList = */					: productService.findByCategoryMainSorted(categoryName);
 		String cartAdjustments = null;
 		int cartTotalItemQty = 0;
@@ -832,7 +832,7 @@ public class MainController {
 						purchasedQty = item.getProduct().getStockQty();		// Lower purchased qty to available stock
 						addedItemQty = item.getProduct().getStockQty() - item.getQty();	// How many were actually added
 					}
-					else if (purchasedQty > item.getProduct().getPurchaseLimit()) {	// If more than purchase limit is requested..
+					else if (item.getProduct().getPurchaseLimit() != 0 && purchasedQty > item.getProduct().getPurchaseLimit()) {	// If more than purchase limit (don't check 0!) is requested..
 						purchasedQty = item.getProduct().getPurchaseLimit();		// Lower purchased qty to purchase limit
 						addedItemQty = item.getProduct().getPurchaseLimit() - item.getQty();	// How many were actually added
 					}
