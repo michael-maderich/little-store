@@ -23,6 +23,7 @@
                 <ul class="nav flex-column">
                     <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="/account">Go to Account</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/account/orders">Order History</a></li>
                     <li class="nav-item"><a class="nav-link" href="/index">Continue Shopping</a></li>
                 </ul>
             </div>
