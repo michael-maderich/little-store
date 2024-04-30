@@ -26,7 +26,10 @@ public interface ProductRepository extends CrudRepository<Product, String>, JpaS
 	public List<Product> getSaleItems();
 	
 	@Query(value = "SELECT p FROM Product p WHERE (p.description LIKE %:searchText% OR p.categoryMain LIKE %:searchText% OR p.categorySpecific LIKE %:searchText%) ORDER BY p.categoryMain ASC, p.categorySpecific ASC, p.name ASC, p.size DESC, p.options ASC")
-	public List<Product> getSearchResults(String searchText);	// AND p.stockQty > 0 
+	public List<Product> getSearchResults(String searchText);
+	
+	@Query(value = "SELECT p FROM Product p WHERE (p.description LIKE %:searchText% OR p.categoryMain LIKE %:searchText% OR p.categorySpecific LIKE %:searchText%) AND p.stockQty > 0 ORDER BY p.categoryMain ASC, p.categorySpecific ASC, p.name ASC, p.size DESC, p.options ASC")
+	public List<Product> getSearchResultsWithStock(String searchText);
 	
 	// Get list of Product Main Categories
 	@Query(value = "SELECT DISTINCT p.categoryMain FROM product p ORDER BY p.categoryMain", nativeQuery=true)

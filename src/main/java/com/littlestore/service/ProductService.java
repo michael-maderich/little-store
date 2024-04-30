@@ -62,6 +62,10 @@ public class ProductService {
 		return repo.getSearchResults(searchText);
 	}
 
+	public List<Product> getSearchResultsWithStock(String searchText) {
+		return repo.getSearchResultsWithStock(searchText);
+	}
+
     public Stream<Product> findProductsContainingDesc(Collection<String> withDesc) {
         Specification<Product> specifications = null;
         for (String s : withDesc) {

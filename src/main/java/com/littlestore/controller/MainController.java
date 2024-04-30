@@ -736,10 +736,13 @@ public class MainController {
 
 	@GetMapping("/search")
 	public String itemSearch(Model model, @RequestParam(value = "q", defaultValue="") String searchText,
+							@RequestParam(value = "showOOS", defaultValue="false", required=false) boolean showOOS, 
 							@RequestParam(value = "addedUpc", defaultValue="") String addedUpc,
 							@RequestParam(value = "addedItemQty", defaultValue="0") String addedItemQty) {
+
 		searchText = searchText.trim();		// Remove outer whitespace from search query
-		List<Product> itemList = productService.getSearchResults(searchText);
+		List<Product> itemList = showOOS ? productService.getSearchResults(searchText) : productService.getSearchResultsWithStock(searchText);
+
 		String cartAdjustments = null;
 		int cartTotalItemQty = 0;
 		float cartTotalItemCost = 0.0f;
