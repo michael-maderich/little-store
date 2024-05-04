@@ -800,7 +800,12 @@ public class MainController {
 		Cart customerCart;
 		Product purchasedProduct;
 		int purchasedQty = Integer.parseInt(itemQty);		// Can't throw exception because referrer string format already checked
+		if (purchasedQty < 0) purchasedQty = 0;				// If somehow qty added is zero or negative - Mark >:(
 		int addedItemQty = purchasedQty;
+		if (addedItemQty <= 0) {
+			return !referer.startsWith("/search") ? "redirect:" + referer + "?addedUpc=" + upc + "&addedItemQty=" + addedItemQty + "#" + upc
+					  : "redirect:" + referer + "?q=" + searchText + "&addedUpc=" + upc + "&addedItemQty=" + addedItemQty + "#" + upc;
+		}
 		try {												// Irrelevant since referrer string checked, but maybe missed something
 			purchasedProduct = productService.get(upc);
 		}
@@ -817,7 +822,6 @@ public class MainController {
 			return "/login";
 		}
 		else {													// If a User is logged in, get their cart, (or null if it doesn't exist)
-			if (addedItemQty == 0) return "redirect:"+referer;	// 0 is a valid qty option, but we don't want to add that to the cart
 			customerCart = cartService.findByCustomerEmail(customer.getEmail());
 			if (customerCart == null) {							// If they don't have a cart started, start a new one
 				customerCart = new Cart();
@@ -828,23 +832,23 @@ public class MainController {
 			}
 			List<CartDetail> cartItems = new ArrayList<>(customerCart.getCartItems());
 			int lineNum = 0;
-			for (CartDetail item : cartItems) {
-				if (item.getProduct().getUpc() == upc) {		// One or more of this item is already in the cart, so just increase qty
-					purchasedQty += item.getQty();				// Add qty already in cart to amount added to cart
-					if (purchasedQty > item.getProduct().getStockQty())	{	// If more than available stock is requested..
-						purchasedQty = item.getProduct().getStockQty();		// Lower purchased qty to available stock
-						addedItemQty = item.getProduct().getStockQty() - item.getQty();	// How many were actually added
+			for (CartDetail cartItem : cartItems) {
+				if (cartItem.getProduct().getUpc() == upc) {		// One or more of this item is already in the cart, so just increase qty
+					purchasedQty += cartItem.getQty();				// Add qty already in cart to amount added to cart
+					if (purchasedQty > cartItem.getProduct().getStockQty())	{	// If more than available stock is requested..
+						purchasedQty = cartItem.getProduct().getStockQty();		// Lower purchased qty to available stock
+						addedItemQty = cartItem.getProduct().getStockQty() - cartItem.getQty();	// How many were actually added
 					}
-					else if (item.getProduct().getPurchaseLimit() != 0 && purchasedQty > item.getProduct().getPurchaseLimit()) {	// If more than purchase limit (don't check 0!) is requested..
-						purchasedQty = item.getProduct().getPurchaseLimit();		// Lower purchased qty to purchase limit
-						addedItemQty = item.getProduct().getPurchaseLimit() - item.getQty();	// How many were actually added
+					else if (cartItem.getProduct().getPurchaseLimit() != 0 && purchasedQty > cartItem.getProduct().getPurchaseLimit()) {	// If more than purchase limit (don't check 0!) is requested..
+						purchasedQty = cartItem.getProduct().getPurchaseLimit();		// Lower purchased qty to purchase limit
+						addedItemQty = cartItem.getProduct().getPurchaseLimit() - cartItem.getQty();	// How many were actually added
 					}
-//					item.setQty(item.getQty()+purchasedQty);	// Don't set now..
-					cartItems.remove(item);						// delete and recreate instead for smoother code
-					lineNum = item.getLineNumber() - 1;			// Get the item's line number -1 because will ++ after loop
+//					item.setQty(item.getQty()+purchasedQty);		// Don't set now..
+					cartItems.remove(cartItem);						// delete and recreate instead for smoother code
+					lineNum = cartItem.getLineNumber() - 1;			// Get the item's line number -1 because will ++ after loop
 					break;	// out of foreach loop
 				}
-				else if (item.getLineNumber() > lineNum) lineNum = item.getLineNumber();	// Get new line number based on max existing
+				else if (cartItem.getLineNumber() > lineNum) lineNum = cartItem.getLineNumber();	// Get new line number based on max existing
 			}
 			lineNum++;
 
@@ -1045,8 +1049,9 @@ public class MainController {
 				model.addAttribute("customerCart", customerCart);
 				return "redirect:/cart";
 			}
-			// Reorganize cart so it's ordered by category/subcategory/name/options/size
+			// Adjust for any items that have changed stock or price
 			cartAdjustments = updateCartChanges();
+			// Reorganize cart so it's ordered by category/subcategory/name/options/size
 			List<CartDetail> cartItems = customerCart.getCartItems();
 			Collections.sort(cartItems);			// CartDetail entity contains compareTo() method
 
@@ -1062,9 +1067,18 @@ public class MainController {
 			model.addAttribute("customerInfo", customer);
 			model.addAttribute("customerCart", customerCart);
 			model.addAttribute("cartAdjustments", cartAdjustments);
-			model.addAttribute("listStates", listStates);
-			model.addAttribute("listPayTypes", listPayTypes);
-			return "checkout";
+
+			double orderMinimum = getGeneralDataDouble("orderMinimum");
+			if (cartTotalItemCost < orderMinimum) {
+				model.addAttribute("orderMinimum", orderMinimum);
+				model.addAttribute("error", "Minimum order total is " + String.format("$%,.2f", orderMinimum));
+				return "redirect:/cart";
+			}
+			else {
+				model.addAttribute("listStates", listStates);
+				model.addAttribute("listPayTypes", listPayTypes);
+				return "checkout";
+			}
 		}
 	}
 
