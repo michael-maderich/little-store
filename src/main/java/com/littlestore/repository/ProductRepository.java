@@ -25,10 +25,10 @@ public interface ProductRepository extends CrudRepository<Product, String>, JpaS
 	@Query(value = "SELECT p FROM Product p WHERE p.currentPrice < p.basePrice AND p.stockQty > 0 ORDER BY p.categoryMain ASC, p.categorySpecific ASC, p.name ASC, p.size DESC, p.options ASC")
 	public List<Product> getSaleItems();
 	
-	@Query(value = "SELECT p FROM Product p WHERE (p.description LIKE %:searchText% OR p.categoryMain LIKE %:searchText% OR p.categorySpecific LIKE %:searchText%) ORDER BY p.categoryMain ASC, p.categorySpecific ASC, p.name ASC, p.size DESC, p.options ASC")
+	@Query(value = "SELECT p FROM Product p WHERE (p.upc LIKE %:searchText% OR p.description LIKE %:searchText% OR p.categoryMain LIKE %:searchText% OR p.categorySpecific LIKE %:searchText%) ORDER BY p.categoryMain ASC, p.categorySpecific ASC, p.name ASC, p.size DESC, p.options ASC")
 	public List<Product> getSearchResults(String searchText);
 	
-	@Query(value = "SELECT p FROM Product p WHERE (p.description LIKE %:searchText% OR p.categoryMain LIKE %:searchText% OR p.categorySpecific LIKE %:searchText%) AND p.stockQty > 0 ORDER BY p.categoryMain ASC, p.categorySpecific ASC, p.name ASC, p.size DESC, p.options ASC")
+	@Query(value = "SELECT p FROM Product p WHERE (p.upc LIKE %:searchText% OR p.description LIKE %:searchText% OR p.categoryMain LIKE %:searchText% OR p.categorySpecific LIKE %:searchText%) AND p.stockQty > 0 ORDER BY p.categoryMain ASC, p.categorySpecific ASC, p.name ASC, p.size DESC, p.options ASC")
 	public List<Product> getSearchResultsWithStock(String searchText);
 	
 	// Get list of Product Main Categories
