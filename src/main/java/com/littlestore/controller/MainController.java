@@ -959,6 +959,10 @@ public class MainController {
 			catch (NoSuchElementException e) {			// An item that does not exist in the cart has been attempted to be removed, again manual URL
 				return "redirect:/cart";
 			}
+			int removedQty = removedLineItem.getQty();
+			cartAdjustments = (""+removedQty).concat(" ").concat(removedLineItem.getProduct().getName()).concat(" ")
+					.concat(removedLineItem.getProduct().getOptions()).concat(" ")
+					.concat(removedLineItem.getProduct().getSize()).concat(" removed from cart");
 			cartItems.remove(removedLineItem);
 			Collections.sort(cartItems);			// CartDetail entity contains compareTo() method
 			customerCart.setCartItems(cartItems);
@@ -969,7 +973,13 @@ public class MainController {
 /**/		System.out.println("Customer removed item from cart. " + customerCart);
 
 			// After removal, check remaining cart items for stock/price changes
-			cartAdjustments = updateCartChanges();
+			String cartChanges = updateCartChanges();
+			if (cartChanges != null && !cartChanges.isEmpty()) {
+				if (cartAdjustments != null && !cartAdjustments.isEmpty()) {
+					cartAdjustments += "<br />";
+				}
+				cartAdjustments += cartChanges;
+			}
 			cartItems = customerCart.getCartItems();
 			Collections.sort(cartItems);			// CartDetail entity contains compareTo() method
 			customerCart.setCartItems(cartItems);
@@ -1002,12 +1012,12 @@ public class MainController {
 		}
 
 		Customer customer = getLoggedInUser();
+		model.addAttribute("navMenuItems", getNavMenuItems());
+		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
+		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
+		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
 		Cart customerCart;
 		if (customer == null) {		// Can't delete cart if not logged in, but also can't get here since can't access cart, either, unless url typed
-			model.addAttribute("navMenuItems", getNavMenuItems());
-			model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
-			model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
-			model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
 			model.addAttribute("error", "You must be logged in to edit your cart.");
 			return "/login";
 		}
@@ -1018,11 +1028,12 @@ public class MainController {
 			for (CartDetail item : cartItems) cartDetailService.delete(item);
 			cartService.delete(customerCart);
 			model.addAttribute("cartTotalItemQty", 0);
+			model.addAttribute("cartAdjustments", "Cart cleared");
 			model.addAttribute("showItemQtyInHeader", getGeneralDataInteger("showItemQtyInHeader"));
 			model.addAttribute("cartTotalItemCost", 0);
 			model.addAttribute("showTotalInHeader", getGeneralDataInteger("showTotalInHeader"));
 			model.addAttribute("customer", customer);
-			return "redirect:/cart";
+			return "/cart";
 		}
 	}
 
