@@ -1100,6 +1100,10 @@ public class MainController {
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
 		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
 
+		String cartAdjustments = "";
+		int cartTotalItemQty = 0;
+		float cartTotalItemCost = 0.0f;
+
 		Customer customer = getLoggedInUser();
 		if (customer == null) {				// Can't complete order if not logged in, for now. Direct user to log in page
 			model.addAttribute("error", "Please log in to your account to check out.");
@@ -1108,10 +1112,34 @@ public class MainController {
 		else {														// If a User is logged in, get their cart, (or null if it doesn't exist)
 			Cart customerCart = cartService.findByCustomerEmail(customer.getEmail());
 			if (customerCart == null) {			// If they don't have a cart, redirect to cart page but couldn't get here unless url typed/bookmarked
-				model.addAttribute("customer", customer);
+				model.addAttribute("customerInfo", customer);
 				model.addAttribute("customerCart", customerCart);
-				return "redirect:/cart";
+				return "cart";
 			}
+
+			// Adjust for any items that have changed stock or price and return to checkout page if so
+			cartAdjustments = updateCartChanges();
+			if (cartAdjustments != null && !cartAdjustments.isEmpty()) {
+				cartAdjustments += "<br />Please Check Out again.";
+
+				// Get updated cart totals
+				List<CartDetail> cartItems = customerCart.getCartItems();
+				for (CartDetail detail : cartItems) {
+					cartTotalItemQty += detail.getQty();
+					cartTotalItemCost += detail.getQty() * detail.getPrice();
+				}
+
+				model.addAttribute("cartTotalItemQty", cartTotalItemQty);
+				model.addAttribute("showItemQtyInHeader", getGeneralDataInteger("showItemQtyInHeader"));
+				model.addAttribute("cartTotalItemCost", cartTotalItemCost);
+				model.addAttribute("showTotalInHeader", getGeneralDataInteger("showTotalInHeader"));
+				model.addAttribute("customerInfo", customer);
+				model.addAttribute("customerCart", customerCart);
+				model.addAttribute("cartAdjustments", cartAdjustments);
+				model.addAttribute("orderMinimum", getGeneralDataDouble("orderMinimum"));
+				return "cart";
+			}
+
 			// Add to Customer any updates to meeting address, phone/contact, payment method and payment handle
 			customer.setPhone(customerUpdates.getPhone().trim().isEmpty() ? null : customerUpdates.getPhone().trim());
 			customer.setAddress(customerUpdates.getAddress().trim().isEmpty() ? null : customerUpdates.getAddress().trim());

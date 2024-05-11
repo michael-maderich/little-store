@@ -37,6 +37,7 @@
 						<br />You may make updates to the meet-up location and other options below.
 						<br />Email confirmations are currently not working. Once submitted, please contact me about your order to set up meetup details.
 					</span>
+					${empty cartAdjustments ? '' : '<div class="cartChangeMsg"><br/><span style="color:red;">'.concat(cartAdjustments).concat('</span></div>')}
 					<form:form id="orderForm" method="POST" modelAttribute="customerInfo" class="form-signin" action="/confirmation">
 					<label for="submitBtn"><form:button id="submitBtn" name="submitBtn" type="submit" class="btn btn-sm btn-primary btn-block highlighted" onclick="submitForm()">
 						PLACE YOUR ORDER
@@ -119,7 +120,6 @@
 				</div>
 				<div id="checkout-panel">
 					<h4 class="checkoutHeader">Order Details</h4>
-					${empty cartAdjustments ? '' : '<div class="cartChangeMsg"><br/><span style="color:red;">'.concat(cartAdjustments).concat('</span></div>')}
 					<c:set var="cartTotal" value="${0}" />
 					<table id="checkout-table">
 						<thead>
