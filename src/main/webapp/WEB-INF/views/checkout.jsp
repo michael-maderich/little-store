@@ -119,7 +119,7 @@
 					</form:form>
 				</div>
 				<div id="checkout-panel">
-					<h4 class="checkoutHeader">Order Details</h4>
+					<h4 class="checkoutHeader">Cart Details</h4>
 					<c:set var="cartTotal" value="${0}" />
 					<table id="checkout-table">
 						<thead>
