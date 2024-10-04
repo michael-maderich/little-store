@@ -57,8 +57,10 @@
 								<td><a href="/category/${cartItem.product.categoryMain}/${cartItem.product.categorySpecific}/#${cartItem.product.upc}">${cartItem.product.options}</a></td>
 								<td><a href="/category/${cartItem.product.categoryMain}/${cartItem.product.categorySpecific}/#${cartItem.product.upc}">${cartItem.product.size}</a></td>
 								<td>${cartItem.qty}</td>
-								<td><fmt:formatNumber value = "${cartItem.price}" type = "currency" /></td>
-								<td><fmt:formatNumber value = "${cartItem.qty * cartItem.price}" type = "currency" /></td>
+								<td>${cartItem.price < cartItem.basePrice ? '<span style="color:green">':''}<fmt:formatNumber value = "${cartItem.price}" type = "currency" />${cartItem.price < cartItem.basePrice ? '</span>':''}
+														 ${cartItem.price < cartItem.basePrice ? '<br /><span style="text-decoration:line-through">':'<span visible="false"'}<fmt:formatNumber value = "${cartItem.basePrice}" type = "currency" />${cartItem.price < cartItem.basePrice ? '</span>':'</span>'}</td>
+								<td>${cartItem.price < cartItem.basePrice ? '<span style="color:green">':''}<fmt:formatNumber value = "${cartItem.qty * cartItem.price}" type = "currency" />${cartItem.price < cartItem.basePrice ? '</span>':''}
+														 ${cartItem.price < cartItem.basePrice ? '<br /><span style="text-decoration:line-through">':'<span visible="false"'}<fmt:formatNumber value = "${cartItem.qty * cartItem.basePrice}" type = "currency" />${cartItem.price < cartItem.basePrice ? '</span>':'</span>'}</td>
 								<td class="button_panel">
 									<input type="hidden" id="upc" name="upc" value="${cartItem.product.upc}" />
 									<button type="submit" class="btn btn-sm btn-primary btn-block">Remove</button>

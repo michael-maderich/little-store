@@ -141,8 +141,10 @@
 								<td>${cartItem.product.options}</td>
 								<td>${cartItem.product.size}</td>
 								<td>${cartItem.qty}</td>
-								<td><fmt:formatNumber value = "${cartItem.price}" type = "currency" /></td>
-								<td><fmt:formatNumber value = "${cartItem.qty * cartItem.price}" type = "currency" /></td>
+								<td>${cartItem.price < cartItem.basePrice ? '<span style="color:green">':''}<fmt:formatNumber value = "${cartItem.price}" type = "currency" />${cartItem.price < cartItem.basePrice ? '</span>':''}
+														 ${cartItem.price < cartItem.basePrice ? '<br /><span style="text-decoration:line-through">':'<span visible="false"'}<fmt:formatNumber value = "${cartItem.basePrice}" type = "currency" />${cartItem.price < cartItem.basePrice ? '</span>':'</span>'}</td>
+								<td>${cartItem.price < cartItem.basePrice ? '<span style="color:green">':''}<fmt:formatNumber value = "${cartItem.qty * cartItem.price}" type = "currency" />${cartItem.price < cartItem.basePrice ? '</span>':''}
+														 ${cartItem.price < cartItem.basePrice ? '<br /><span style="text-decoration:line-through">':'<span visible="false"'}<fmt:formatNumber value = "${cartItem.qty * cartItem.basePrice}" type = "currency" />${cartItem.price < cartItem.basePrice ? '</span>':'</span>'}</td>
 							</tr>
 							<c:set var="cartTotal" value="${cartTotal + cartItem.qty * cartItem.price}" />
 						</c:forEach></tbody>

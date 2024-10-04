@@ -160,8 +160,10 @@
 								<td>${orderItem.product.options}</td>
 								<td>${orderItem.product.size}</td>
 								<td>${orderItem.qty}</td>
-								<td><fmt:formatNumber value = "${orderItem.price}" type = "currency" /></td>
-								<td><fmt:formatNumber value = "${orderItem.qty * orderItem.price}" type = "currency" /></td>
+								<td>${orderItem.price < orderItem.basePrice ? '<span style="color:green">':''}<fmt:formatNumber value = "${orderItem.price}" type = "currency" />${orderItem.price < orderItem.basePrice ? '</span>':''}
+														 ${orderItem.price < orderItem.basePrice ? '<br /><span style="text-decoration:line-through">':'<span visible="false"'}<fmt:formatNumber value = "${orderItem.basePrice}" type = "currency" />${orderItem.price < orderItem.basePrice ? '</span>':'</span>'}</td>
+								<td>${orderItem.price < orderItem.basePrice ? '<span style="color:green">':''}<fmt:formatNumber value = "${orderItem.qty * orderItem.price}" type = "currency" />${orderItem.price < orderItem.basePrice ? '</span>':''}
+														 ${orderItem.price < orderItem.basePrice ? '<br /><span style="text-decoration:line-through">':'<span visible="false"'}<fmt:formatNumber value = "${orderItem.qty * orderItem.basePrice}" type = "currency" />${orderItem.price < orderItem.basePrice ? '</span>':'</span>'}</td>
 							</tr>
 							<c:set var="orderTotal" value="${orderTotal + orderItem.qty * orderItem.price}" />
 						</c:forEach></tbody>

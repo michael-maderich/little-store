@@ -35,6 +35,10 @@ public class CartDetail implements Serializable, Comparable<CartDetail> {
 	private int qty;
 	
 	@Basic
+	@Column(name="basePrice", nullable=false)
+	private float basePrice;
+	
+	@Basic
 	@Column(name="price", nullable=false)
 	private float price;
 	
@@ -45,10 +49,11 @@ public class CartDetail implements Serializable, Comparable<CartDetail> {
 	public CartDetail() {
 	}
 
-	public CartDetail(Cart cart, Product product, int qty, float price, int lineNumber) {
+	public CartDetail(Cart cart, Product product, int qty, float basePrice, float price, int lineNumber) {
 		this.cart = cart;
 		this.product = product;
 		this.qty = qty;
+		this.basePrice = basePrice;
 		this.price = price;
 		this.lineNumber = lineNumber;
 	}
@@ -75,6 +80,13 @@ public class CartDetail implements Serializable, Comparable<CartDetail> {
 		this.qty = qty;
 	}
 
+	public float getBasePrice() {
+		return basePrice;
+	}
+	public void setBasePrice(float basePrice) {
+		this.basePrice = basePrice;
+	}
+
 	public float getPrice() {
 		return price;
 	}
@@ -91,7 +103,7 @@ public class CartDetail implements Serializable, Comparable<CartDetail> {
 
 	@Override
 	public String toString() {
-		return "\n\t\tCartDetail [" + product + ", qty=" + qty + ", price=" + price + ", lineNumber=" + lineNumber + "]";
+		return "\n\t\tCartDetail [" + product + ", qty=" + qty + ", basePrice=" + basePrice + ", price=" + price + ", lineNumber=" + lineNumber + "]";
 	}
 
 	@Override			// Could probably just implement a custom toString() for CartDetail and compare that

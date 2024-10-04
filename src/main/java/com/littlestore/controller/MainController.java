@@ -46,7 +46,7 @@ import com.littlestore.service.PaymentInfoService;
 import com.littlestore.service.SecurityService;
 import com.littlestore.validator.CustomerFormValidator;
 
-import com.littlestore.utils.SendSimpleEmail;
+//import com.littlestore.utils.SendSimpleEmail;
 
 /**
  * @author Michael Maderich
@@ -166,6 +166,11 @@ public class MainController {
 						+ String.format("%.2f", cartItems.get(i).getPrice()) + " to $" + String.format("%.2f", checkedProduct.getCurrentPrice())
 						+ "  since it was added to your cart.<br/>";
 				cartItems.get(i).setPrice(checkedProduct.getCurrentPrice());
+				cartDetailService.save(cartItems.get(i));	// Will overwrite any previous cartDetail with same composite key (cartId/upc)
+			}
+			// Adjust base price if changed; no notification to user necessary
+			if (cartItems.get(i).getBasePrice() != checkedProduct.getBasePrice()) {
+				cartItems.get(i).setBasePrice(checkedProduct.getBasePrice());
 				cartDetailService.save(cartItems.get(i));	// Will overwrite any previous cartDetail with same composite key (cartId/upc)
 			}
 
@@ -536,7 +541,7 @@ public class MainController {
 		if (customer != null) {										// If a User is logged in, get their cart, (or null if it doesn't exist)
 			Cart customerCart = cartService.findByCustomerEmail(customer.getEmail());
 			if (customerCart != null)
-			{		// If they have a cart, fill cartItems with their cart item quantities
+			{	// If they have a cart, fill cartItems with their cart item quantities
 				cartAdjustments = updateCartChanges();
 				List<CartDetail> cartItems = customerCart.getCartItems();
 				for (CartDetail detail : cartItems) {
@@ -786,7 +791,7 @@ public class MainController {
 		int cartTotalItemQty = 0;
 		float cartTotalItemCost = 0.0f;
 		
-		String referer = request.getHeader("Referer");						// http://localhost:8080/xxxxxx - we just want the "xxxxxx"
+		String referer = request.getHeader("Referer");					// http://localhost:8080/xxxxxx - we just want the "xxxxxx"
 		if (referer==null) return "redirect:/index";					// If page request didn't come from product page, reject and return to cart
 		else {
 			referer = referer.substring( referer.indexOf('/', referer.indexOf('/')+2) );		// everything after root '/', including the /
@@ -852,7 +857,7 @@ public class MainController {
 			}
 			lineNum++;
 
-			CartDetail newLineItem = new CartDetail(customerCart, purchasedProduct, purchasedQty, purchasedProduct.getCurrentPrice(), lineNum);
+			CartDetail newLineItem = new CartDetail(customerCart, purchasedProduct, purchasedQty, purchasedProduct.getBasePrice(), purchasedProduct.getCurrentPrice(), lineNum);
 			cartItems.add(newLineItem);
 			Collections.sort(cartItems);			// CartDetail entity contains compareTo() method. List sorted for better cart/checkout display
 			customerCart.setCartItems(cartItems);
@@ -1172,6 +1177,7 @@ public class MainController {
 				lineItem.setImage(item.getProduct().getImage());
 				lineItem.setQty(item.getQty());
 				lineItem.setQtyFulfilled(item.getQty());	// Set fulfilled qty to ordered qty by default
+				lineItem.setBasePrice(item.getBasePrice());
 				lineItem.setPrice(item.getPrice());
 				lineItem.setLineNumber(lineNum++);
 				orderItems.add(lineItem);
