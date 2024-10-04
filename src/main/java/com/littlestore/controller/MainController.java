@@ -199,12 +199,19 @@ public class MainController {
 /**/		System.out.println(customerCart);
 		return error;
 	}
-	
+
+	private String getRandomTransparentImage()
+	{
+		List<String> transparentImages = productService.getTransparentImages();
+		int index = (int) Math.floor(Math.random() * transparentImages.size());
+		return transparentImages.get(index);
+	}
+
+
 	@GetMapping("/403")
 	public String accessDenied() {
 		  return "/403";
 	}
-	
 
 	@GetMapping("/{nonsense}")
 	public String badUrl(Model model) {
@@ -263,6 +270,7 @@ public class MainController {
 		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
 		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
+		model.addAttribute("transparentImage", getRandomTransparentImage());
 		if (getLoggedInUser() != null) return "/newitems";				// If user is logged in, redirect to newitems page
 		else return "/login";											// Otherwise, submit POST request to login page (handled by Spring Security)
 	}
@@ -1319,6 +1327,8 @@ public class MainController {
 			"				<td>"+orderItem.getProduct().getSize()+"</td>\n"+
 			"				<td>"+orderItem.getQty()+"</td>\n"+
 			"				<td>"+String.format("$%,.2f", orderItem.getPrice())+"</td>\n"+
+			"               <td>"+((orderItem.getPrice() < orderItem.getBasePrice()) ? "<span style=\"color:green\">":""+String.format("$%,.2f", orderItem.getPrice()))+((orderItem.getPrice() < orderItem.getBasePrice()) ? "</span>":"")+
+								  ((orderItem.getPrice() < orderItem.getBasePrice()) ? "<br /><span style=\"text-decoration:line-through\">":"<span visible=\"false\"")+String.format("$%,.2f", orderItem.getBasePrice())+"</span></td>"+
 			"				<td align=\"center\">"+String.format("$%,.2f", orderItem.getQty() * orderItem.getPrice())+"</td>\n"+
 			"			</tr>\n";
 				orderTotal += orderItem.getQty() * orderItem.getPrice();

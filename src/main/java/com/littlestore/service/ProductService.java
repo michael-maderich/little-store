@@ -155,6 +155,10 @@ public class ProductService {
 		return listByCatAndSubcat;
 	}
 	
+	public List<String> getTransparentImages() {
+		return repo.findTransparentImages();
+	}	 
+	
 /*	public PaginationResult<Product> queryProducts(int page, int maxResult, int maxNavigationPage, String likeName) {
 		String sql = "Select new " + Product.class.getName() //
 				+ "(p.code, p.name, p.price) " + " from "//

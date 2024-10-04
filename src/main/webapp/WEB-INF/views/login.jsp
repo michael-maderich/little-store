@@ -42,7 +42,7 @@
                     <p>Forgot Password? Click <a href="/forgotPassword">here</a></p>
                 </div>
                 <div id="bottom-img-content">
-                    <img src="https://asset-americas.unileversolutions.com/content/dam/unilever/dove/united_states_of_america/pack_shot/011111012080.01-31728480-png.png.ulenscale.490x490.png" alt="Dove Men+Care Fresh Soap" width=400em; />
+                    <img src="${transparentImage}" alt="" width=400em; />
                 </div>
             </div>
         </div>

@@ -71,6 +71,10 @@ public class Product implements Serializable {
 	private String image;	// URL of product image
 
 	@Basic
+	@Column(name="transparent")
+	private int transparent;	// whether image has transparent background
+
+	@Basic
 	@Column(name="dateAdded", nullable=false)
 	private LocalDateTime dateAdded;
 	
@@ -87,7 +91,7 @@ public class Product implements Serializable {
 
 	public Product(String upc, String categoryMain, String categorySpecific, String name, String options, String size,
 			float cost, float basePrice, float currentPrice, boolean onSale, int stockQty, int purchaseLimit,
-			String description, String image, LocalDateTime dateAdded) {
+			String description, String image, int transparent, LocalDateTime dateAdded, LocalDateTime dateLastSold) {
 		this.upc = upc;
 		this.categoryMain = categoryMain;
 		this.categorySpecific = categorySpecific;
@@ -102,7 +106,9 @@ public class Product implements Serializable {
 		this.purchaseLimit = purchaseLimit;
 		this.description = description;
 		this.image = image;
+		this.transparent = transparent;
 		this.dateAdded = dateAdded;
+		this.dateLastSold = dateLastSold;
 	}
 
 	public String getUpc() {
@@ -194,6 +200,13 @@ public class Product implements Serializable {
 	}
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public int getTransparent() {
+		return transparent;
+	}
+	public void setTransparent(int isTransparent) {
+		this.transparent = isTransparent;
 	}
 
 	public String getImage() {
