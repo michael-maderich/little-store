@@ -42,7 +42,7 @@
                     <p>Forgot Password? Click <a href="/forgotPassword">here</a></p>
                 </div>
                 <div id="bottom-img-content">
-                    <img src="${transparentImage}" alt="" width=400em; />
+                    <img src="${transparentImage?transparentImage:''}" alt="" width=400em; />
                 </div>
             </div>
         </div>

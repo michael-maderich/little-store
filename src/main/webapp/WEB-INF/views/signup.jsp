@@ -20,11 +20,11 @@
 	        <jsp:include page="sideNav.jsp"></jsp:include>
 			<div id="left-img-content">
 				<div class="image-buffer"></div>
-				<img src="https://asset-americas.unileversolutions.com/content/dam/unilever/dove/united_states_of_america/pack_shot/011111017061-2270321-png.png.ulenscale.490x490.png" alt="Dove Men+Care Body Wash Blue Eucalyptus + Birch Relaxing Micromoisture Body +Face Wash 18 fl oz" />
+				<img src="${transparentImageLeft}" alt=""/>
 			</div>
 			<div id="right-img-content">
 				<div class="image-buffer"></div>
-				<img src="https://www.dove.com/content/dam/unilever/dove/canada/pack_shot/011111121140-1773965-png.png" alt="Dove Women Body Wash Purifying Detox with Green Clay 22 fl oz" />
+				<img src="${transparentImageRight}" alt=""/>
 			</div>
 			<div id="center-content">
 				<div id="registration-panel">

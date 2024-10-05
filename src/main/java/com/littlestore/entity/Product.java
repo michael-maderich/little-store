@@ -71,7 +71,7 @@ public class Product implements Serializable {
 	private String image;	// URL of product image
 
 	@Basic
-	@Column(name="transparent")
+	@Column(name="transparent", nullable=false)
 	private int transparent;	// whether image has transparent background
 
 	@Basic

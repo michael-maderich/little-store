@@ -286,6 +286,11 @@ public class MainController {
 		else {
 			model.addAttribute("customerForm", new Customer());
 			model.addAttribute("listStates", listStates);
+			String imageLeft = getRandomTransparentImage();
+			model.addAttribute("transparentImageLeft", imageLeft);
+			String imageRight = getRandomTransparentImage();
+			while (imageRight.equals(imageLeft)) {imageRight = getRandomTransparentImage();};
+			model.addAttribute("transparentImageRight", imageRight);
 			return "/signup";
 		}
 	}
@@ -299,6 +304,11 @@ public class MainController {
 		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
 		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
+		String imageLeft = getRandomTransparentImage();
+		model.addAttribute("transparentImageLeft", imageLeft);
+		String imageRight = getRandomTransparentImage();
+		while (imageRight.equals(imageLeft)) {imageRight = getRandomTransparentImage();};
+		model.addAttribute("transparentImageRight", imageRight);
 
 		customerFormValidator.validate(customerForm, bindingResult);
 		if (bindingResult.hasErrors()) {
@@ -332,6 +342,11 @@ public class MainController {
 		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
 		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
+		String imageLeft = getRandomTransparentImage();
+		model.addAttribute("transparentImageLeft", imageLeft);
+		String imageRight = getRandomTransparentImage();
+		while (imageRight.equals(imageLeft)) {imageRight = getRandomTransparentImage();};
+		model.addAttribute("transparentImageRight", imageRight);
 
 		if (getLoggedInUser() != null) return "redirect:/account";		// If user is already signed in, redirect to account page.
 		else {
@@ -391,6 +406,11 @@ public class MainController {
 		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
 		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
+		String imageLeft = getRandomTransparentImage();
+		model.addAttribute("transparentImageLeft", imageLeft);
+		String imageRight = getRandomTransparentImage();
+		while (imageRight.equals(imageLeft)) {imageRight = getRandomTransparentImage();};
+		model.addAttribute("transparentImageRight", imageRight);
 
 		Customer customer = getLoggedInUser();
 		if (customer == null) {
@@ -416,6 +436,8 @@ public class MainController {
 			}
 			model.addAttribute("customerForm", customer);
 			model.addAttribute("listStates", listStates);
+			model.addAttribute("transparentImageLeft", imageLeft);
+			model.addAttribute("transparentImageRight", imageRight);
 			return "/account";
 		}
 	}
@@ -440,6 +462,11 @@ public class MainController {
 		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
 		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
+		String imageLeft = getRandomTransparentImage();
+		model.addAttribute("transparentImageLeft", imageLeft);
+		String imageRight = getRandomTransparentImage();
+		while (imageRight.equals(imageLeft)) {imageRight = getRandomTransparentImage();};
+		model.addAttribute("transparentImageRight", imageRight);
 		Customer customer = getLoggedInUser();
 		if (customer == null) {				// Can't view orders if not logged in, for now. Direct user to log in/sign up
 			model.addAttribute("error", "You must be logged in to edit your account details.");
@@ -474,6 +501,11 @@ public class MainController {
 		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
 		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
+		String imageLeft = getRandomTransparentImage();
+		model.addAttribute("transparentImageLeft", imageLeft);
+		String imageRight = getRandomTransparentImage();
+		while (imageRight.equals(imageLeft)) {imageRight = getRandomTransparentImage();};
+		model.addAttribute("transparentImageRight", imageRight);
 		Customer customer = getLoggedInUser();
 		if (customer == null) {				// Can't view orders if not logged in, for now. Direct user to log in/sign up
 			model.addAttribute("error", "You must be logged in to view your orders.");

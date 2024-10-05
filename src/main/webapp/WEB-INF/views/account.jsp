@@ -25,7 +25,7 @@
                 </ul>
             </div>
 			<div id="left-img-content">
-				<img src="https://www.dove.com/content/dam/unilever/dove/canada/pack_shot/011111121140-1773965-png.png" alt="Dove Women Body Wash Purifying Detox with Green Clay" />
+				<img src="${transparentImageLeft}" alt="" />
 			</div>
 			<div id="center-content">
 				<div id="profile-panel">
@@ -83,7 +83,7 @@
 				</div>
 			</div>
 			<div id="right-img-content">
-				<img src="https://www.dove.com/content/dam/unilever/dove/united_states_of_america/pack_shot/011111023659-2252303-png.png" alt="Dove Women Body Wash Irritation Care Fragrance-Free 22 fl oz" />
+				<img src="${transparentImageRight}" alt="" />
 			</div>
         </div>
         <footer>
