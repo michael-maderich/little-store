@@ -9,6 +9,28 @@ form .text-field {
 	width:16em;
 }
 
+#left-img-content {
+    float:left;
+    position:absolute;
+/*     top:20rem; */
+    left:10%;
+    max-width: 10em;
+    z-index:-1;
+}
+#left-img-content img {
+    height:20rem;
+}
+#right-img-content {
+    float:right;
+    position:absolute;
+/*     top:20rem; */
+    right:10%;
+    z-index:-1;
+}
+#right-img-content img {
+    height:20rem;
+}
+
 /* #bottom-img-content {
 }*/
 

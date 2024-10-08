@@ -64,6 +64,6 @@ public interface ProductRepository extends CrudRepository<Product, String>, JpaS
 
 	public List<Product> findByCategorySpecificAndStockQtyGreaterThanOrderByNameAscSizeDescOptionsAsc(String subCategoryName, int minQty);
 
-	@Query(value = "SELECT p.image FROM Product p WHERE p.transparent = 1")
-	public List<String> findTransparentImages();
+	@Query(value = "SELECT p FROM Product p WHERE p.transparent = 1")
+	public List<Product> findProductsWithTransparentImages();
 }

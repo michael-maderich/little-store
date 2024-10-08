@@ -46,6 +46,8 @@ import com.littlestore.service.PaymentInfoService;
 import com.littlestore.service.SecurityService;
 import com.littlestore.validator.CustomerFormValidator;
 
+import kotlin.Triple;
+
 //import com.littlestore.utils.SendSimpleEmail;
 
 /**
@@ -200,11 +202,16 @@ public class MainController {
 		return error;
 	}
 
-	private String getRandomTransparentImage()
+	private Triple<String, String, String> getRandomTransparentImage()
 	{
-		List<String> transparentImages = productService.getTransparentImages();
+		List<Product> transparentImages = productService.getProductsWithTransparentImages();
 		int index = (int) Math.floor(Math.random() * transparentImages.size());
-		return transparentImages.get(index);
+		Product randomProduct = transparentImages.get(index);
+		String image = randomProduct.getImage();
+		String desc = randomProduct.getDescription();
+		String productUrl = "/category/"+randomProduct.getCategoryMain()+"/"+randomProduct.getCategorySpecific()+"/#"+randomProduct.getUpc();
+		Triple<String, String, String> triplet = new Triple<String, String, String>(image, desc, productUrl);
+		return triplet;
 	}
 
 
@@ -270,7 +277,11 @@ public class MainController {
 		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
 		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
-		model.addAttribute("transparentImage", getRandomTransparentImage());
+		Triple<String, String, String> imageLeft = getRandomTransparentImage();
+		model.addAttribute("transparentImageLeft", imageLeft);
+		Triple<String, String, String> imageRight = getRandomTransparentImage();
+		while (imageRight.equals(imageLeft)) {imageRight = getRandomTransparentImage();};
+		model.addAttribute("transparentImageRight", imageRight);
 		if (getLoggedInUser() != null) return "/newitems";				// If user is logged in, redirect to newitems page
 		else return "/login";											// Otherwise, submit POST request to login page (handled by Spring Security)
 	}
@@ -286,9 +297,9 @@ public class MainController {
 		else {
 			model.addAttribute("customerForm", new Customer());
 			model.addAttribute("listStates", listStates);
-			String imageLeft = getRandomTransparentImage();
+			Triple<String, String, String> imageLeft = getRandomTransparentImage();
 			model.addAttribute("transparentImageLeft", imageLeft);
-			String imageRight = getRandomTransparentImage();
+			Triple<String, String, String> imageRight = getRandomTransparentImage();
 			while (imageRight.equals(imageLeft)) {imageRight = getRandomTransparentImage();};
 			model.addAttribute("transparentImageRight", imageRight);
 			return "/signup";
@@ -304,9 +315,9 @@ public class MainController {
 		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
 		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
-		String imageLeft = getRandomTransparentImage();
+		Triple<String, String, String> imageLeft = getRandomTransparentImage();
 		model.addAttribute("transparentImageLeft", imageLeft);
-		String imageRight = getRandomTransparentImage();
+		Triple<String, String, String> imageRight = getRandomTransparentImage();
 		while (imageRight.equals(imageLeft)) {imageRight = getRandomTransparentImage();};
 		model.addAttribute("transparentImageRight", imageRight);
 
@@ -342,9 +353,9 @@ public class MainController {
 		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
 		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
-		String imageLeft = getRandomTransparentImage();
+		Triple<String, String, String> imageLeft = getRandomTransparentImage();
 		model.addAttribute("transparentImageLeft", imageLeft);
-		String imageRight = getRandomTransparentImage();
+		Triple<String, String, String> imageRight = getRandomTransparentImage();
 		while (imageRight.equals(imageLeft)) {imageRight = getRandomTransparentImage();};
 		model.addAttribute("transparentImageRight", imageRight);
 
@@ -406,9 +417,9 @@ public class MainController {
 		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
 		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
-		String imageLeft = getRandomTransparentImage();
+		Triple<String, String, String> imageLeft = getRandomTransparentImage();
 		model.addAttribute("transparentImageLeft", imageLeft);
-		String imageRight = getRandomTransparentImage();
+		Triple<String, String, String> imageRight = getRandomTransparentImage();
 		while (imageRight.equals(imageLeft)) {imageRight = getRandomTransparentImage();};
 		model.addAttribute("transparentImageRight", imageRight);
 
@@ -462,9 +473,9 @@ public class MainController {
 		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
 		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
-		String imageLeft = getRandomTransparentImage();
+		Triple<String, String, String> imageLeft = getRandomTransparentImage();
 		model.addAttribute("transparentImageLeft", imageLeft);
-		String imageRight = getRandomTransparentImage();
+		Triple<String, String, String> imageRight = getRandomTransparentImage();
 		while (imageRight.equals(imageLeft)) {imageRight = getRandomTransparentImage();};
 		model.addAttribute("transparentImageRight", imageRight);
 		Customer customer = getLoggedInUser();
@@ -501,9 +512,9 @@ public class MainController {
 		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
 		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
-		String imageLeft = getRandomTransparentImage();
+		Triple<String, String, String> imageLeft = getRandomTransparentImage();
 		model.addAttribute("transparentImageLeft", imageLeft);
-		String imageRight = getRandomTransparentImage();
+		Triple<String, String, String> imageRight = getRandomTransparentImage();
 		while (imageRight.equals(imageLeft)) {imageRight = getRandomTransparentImage();};
 		model.addAttribute("transparentImageRight", imageRight);
 		Customer customer = getLoggedInUser();

@@ -18,6 +18,14 @@
         </header>
         <div id="main-content">
 	        <jsp:include page="sideNav.jsp"></jsp:include>
+			<div id="left-img-content">
+				<div class="image-buffer"></div>
+				<a href="${transparentImageLeft.getThird()}"><img src="${transparentImageLeft.getFirst()}" alt="${transparentImageLeft.getSecond() }"/></a>
+			</div>
+			<div id="right-img-content">
+				<div class="image-buffer"></div>
+				<a href="${transparentImageRight.getThird()}"><img src="${transparentImageRight.getFirst()}" alt="${transparentImageRight.getSecond() }"/></a>
+			</div>
             <div id="center-content">
                 <div id="login-panel">
                     <h2>Log In</h2>
@@ -41,9 +49,9 @@
                     </form>
                     <p>Forgot Password? Click <a href="/forgotPassword">here</a></p>
                 </div>
-                <div id="bottom-img-content">
-                    <img src="${transparentImage?transparentImage:''}" alt="" width=400em; />
-                </div>
+                <!--div id="bottom-img-content">
+                    <a href="${transparentImage.getThird()}"><img src="${transparentImage.getFirst()}" alt="${transparentImage.getSecond() }"/></a>
+                </div-->
             </div>
         </div>
         <footer>
