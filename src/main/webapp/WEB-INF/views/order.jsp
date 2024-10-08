@@ -53,10 +53,10 @@
 						</thead>
 						<tbody><c:forEach items="${order.orderItems}" var="orderItem">
 							<tr>
-								<td class="order_image_panel"><img src="${orderItem.product.image}" alt="${orderItem.product.description}" /></td>
-								<td>${orderItem.product.name}</td>
-								<td>${orderItem.product.options}</td>
-								<td>${orderItem.product.size}</td>
+								<td class="order_image_panel"><a href="/category/${orderItem.product.categoryMain}/${orderItem.product.categorySpecific}/#${orderItem.product.upc}"><img src="${orderItem.product.image}" alt="${orderItem.product.description}" /></a></td>
+								<td><a href="/category/${orderItem.product.categoryMain}/${orderItem.product.categorySpecific}/#${orderItem.product.upc}">${orderItem.product.name}</a></td>
+								<td><a href="/category/${orderItem.product.categoryMain}/${orderItem.product.categorySpecific}/#${orderItem.product.upc}">${orderItem.product.options}</a></td>
+								<td><a href="/category/${orderItem.product.categoryMain}/${orderItem.product.categorySpecific}/#${orderItem.product.upc}">${orderItem.product.size}</a></td>
 								<td>${(orderItem.qtyFulfilled != orderItem.qty) ? '<span style=\"margin-left:0.25rem; margin-right:0.25rem; text-decoration: line-through; color:red\"> '.concat(orderItem.qty).concat(' </span> ').concat(orderItem.qtyFulfilled) : orderItem.qty}</td>
 								<td>${orderItem.price < orderItem.basePrice ? '<span style="color:green">':''}<fmt:formatNumber value = "${orderItem.price}" type = "currency" />${orderItem.price < orderItem.basePrice ? '</span>':''}
 														 ${orderItem.price < orderItem.basePrice ? '<br /><span style="text-decoration:line-through">':'<span visible="false"'}<fmt:formatNumber value = "${orderItem.basePrice}" type = "currency" />${orderItem.price < orderItem.basePrice ? '</span>':'</span>'}</td>
