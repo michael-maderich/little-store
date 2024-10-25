@@ -512,6 +512,7 @@ public class MainController {
 		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
 		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
+		model.addAttribute("showRetailPrice", getGeneralDataInteger("showRetailPrice"));
 		Triple<String, String, String> imageLeft = getRandomTransparentImage();
 		model.addAttribute("transparentImageLeft", imageLeft);
 		Triple<String, String, String> imageRight = getRandomTransparentImage();
@@ -612,6 +613,7 @@ public class MainController {
 		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
 		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
+		model.addAttribute("showRetailPrice", getGeneralDataInteger("showRetailPrice"));
 		model.addAttribute("addedUpc", addedUpc);
 		model.addAttribute("addedItemQty", addedItemQty);
 		model.addAttribute("itemList", itemList);
@@ -659,6 +661,7 @@ public class MainController {
 		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
 		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
+		model.addAttribute("showRetailPrice", getGeneralDataInteger("showRetailPrice"));
 		model.addAttribute("addedUpc", addedUpc);
 		model.addAttribute("addedItemQty", addedItemQty);
 		model.addAttribute("itemList", itemList);
@@ -684,6 +687,7 @@ public class MainController {
 		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
 		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
+		model.addAttribute("showRetailPrice", getGeneralDataInteger("showRetailPrice"));
 
 		String cartAdjustments = "";
 		int cartTotalItemQty = 0;
@@ -748,6 +752,7 @@ public class MainController {
 		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
 		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
+		model.addAttribute("showRetailPrice", getGeneralDataInteger("showRetailPrice"));
 		model.addAttribute("addedUpc", addedUpc);
 		model.addAttribute("addedItemQty", addedItemQty);
 		model.addAttribute("itemList", itemList);
@@ -784,6 +789,7 @@ public class MainController {
 		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
 		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
+		model.addAttribute("showRetailPrice", getGeneralDataInteger("showRetailPrice"));
 		model.addAttribute("addedUpc", addedUpc);
 		model.addAttribute("addedItemQty", addedItemQty);
 		model.addAttribute("itemList", itemList);
@@ -826,6 +832,7 @@ public class MainController {
 		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
 		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
+		model.addAttribute("showRetailPrice", getGeneralDataInteger("showRetailPrice"));
 		model.addAttribute("addedUpc", addedUpc);
 		model.addAttribute("addedItemQty", addedItemQty);
 		model.addAttribute("itemList", itemList);
@@ -874,6 +881,7 @@ public class MainController {
 			model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 			model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
 			model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
+			model.addAttribute("showRetailPrice", getGeneralDataInteger("showRetailPrice"));
 			model.addAttribute("error", "You must be logged in to add items to your cart.");
 			return "/login";
 		}
@@ -938,6 +946,7 @@ public class MainController {
 		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
 		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
+		model.addAttribute("showRetailPrice", getGeneralDataInteger("showRetailPrice"));
 		model.addAttribute("orderMinimum", getGeneralDataDouble("orderMinimum"));
 
 		Customer customer = getLoggedInUser();
@@ -984,6 +993,7 @@ public class MainController {
 		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
 		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
+		model.addAttribute("showRetailPrice", getGeneralDataInteger("showRetailPrice"));
 		model.addAttribute("orderMinimum", getGeneralDataDouble("orderMinimum"));
 
 		Customer customer = getLoggedInUser();
@@ -1072,6 +1082,7 @@ public class MainController {
 		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
 		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
+		model.addAttribute("showRetailPrice", getGeneralDataInteger("showRetailPrice"));
 		Cart customerCart;
 		if (customer == null) {		// Can't delete cart if not logged in, but also can't get here since can't access cart, either, unless url typed
 			model.addAttribute("error", "You must be logged in to edit your cart.");
@@ -1099,6 +1110,7 @@ public class MainController {
 		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
 		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
+		model.addAttribute("showRetailPrice", getGeneralDataInteger("showRetailPrice"));
 
 		String cartAdjustments = "";
 		int cartTotalItemQty = 0;
@@ -1155,6 +1167,7 @@ public class MainController {
 		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
 		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
+		model.addAttribute("showRetailPrice", getGeneralDataInteger("showRetailPrice"));
 
 		String cartAdjustments = "";
 		int cartTotalItemQty = 0;
@@ -1409,6 +1422,7 @@ public class MainController {
 		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
 		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
+		model.addAttribute("showRetailPrice", getGeneralDataInteger("showRetailPrice"));
 		Customer customer = customerService.findByEmail(email);
 		if (customer == null) {				// Can't resend confirmation if user doesn't exist
 			model.addAttribute("error", "User email not found.");
@@ -1597,6 +1611,7 @@ public class MainController {
 		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
 		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
+		model.addAttribute("showRetailPrice", getGeneralDataInteger("showRetailPrice"));
 		Customer customer = customerService.findByEmail(email);
 		if (customer == null) {				// Can't print order if user doesn't exist
 			model.addAttribute("error", "User email not found.");
