@@ -22,6 +22,10 @@ public class Product implements Serializable {
 	@Column(name="categoryMain", length=50, nullable=false)
 	private String categoryMain;
 
+	@Basic(optional=true)
+	@Column(name="categorySecondary", length=50, nullable=true)
+	private String categorySecondary;
+
 	@Basic(optional=false)
 	@Column(name="categorySpecific", length=50, nullable=false)
 	private String categorySpecific;
@@ -43,6 +47,10 @@ public class Product implements Serializable {
 	private float cost;
 
 	@Basic
+	@Column(name="retailPrice", nullable=false)
+	private float retailPrice;
+
+	@Basic
 	@Column(name="basePrice", nullable=false)
 	private float basePrice;
 
@@ -59,15 +67,23 @@ public class Product implements Serializable {
 	private int stockQty;
 
 	@Basic
-	@Column(name="purchaseLimit", nullable=false)
+	@Column(name="inventoried")
+	private int inventoried;
+
+	@Basic
+	@Column(name="inventoriedDate")
+	private LocalDateTime inventoriedDate;
+	
+	@Basic
+	@Column(name="purchaseLimit")
 	private int purchaseLimit;
 
 	@Basic
-	@Column(name="description", length=200)
+	@Column(name="description", length=200, nullable=false)
 	private String description;
 
 	@Basic
-	@Column(name="image", length=255)
+	@Column(name="image", length=255, nullable=false)
 	private String image;	// URL of product image
 
 	@Basic
@@ -89,20 +105,25 @@ public class Product implements Serializable {
 	public Product() {
 	}
 
-	public Product(String upc, String categoryMain, String categorySpecific, String name, String options, String size,
-			float cost, float basePrice, float currentPrice, boolean onSale, int stockQty, int purchaseLimit,
+	public Product(String upc, String categoryMain, String categorySecondary, String categorySpecific, String name,
+			String options, String size, float cost, float retailPrice, float basePrice, float currentPrice, boolean onSale,
+			int stockQty, int inventoried, LocalDateTime inventoriedDate, int purchaseLimit,
 			String description, String image, int transparent, LocalDateTime dateAdded, LocalDateTime dateLastSold) {
 		this.upc = upc;
 		this.categoryMain = categoryMain;
+		this.categorySecondary = categorySecondary;
 		this.categorySpecific = categorySpecific;
 		this.name = name;
 		this.options = options;
 		this.size = size;
 		this.cost = cost;
+		this.retailPrice = retailPrice;
 		this.basePrice = basePrice;
 		this.currentPrice = currentPrice;
 		this.onSale = onSale;
 		this.stockQty = stockQty;
+		this.inventoried = inventoried;
+		this.inventoriedDate = inventoriedDate;
 		this.purchaseLimit = purchaseLimit;
 		this.description = description;
 		this.image = image;
@@ -123,6 +144,13 @@ public class Product implements Serializable {
 	}
 	public void setCategoryMain(String categoryMain) {
 		this.categoryMain = categoryMain;
+	}
+
+	public String getCategorySecondary() {
+		return categorySecondary;
+	}
+	public void setCategorySecondary(String categorySecondary) {
+		this.categorySecondary = categorySecondary;
 	}
 
 	public String getCategorySpecific() {
@@ -160,6 +188,13 @@ public class Product implements Serializable {
 		this.cost = cost;
 	}
 
+	public float getRetailPrice() {
+		return retailPrice;
+	}
+	public void setRetailPrice(float retailPrice) {
+		this.retailPrice = retailPrice;
+	}
+
 	public float getBasePrice() {
 		return basePrice;
 	}
@@ -186,6 +221,20 @@ public class Product implements Serializable {
 	}
 	public void setStockQty(int stockQty) {
 		this.stockQty = stockQty;
+	}
+
+	public int getInventoried() {
+		return inventoried;
+	}
+	public void setInventoried(int inventoried) {
+		this.inventoried = inventoried;
+	}
+
+	public LocalDateTime getInventoriedDate() {
+		return inventoriedDate;
+	}
+	public void setInventoriedDate(LocalDateTime inventoriedDate) {
+		this.inventoriedDate = inventoriedDate;
 	}
 
 	public int getPurchaseLimit() {
@@ -243,6 +292,8 @@ public class Product implements Serializable {
 		result = prime * result + ((categoryMain == null) ? 0 : categoryMain.hashCode());
 		result = prime * result + ((categorySpecific == null) ? 0 : categorySpecific.hashCode());
 		result = prime * result + Float.floatToIntBits(cost);
+		result = prime * result + Float.floatToIntBits(retailPrice);
+		result = prime * result + Float.floatToIntBits(basePrice);
 		result = prime * result + Float.floatToIntBits(currentPrice);
 		result = prime * result + ((dateAdded == null) ? 0 : dateAdded.hashCode());
 		result = prime * result + ((description == null) ? 0 : description.hashCode());
@@ -279,6 +330,10 @@ public class Product implements Serializable {
 		} else if (!categorySpecific.equals(other.categorySpecific))
 			return false;
 		if (Float.floatToIntBits(cost) != Float.floatToIntBits(other.cost))
+			return false;
+		if (Float.floatToIntBits(currentPrice) != Float.floatToIntBits(other.retailPrice))
+			return false;
+		if (Float.floatToIntBits(currentPrice) != Float.floatToIntBits(other.basePrice))
 			return false;
 		if (Float.floatToIntBits(currentPrice) != Float.floatToIntBits(other.currentPrice))
 			return false;
