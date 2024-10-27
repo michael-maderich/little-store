@@ -57,7 +57,7 @@
 								<td class="product_info">${item.size}</td>
 								<td class="product_info">${item.currentPrice < item.basePrice ? '<span style="color:green; white-space: nowrap">Sale Price: ':''}<fmt:formatNumber value = "${item.currentPrice}" type = "currency" />${item.currentPrice < item.basePrice ? '</span>':''}
 														 ${item.currentPrice < item.basePrice ? '<br /><span style="text-decoration:line-through; white-space: nowrap">':'<span visible="false"'}<fmt:formatNumber value = "${item.basePrice}" type = "currency" />${item.currentPrice < item.basePrice ? '</span>':'</span>'}
-													 	 ${(showRetailPrice eq 1) and (item.retailPrice > 0) ? '<br /><span title="(Lowest retail price)" style="text-decoration:line-through; white-space: nowrap">':'<span visible="false"'}Retail Price: <fmt:formatNumber value = "${item.retailPrice}" type = "currency" />${(showRetailPrice eq 1) and (item.retailPrice > 0) ? '</span>':'</span>'}</td>
+													 	 ${(showRetailPrice eq 1) and (item.retailPrice > 0) ? '<br /><span title="(Lowest retail price)" style="text-decoration:line-through; white-space: nowrap; font-size: 75%;">':'<span visible="false"'}Lowest Retail: <fmt:formatNumber value = "${item.retailPrice}" type = "currency" />${(showRetailPrice eq 1) and (item.retailPrice > 0) ? '</span>':'</span>'}</td>
 								<td class="product_info">${(item.purchaseLimit != 0 and item.purchaseLimit < item.stockQty) ? item.purchaseLimit : item.stockQty}</td>
 								<td class="customerQty product_info">
 									<input type="hidden" id="upc${item.upc}" name="upc" value="${item.upc}" />
