@@ -916,7 +916,7 @@ public class MainController {
 			}
 			lineNum++;
 
-			CartDetail newLineItem = new CartDetail(customerCart, purchasedProduct, purchasedQty, purchasedProduct.getBasePrice(), purchasedProduct.getCurrentPrice(), lineNum);
+			CartDetail newLineItem = new CartDetail(customerCart, purchasedProduct, purchasedQty, purchasedProduct.getRetailPrice(), purchasedProduct.getBasePrice(), purchasedProduct.getCurrentPrice(), lineNum);
 			cartItems.add(newLineItem);
 			Collections.sort(cartItems);			// CartDetail entity contains compareTo() method. List sorted for better cart/checkout display
 			customerCart.setCartItems(cartItems);
@@ -1241,6 +1241,7 @@ public class MainController {
 				lineItem.setImage(item.getProduct().getImage());
 				lineItem.setQty(item.getQty());
 				lineItem.setQtyFulfilled(item.getQty());	// Set fulfilled qty to ordered qty by default
+				lineItem.setRetailPrice(item.getRetailPrice());
 				lineItem.setBasePrice(item.getBasePrice());
 				lineItem.setPrice(item.getPrice());
 				lineItem.setLineNumber(lineNum++);

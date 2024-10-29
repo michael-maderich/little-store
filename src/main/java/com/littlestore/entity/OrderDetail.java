@@ -46,6 +46,10 @@ public class OrderDetail implements Serializable, Comparable<OrderDetail> {
 	private int qtyFulfilled;
 	
 	@Basic
+	@Column(name="retailPrice", nullable=false)
+	private float retailPrice;
+	
+	@Basic
 	@Column(name="basePrice", nullable=false)
 	private float basePrice;
 	
@@ -60,13 +64,14 @@ public class OrderDetail implements Serializable, Comparable<OrderDetail> {
 	public OrderDetail() {
 	}
 
-	public OrderDetail(Order order, Product product, String description, String image, int qty, float basePrice, float price, int lineNumber) {
+	public OrderDetail(Order order, Product product, String description, String image, int qty, float retailPrice, float basePrice, float price, int lineNumber) {
 		this.order = order;
 		this.product = product;
 		this.description = description;
 		this.image = image;
 		this.qty = qty;
 //		this.qtyFulfilled = 0;
+		this.retailPrice = retailPrice;
 		this.basePrice = basePrice;
 		this.price = price;
 		this.lineNumber = lineNumber;
@@ -113,6 +118,13 @@ public class OrderDetail implements Serializable, Comparable<OrderDetail> {
 	}
 	public void setQtyFulfilled(int qtyFulfilled) {
 		this.qtyFulfilled = qtyFulfilled;
+	}
+
+	public float getRetailPrice() {
+		return retailPrice;
+	}
+	public void setRetailPrice(float retailPrice) {
+		this.retailPrice = retailPrice;
 	}
 
 	public float getBasePrice() {
