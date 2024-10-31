@@ -41,7 +41,7 @@
 								<th>Size</th>
 								<th>Quantity</th>
 								<th>Unit Price</th>
-								<th>Subtotal</th>
+								<th>Sub-total</th>
 								<th>
 									<form action="${customerCart.cartItems!=null ? '/clearCart' : '/'}">
 										<button type="submit" ${customerCart.cartItems==null ? 'hidden ' : ''}class="btn btn-sm btn-primary btn-block highlighted">
@@ -64,7 +64,7 @@
 							 	    ${(showRetailPrice eq 1) and (cartItem.retailPrice > 0) ? '<br /><span title="(Lowest retail price)" style="text-decoration:line-through; white-space: nowrap; font-size: 75%;">':'<span visible="false"'}Lowest Retail: <fmt:formatNumber value = "${cartItem.retailPrice}" type = "currency" />${(showRetailPrice eq 1) and (cartItem.retailPrice > 0) ? '</span>':'</span>'}</td>
 								<td>${cartItem.price < cartItem.basePrice ? '<span style="color:green; white-space: nowrap">Sale Price: ':''}<fmt:formatNumber value = "${cartItem.qty * cartItem.price}" type = "currency" />${cartItem.price < cartItem.basePrice ? '</span>':''}
 								    ${cartItem.price < cartItem.basePrice ? '<br /><span style="text-decoration:line-through; white-space: nowrap">':'<span visible="false"'}<fmt:formatNumber value = "${cartItem.qty * cartItem.basePrice}" type = "currency" />${cartItem.price < cartItem.basePrice ? '</span>':'</span>'}
-							 	    ${(showRetailPrice eq 1) and (cartItem.retailPrice > 0) ? '<br /><span title="(Savings off Retail)" style="color:green; white-space: nowrap; font-size: 75%;">':'<span visible="false"'}Savings off Retail: <fmt:formatNumber value = "${cartItem.qty * (cartItem.retailPrice - cartItem.price)}" type = "currency" />${(showRetailPrice eq 1) and (cartItem.retailPrice > 0) ? '</span>':'</span>'}</td>
+							 	    ${(showRetailPrice eq 1) and (cartItem.retailPrice > 0) ? '<br /><span title="(Savings off Lowest Retail Total)" style="color:green; white-space: nowrap; font-size: 75%;">':'<span visible="false"'}Savings off Retail: <fmt:formatNumber value = "${cartItem.qty * (cartItem.retailPrice - cartItem.price)}" type = "currency" />${(showRetailPrice eq 1) and (cartItem.retailPrice > 0) ? '</span>':'</span>'}</td>
 								<td class="button_panel">
 									<input type="hidden" id="upc" name="upc" value="${cartItem.product.upc}" />
 									<button type="submit" class="btn btn-sm btn-primary btn-block">Remove</button>
@@ -101,9 +101,9 @@
 										<c:if test = "${cartTotal < orderMinimum}">
 										<fmt:formatNumber value = "${orderMinimum}" type = "currency" /> Order<br />Minimum
 										</c:if>
-										<c:if test = "${cartTotal >= orderMinimum}">
+										<c:if test = "${cartTotal >= orderMinimum}"><span style="white-space: nowrap">
 										Proceed to<br />Check Out
-										</c:if>
+										</span></c:if>
 									</button>
 								</form>
 								</td>

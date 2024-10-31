@@ -12,7 +12,7 @@ form .text-field {
 #left-img-content {
     float:left;
     position:absolute;
-/*     top:20rem; */
+    top:10rem; 
     left:10%;
     max-width: 10em;
     z-index:-1;
@@ -23,7 +23,7 @@ form .text-field {
 #right-img-content {
     float:right;
     position:absolute;
-/*     top:20rem; */
+    top:10rem; 
     right:10%;
     z-index:-1;
 }
