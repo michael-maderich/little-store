@@ -836,6 +836,7 @@ public class MainController {
 		model.addAttribute("addedUpc", addedUpc);
 		model.addAttribute("addedItemQty", addedItemQty);
 		model.addAttribute("itemList", itemList);
+		model.addAttribute("searchItemQty", itemList.size());
 		model.addAttribute("searchText", searchText);
 		return "searchresults";
 	}
