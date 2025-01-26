@@ -226,6 +226,7 @@ public class MainController {
 		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
 		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
+		model.addAttribute("allowOosSearch", getGeneralDataInteger("allowOosSearch"));
 		return "redirect:/";
 	}
 	
@@ -266,6 +267,7 @@ public class MainController {
 		model.addAttribute("indexBgImageAltText", getGeneralDataString("indexBgImageAltText"));
 		model.addAttribute("indexBgImageTooltip", getGeneralDataString("indexBgImageTooltip"));
 		model.addAttribute("indexBgImageHyperlink", getGeneralDataString("indexBgImageHyperlink"));
+		model.addAttribute("allowOosSearch", getGeneralDataInteger("allowOosSearch"));
 		return "/index";
 	}
 
@@ -282,6 +284,7 @@ public class MainController {
 		Triple<String, String, String> imageRight = getRandomTransparentImage();
 		while (imageRight.equals(imageLeft)) {imageRight = getRandomTransparentImage();};
 		model.addAttribute("transparentImageRight", imageRight);
+		model.addAttribute("allowOosSearch", getGeneralDataInteger("allowOosSearch"));
 		if (getLoggedInUser() != null) return "/newitems";				// If user is logged in, redirect to newitems page
 		else return "/login";											// Otherwise, submit POST request to login page (handled by Spring Security)
 	}
@@ -292,6 +295,7 @@ public class MainController {
 		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
 		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
+		model.addAttribute("allowOosSearch", getGeneralDataInteger("allowOosSearch"));
 
 		if (getLoggedInUser() != null) return "redirect:/account";		// If user is already signed in, redirect to account page.
 		else {
@@ -320,6 +324,7 @@ public class MainController {
 		Triple<String, String, String> imageRight = getRandomTransparentImage();
 		while (imageRight.equals(imageLeft)) {imageRight = getRandomTransparentImage();};
 		model.addAttribute("transparentImageRight", imageRight);
+		model.addAttribute("allowOosSearch", getGeneralDataInteger("allowOosSearch"));
 
 		customerFormValidator.validate(customerForm, bindingResult);
 		if (bindingResult.hasErrors()) {
@@ -343,6 +348,7 @@ public class MainController {
 		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
 		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
+		model.addAttribute("allowOosSearch", getGeneralDataInteger("allowOosSearch"));
 		return "/forgotPassword";
 	}
 	
@@ -358,6 +364,7 @@ public class MainController {
 		Triple<String, String, String> imageRight = getRandomTransparentImage();
 		while (imageRight.equals(imageLeft)) {imageRight = getRandomTransparentImage();};
 		model.addAttribute("transparentImageRight", imageRight);
+		model.addAttribute("allowOosSearch", getGeneralDataInteger("allowOosSearch"));
 
 		if (getLoggedInUser() != null) return "redirect:/account";		// If user is already signed in, redirect to account page.
 		else {
@@ -386,6 +393,7 @@ public class MainController {
 		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
 		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
+		model.addAttribute("allowOosSearch", getGeneralDataInteger("allowOosSearch"));
 
 		customerFormValidator.validatePasswordReset(customerForm, bindingResult);
 		if (bindingResult.hasErrors()) {
@@ -417,6 +425,7 @@ public class MainController {
 		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
 		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
+		model.addAttribute("allowOosSearch", getGeneralDataInteger("allowOosSearch"));
 		Triple<String, String, String> imageLeft = getRandomTransparentImage();
 		model.addAttribute("transparentImageLeft", imageLeft);
 		Triple<String, String, String> imageRight = getRandomTransparentImage();
@@ -447,8 +456,6 @@ public class MainController {
 			}
 			model.addAttribute("customerForm", customer);
 			model.addAttribute("listStates", listStates);
-			model.addAttribute("transparentImageLeft", imageLeft);
-			model.addAttribute("transparentImageRight", imageRight);
 			return "/account";
 		}
 	}
@@ -473,11 +480,13 @@ public class MainController {
 		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
 		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
+		model.addAttribute("allowOosSearch", getGeneralDataInteger("allowOosSearch"));
 		Triple<String, String, String> imageLeft = getRandomTransparentImage();
 		model.addAttribute("transparentImageLeft", imageLeft);
 		Triple<String, String, String> imageRight = getRandomTransparentImage();
 		while (imageRight.equals(imageLeft)) {imageRight = getRandomTransparentImage();};
 		model.addAttribute("transparentImageRight", imageRight);
+		model.addAttribute("allowOosSearch", getGeneralDataInteger("allowOosSearch"));
 		Customer customer = getLoggedInUser();
 		if (customer == null) {				// Can't view orders if not logged in, for now. Direct user to log in/sign up
 			model.addAttribute("error", "You must be logged in to edit your account details.");
@@ -513,6 +522,7 @@ public class MainController {
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
 		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
 		model.addAttribute("showRetailPrice", getGeneralDataInteger("showRetailPrice"));
+		model.addAttribute("allowOosSearch", getGeneralDataInteger("allowOosSearch"));
 		Triple<String, String, String> imageLeft = getRandomTransparentImage();
 		model.addAttribute("transparentImageLeft", imageLeft);
 		Triple<String, String, String> imageRight = getRandomTransparentImage();
@@ -614,6 +624,7 @@ public class MainController {
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
 		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
 		model.addAttribute("showRetailPrice", getGeneralDataInteger("showRetailPrice"));
+		model.addAttribute("allowOosSearch", getGeneralDataInteger("allowOosSearch"));
 		model.addAttribute("addedUpc", addedUpc);
 		model.addAttribute("addedItemQty", addedItemQty);
 		model.addAttribute("itemList", itemList);
@@ -662,6 +673,7 @@ public class MainController {
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
 		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
 		model.addAttribute("showRetailPrice", getGeneralDataInteger("showRetailPrice"));
+		model.addAttribute("allowOosSearch", getGeneralDataInteger("allowOosSearch"));
 		model.addAttribute("addedUpc", addedUpc);
 		model.addAttribute("addedItemQty", addedItemQty);
 		model.addAttribute("itemList", itemList);
@@ -677,6 +689,7 @@ public class MainController {
 		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
 		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
+		model.addAttribute("allowOosSearch", getGeneralDataInteger("allowOosSearch"));
 		return "images";
 	}
 	
@@ -688,6 +701,7 @@ public class MainController {
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
 		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
 		model.addAttribute("showRetailPrice", getGeneralDataInteger("showRetailPrice"));
+		model.addAttribute("allowOosSearch", getGeneralDataInteger("allowOosSearch"));
 
 		String cartAdjustments = "";
 		int cartTotalItemQty = 0;
@@ -753,6 +767,7 @@ public class MainController {
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
 		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
 		model.addAttribute("showRetailPrice", getGeneralDataInteger("showRetailPrice"));
+		model.addAttribute("allowOosSearch", getGeneralDataInteger("allowOosSearch"));
 		model.addAttribute("addedUpc", addedUpc);
 		model.addAttribute("addedItemQty", addedItemQty);
 		model.addAttribute("itemList", itemList);
@@ -790,6 +805,7 @@ public class MainController {
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
 		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
 		model.addAttribute("showRetailPrice", getGeneralDataInteger("showRetailPrice"));
+		model.addAttribute("allowOosSearch", getGeneralDataInteger("allowOosSearch"));
 		model.addAttribute("addedUpc", addedUpc);
 		model.addAttribute("addedItemQty", addedItemQty);
 		model.addAttribute("itemList", itemList);
@@ -833,6 +849,7 @@ public class MainController {
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
 		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
 		model.addAttribute("showRetailPrice", getGeneralDataInteger("showRetailPrice"));
+		model.addAttribute("allowOosSearch", getGeneralDataInteger("allowOosSearch"));
 		model.addAttribute("addedUpc", addedUpc);
 		model.addAttribute("addedItemQty", addedItemQty);
 		model.addAttribute("itemList", itemList);
@@ -883,6 +900,7 @@ public class MainController {
 			model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
 			model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
 			model.addAttribute("showRetailPrice", getGeneralDataInteger("showRetailPrice"));
+			model.addAttribute("allowOosSearch", getGeneralDataInteger("allowOosSearch"));
 			model.addAttribute("error", "You must be logged in to add items to your cart.");
 			return "/login";
 		}
@@ -936,6 +954,8 @@ public class MainController {
 			model.addAttribute("showTotalInHeader", getGeneralDataInteger("showTotalInHeader"));
 			model.addAttribute("customerCart", customerCart);
 			model.addAttribute("searchText", searchText);
+			model.addAttribute("showRetailPrice", getGeneralDataInteger("showRetailPrice"));
+			model.addAttribute("allowOosSearch", getGeneralDataInteger("allowOosSearch"));
 			return !referer.startsWith("/search") ? "redirect:" + referer + "?addedUpc=" + upc + "&addedItemQty=" + addedItemQty + "#" + upc
 												  : "redirect:" + referer + "?q=" + searchText + "&addedUpc=" + upc + "&addedItemQty=" + addedItemQty + "#" + upc;
 		}
@@ -948,6 +968,7 @@ public class MainController {
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
 		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
 		model.addAttribute("showRetailPrice", getGeneralDataInteger("showRetailPrice"));
+		model.addAttribute("allowOosSearch", getGeneralDataInteger("allowOosSearch"));
 		model.addAttribute("orderMinimum", getGeneralDataDouble("orderMinimum"));
 
 		Customer customer = getLoggedInUser();
@@ -995,6 +1016,7 @@ public class MainController {
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
 		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
 		model.addAttribute("showRetailPrice", getGeneralDataInteger("showRetailPrice"));
+		model.addAttribute("allowOosSearch", getGeneralDataInteger("allowOosSearch"));
 		model.addAttribute("orderMinimum", getGeneralDataDouble("orderMinimum"));
 
 		Customer customer = getLoggedInUser();
@@ -1084,6 +1106,7 @@ public class MainController {
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
 		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
 		model.addAttribute("showRetailPrice", getGeneralDataInteger("showRetailPrice"));
+		model.addAttribute("allowOosSearch", getGeneralDataInteger("allowOosSearch"));
 		Cart customerCart;
 		if (customer == null) {		// Can't delete cart if not logged in, but also can't get here since can't access cart, either, unless url typed
 			model.addAttribute("error", "You must be logged in to edit your cart.");
@@ -1112,6 +1135,7 @@ public class MainController {
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
 		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
 		model.addAttribute("showRetailPrice", getGeneralDataInteger("showRetailPrice"));
+		model.addAttribute("allowOosSearch", getGeneralDataInteger("allowOosSearch"));
 
 		String cartAdjustments = "";
 		int cartTotalItemQty = 0;
@@ -1169,6 +1193,7 @@ public class MainController {
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
 		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
 		model.addAttribute("showRetailPrice", getGeneralDataInteger("showRetailPrice"));
+		model.addAttribute("allowOosSearch", getGeneralDataInteger("allowOosSearch"));
 
 		String cartAdjustments = "";
 		int cartTotalItemQty = 0;
@@ -1425,6 +1450,7 @@ public class MainController {
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
 		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
 		model.addAttribute("showRetailPrice", getGeneralDataInteger("showRetailPrice"));
+		model.addAttribute("allowOosSearch", getGeneralDataInteger("allowOosSearch"));
 		Customer customer = customerService.findByEmail(email);
 		if (customer == null) {				// Can't resend confirmation if user doesn't exist
 			model.addAttribute("error", "User email not found.");
@@ -1614,6 +1640,7 @@ public class MainController {
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
 		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
 		model.addAttribute("showRetailPrice", getGeneralDataInteger("showRetailPrice"));
+		model.addAttribute("allowOosSearch", getGeneralDataInteger("allowOosSearch"));
 		Customer customer = customerService.findByEmail(email);
 		if (customer == null) {				// Can't print order if user doesn't exist
 			model.addAttribute("error", "User email not found.");

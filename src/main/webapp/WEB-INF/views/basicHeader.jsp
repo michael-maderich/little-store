@@ -11,8 +11,9 @@
 			<form id="searchForm" method="GET" action="/search">
 				<input type="text" name="q" placeholder=" Search">
 				<button id="searchBtn" type="submit" class="btn btn-sm btn-primary btn-block">Search</button>
+				${(allowOosSearch eq 1) ? '
 				<input type="checkbox" id="showOOS" name="showOOS">
-				<label for="showOOS">Show Out of Stock items</label>
+				<label for="showOOS">Show Out of Stock items</label>':''}
 			</form>
 			</nav>
  			<div id="action-icons">
