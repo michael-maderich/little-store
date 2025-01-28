@@ -7,10 +7,10 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <jsp:include page="headElement.jsp">
-            <jsp:param name="title" value="The Little Store - Forgot Password" />
-            <jsp:param name="page" value="login" />
-        </jsp:include>
+<jsp:include page="headElement.jsp">
+    <jsp:param name="title" value="The Little Store - Forgot Password" />
+    <jsp:param name="page" value="login" />
+</jsp:include>
     </head>
     <body>
         <header>
@@ -18,6 +18,14 @@
         </header>
         <div id="main-content">
 	        <jsp:include page="sideNav.jsp"></jsp:include>
+			<div id="left-img-content">
+				<div class="image-buffer"></div>
+				<a href="${transparentImageLeft.getThird()}"><img src="${transparentImageLeft.getFirst()}" alt="${transparentImageLeft.getSecond() }"/></a>
+			</div>
+			<div id="right-img-content">
+				<div class="image-buffer"></div>
+				<a href="${transparentImageRight.getThird()}"><img src="${transparentImageRight.getFirst()}" alt="${transparentImageRight.getSecond() }"/></a>
+			</div>
             <div id="center-content">
                 <div id="login-panel">
                     <h2>Reset Password</h2>
@@ -35,9 +43,9 @@
 						</div>
                     </form>
                 </div>
-                <div id="bottom-img-content">
-                    <img src="https://www.suave.com/sk-eu/content/dam/brands/suave/united_states_ofamerica/1319751-079400459534.png.rendition.767.767.png" alt="Suave Kids Silly Apple 3-in-1 Shampoo + Conditioner + Body Wash 18 fl oz" width=400em; />
-                </div>
+                <!--div id="bottom-img-content">
+					<a href="${transparentImageBottom.getThird()}"><img src="${transparentImageBottom.getFirst()}" alt="${transparentImageBottom.getSecond() }"/></a>
+                </div-->
             </div>
         </div>
         <footer>

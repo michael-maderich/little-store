@@ -319,12 +319,12 @@ public class MainController {
 		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
 		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
+		model.addAttribute("allowOosSearch", getGeneralDataInteger("allowOosSearch"));
 		Triple<String, String, String> imageLeft = getRandomTransparentImage();
 		model.addAttribute("transparentImageLeft", imageLeft);
 		Triple<String, String, String> imageRight = getRandomTransparentImage();
 		while (imageRight.equals(imageLeft)) {imageRight = getRandomTransparentImage();};
 		model.addAttribute("transparentImageRight", imageRight);
-		model.addAttribute("allowOosSearch", getGeneralDataInteger("allowOosSearch"));
 
 		customerFormValidator.validate(customerForm, bindingResult);
 		if (bindingResult.hasErrors()) {
@@ -349,6 +349,14 @@ public class MainController {
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
 		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
 		model.addAttribute("allowOosSearch", getGeneralDataInteger("allowOosSearch"));
+		Triple<String, String, String> imageLeft = getRandomTransparentImage();
+		model.addAttribute("transparentImageLeft", imageLeft);
+		Triple<String, String, String> imageRight = getRandomTransparentImage();
+		while (imageRight.equals(imageLeft)) {imageRight = getRandomTransparentImage();};
+		model.addAttribute("transparentImageRight", imageRight);
+		Triple<String, String, String> imageBottom = getRandomTransparentImage();
+		while (imageBottom.equals(imageLeft) || imageBottom.equals(imageRight)) {imageBottom = getRandomTransparentImage();};
+		model.addAttribute("transparentImageBottom", imageBottom);
 		return "/forgotPassword";
 	}
 	
