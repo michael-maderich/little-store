@@ -4,8 +4,8 @@
 <html lang="en">
     <head>
         <jsp:include page="headElement.jsp">
-            <jsp:param name="title" value="The Little Store - Home" />
-            <jsp:param name="page" value="index" />
+            <jsp:param name="title" value="The Little Store - Access Denied" />
+            <jsp:param name="page" value="403" />
         </jsp:include>
     </head>
 	<body>
@@ -15,7 +15,7 @@
         <div id="main-content">
 	        <jsp:include page="sideNav.jsp"></jsp:include>
             <div id="center-content">
-				<div class="page-title">Access Denied!</div>
+				<div class="page-title"><b>Access Denied</b></div>
 				<h3 style="color:red;">Sorry, you can not access this page!</h3>
             </div>
         </div>
