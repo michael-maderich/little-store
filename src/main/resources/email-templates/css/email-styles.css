@@ -1,0 +1,56 @@
+@charset "ISO-8859-1";
+#checkout-panel
+{
+	padding-bottom:1em;
+}
+#checkout-panel h2, #checkout-panel h4
+{
+	font-family: 'Gravitas One', Verdana, Geneva, Tahoma, sans-serif;
+}
+#checkout-panel h4
+{
+	font-family: 'Inknut Antiqua', Verdana, Geneva, Tahoma, sans-serif;
+}
+.orderDetailHeader
+{
+	margin-top:3em;
+}
+.orderDetailHeader span
+{
+	padding-left:1em;
+	padding-right:1em;
+}
+#checkout-table
+{
+    border-collapse: collapse; /* important for email clients */
+    width: 100%;
+	margin:0 auto;
+	margin-top:2em;
+}
+#checkout-table th
+{
+	background-color: #f9f9f9;
+	border:1px solid #ccc;
+	padding: .5rem 1 rem;
+}
+#checkout-table td
+{
+	background-color:white;
+	border:1px solid #ccc;
+	padding: .5rem 1 rem;
+}
+#checkout-table img
+{
+	height:2em;
+}
+.checkout_image_panel {background-color:white;}
+.checkout_subtotal_panel {font-weight:bold;}
+.checkoutHeader {margin-top:2em; margin-bottom:1em;}
+.checkoutHeader span {padding-left:1em; padding-right:1em;}
+#customer-panel {padding-bottom:1em;}
+#customer-panel h2, #customer-panel h4 {font-family: 'Gravitas One', Verdana, Geneva, Tahoma, sans-serif;}
+#customer-panel h4 {font-family: 'Inknut Antiqua', Verdana, Geneva, Tahoma, sans-serif;}
+#customer-table {margin:0 auto; margin-top:2em;}
+#customer-table td {width:8em;}
+.customer_td_label {text-align:right; padding-bottom:.5em; padding-right:.5em;}
+.customer_td_input {text-align:left;}

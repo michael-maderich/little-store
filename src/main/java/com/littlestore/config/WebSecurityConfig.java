@@ -32,13 +32,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		// Admin pages (manage inventory/customers/orders etc
+		// Admin pages (manage inventory/customers/orders etc)
 		http.csrf().disable().authorizeRequests()
-			.antMatchers(HttpMethod.DELETE, "/admin/products/{productId}").hasAnyRole(Role.Roles.ADMIN.name(), Role.Roles.OWNER.name()) 	// Owner should be able to delete
-			.antMatchers(HttpMethod.PUT, "/admin/products/{productId}").hasAnyRole(Role.Roles.ADMIN.name(), Role.Roles.OWNER.name()) 		// Owner should be able to update
-			.antMatchers("/admin/products/add").hasAnyRole(Role.Roles.ADMIN.name(), Role.Roles.OWNER.name()) // Admin and Supervisor should be able to add product.
-			.antMatchers("/admin/**").hasAnyRole(Role.Roles.ADMIN.name(), Role.Roles.OWNER.name())
-			.antMatchers("/admin").hasAnyRole(Role.Roles.ADMIN.name(), Role.Roles.OWNER.name())
+//			.antMatchers(HttpMethod.DELETE, "/admin/products/{productId}").hasAnyRole(Role.Roles.ADMIN.name(), Role.Roles.OWNER.name()) 	// Owner should be able to delete
+//			.antMatchers(HttpMethod.PUT, "/admin/products/{productId}").hasAnyRole(Role.Roles.ADMIN.name(), Role.Roles.OWNER.name()) 		// Owner should be able to update
+//			.antMatchers("/admin/products/add").hasAnyRole(Role.Roles.ADMIN.name(), Role.Roles.OWNER.name()) // Admin and Supervisor should be able to add product.
+//			.antMatchers("/admin/**").hasAnyRole(Role.Roles.ADMIN.name(), Role.Roles.OWNER.name())
+//			.antMatchers("/admin").hasAnyRole(Role.Roles.ADMIN.name(), Role.Roles.OWNER.name())
 			.antMatchers("/**").permitAll()
 			.and()
 			.formLogin()

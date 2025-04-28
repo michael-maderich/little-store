@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	    <meta charset="ISO-8859-1">
+	    <title>Order Confirmation</title>
+	</head>
+	<body>
+		<div id='customer-panel' style='padding-bottom:1rem'>
+			<h2 style="font-family: 'Gravitas One', Verdana, Geneva, Tahoma, sans-serif">
+				Thank You For Your Order at <a href=\"https://the-little-store.herokuapp.com/\" target=\"_new\">The Little Store</a>!
+			</h2>
+			<h3 class='checkoutHeader' style="font-family: 'Inknut Antiqua', Verdana, Geneva, Tahoma, sans-serif">
+				Customer Details
+			</h3>
+			<table id='customer-table' style="margin:0 auto; margin-top:2rem">
+				<tr>
+					<td></td>
+					<td class='customer_td_label' style='width:8rem; text-align:right; padding-bottom:.5rem; padding:.5rem; background-color: #f9f9f9'>
+						<label for='name'><b>Name</b>:</label>
+					</td>
+					<td colspan=2 class='customer_td_label' style='width:8rem; text-align:right; padding-bottom:.5rem; padding:.5rem'>
+						${firstName} ${lastName}
+					</td>
+					<td class='customer_td_label' style='width:8rem; text-align:right; padding-bottom:.5rem; padding:.5rem; background-color: #f9f9f9'>
+						<label for='email'><b>Email</b>:</label>
+					</td>
+					<td colspan=2 class='customer_td_input' style='width:8rem; text-align:right; padding-bottom:.5rem; padding:.5rem'>
+						${email}
+					</td>
+					<td class='customer_td_label' style='width:8rem; text-align:right; padding-bottom:.5rem; padding:.5rem; background-color: #f9f9f9'>
+						<label for='phone'><b>Phone</b>:</label>
+					</td>
+					<td colspan=2 class='customer_td_label' style='width:8rem; text-align:right; padding-bottom:.5rem; padding:.5rem'>
+						${phone}
+					</td>
+				</tr>
+				<tr>
+					<td colspan=2 class='customer_td_label' style='width:8rem; text-align:right; padding-bottom:.5rem; padding:.5rem; background-color: #f9f9f9'>
+						<label for='address'><b>Meet-Up Address</b>:</label>
+					</td>
+					<td colspan=2 class='customer_td_label' style='width:8rem; text-align:right; padding-bottom:.5rem; padding:.5rem'>
+						${address}
+					</td>
+					<td class='customer_td_label' style='width:8rem; text-align:right; padding-bottom:.5rem; padding:.5rem; background-color: #f9f9f9'>
+						<label for='city'><b>City</b>:</label>
+					</td>
+					<td colspan=2 class='customer_td_label' style='width:8rem; text-align:right; padding-bottom:.5rem; padding:.5rem'>
+						${city}
+					</td>
+					<td class='customer_td_label' style='width:8rem; text-align:right; padding-bottom:.5rem; padding:.5rem; background-color: #f9f9f9'>
+						<label for='state'><b>State</b>:</label>
+					</td>
+					<td class='customer_td_label' style='width:8rem; text-align:right; padding-bottom:.5rem; padding:.5rem'>
+						${state}
+					</td>
+				</tr>
+				<tr>
+					<td colspan=2 class='customer_td_label' style='width:8rem; text-align:right; padding-bottom:.5rem; padding:.5rem; background-color: #f9f9f9'>
+						<label for='paymentType'><b>Payment Type</b>:</label>
+					</td>
+					<td colspan=2 class='customer_td_label' style='width:8rem; text-align:right; padding-bottom:.5rem; padding:.5rem'>
+						${payMethod}
+					</td>
+					<td class='customer_td_label' style='width:8rem; text-align:right; padding-bottom:.5rem; padding:.5rem; background-color: #f9f9f9'>
+						<label for='paymentHandle'><b>Payment Handle</b>:</label>
+					</td>
+					<td colspan=2 class='customer_td_label' style='width:8rem; text-align:right; padding-bottom:.5rem; padding:.5rem'>
+						${payHandle}
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div id='checkout-panel' style='padding-bottom:1rem; margin-top:2rem; margin-bottom:1rem'>
+			<h3 class='checkoutHeader'  style="font-family: 'Inknut Antiqua', Verdana, Geneva, Tahoma, sans-serif">
+				Order Details
+			</h3>
+			<div class='orderDetailHeader'>
+				<h4 style="font-family: 'Inknut Antiqua', Verdana, Geneva, Tahoma, sans-serif">
+					<span style='padding-left:1em; padding-right:1em'>Order #${orderNum}</span>
+					<span style='padding-left:1em; padding-right:1em'>Order Date: ${orderDate}</span>
+					<span style='padding-left:1em; padding-right:1em'>Status: ${orderStatus}</span>
+				</h4>
+			</div>
+			${orderItemsTable}
+		</div>
+		<p>If you have any questions, please contact us at ${supportEmail}.</p>
+	</body>
+</html>

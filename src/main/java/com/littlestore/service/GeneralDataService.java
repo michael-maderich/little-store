@@ -2,7 +2,6 @@ package com.littlestore.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.littlestore.entity.GeneralData;
@@ -12,7 +11,6 @@ import com.littlestore.repository.GeneralDataRepository;
 public class GeneralDataService {
 	
 	GeneralDataRepository repo;
-	@Autowired
 	public GeneralDataService(GeneralDataRepository repo) {
 		this.repo = repo;
 	}
