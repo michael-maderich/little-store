@@ -26,7 +26,7 @@
             </div>
 			<div id="left-img-content">
 				<div class="image-buffer"></div>
-				<a href="${transparentImageLeft.getThird()}"><img src="${transparentImageLeft.getFirst()}" alt="${transparentImageLeft.getSecond() }"/></a>
+				<a href="${transparentImageLeft.right}"><img src="${transparentImageLeft.left}" alt="${transparentImageLeft.middle }"/></a>
 			</div>
 			<div id="center-content">
 				<div id="profile-panel">
@@ -85,7 +85,7 @@
 			</div>
 			<div id="right-img-content">
 				<div class="image-buffer"></div>
-				<a href="${transparentImageRight.getThird()}"><img src="${transparentImageRight.getFirst()}" alt="${transparentImageRight.getSecond() }"/></a>
+				<a href="${transparentImageRight.right}"><img src="${transparentImageRight.left}" alt="${transparentImageRight.middle }"/></a>
 			</div>
         </div>
         <footer>

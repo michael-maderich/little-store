@@ -1,6 +1,11 @@
 package com.littlestore.controller;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
@@ -17,8 +22,11 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.tuple.Triple;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -51,8 +59,6 @@ import com.littlestore.service.GeneralDataService;
 import com.littlestore.service.PaymentInfoService;
 import com.littlestore.service.SecurityService;
 import com.littlestore.validator.CustomerFormValidator;
-
-import kotlin.Triple;
 
 import com.littlestore.service.GmailEmailService;
 
@@ -233,7 +239,7 @@ public class MainController {
 		String desc = randomProduct.getDescription();
 		String productUrl = "/category/" + randomProduct.getCategoryMain() + "/" + randomProduct.getCategorySpecific()
 				+ "/#" + randomProduct.getUpc();
-		Triple<String, String, String> triplet = new Triple<String, String, String>(image, desc, productUrl);
+		Triple<String, String, String> triplet = Triple.of(image, desc, productUrl);
 		return triplet;
 	}
 
@@ -426,8 +432,7 @@ public class MainController {
 		Triple<String, String, String> imageRight = getRandomTransparentImage();
 		while (imageRight.equals(imageLeft)) {
 			imageRight = getRandomTransparentImage();
-		}
-		;
+		};
 		model.addAttribute("transparentImageRight", imageRight);
 		model.addAttribute("allowOosSearch", getGeneralDataInteger("allowOosSearch"));
 		Customer user = getLoggedInUser();
@@ -1393,6 +1398,62 @@ public class MainController {
 		}
 	}
 
+	@GetMapping("/connect")
+	public void connect(HttpServletResponse response) throws IOException {
+	    String redirectUri = "http://localhost:8080/oauth2/callback";
+	    String clientId = "***REMOVED***";
+	    String scope = "https://www.googleapis.com/auth/gmail.send";
+
+	    String oauthUrl = "https://accounts.google.com/o/oauth2/v2/auth"
+	            + "?client_id=" + URLEncoder.encode(clientId, StandardCharsets.UTF_8)
+	            + "&redirect_uri=" + URLEncoder.encode(redirectUri, StandardCharsets.UTF_8)
+	            + "&response_type=code"
+	            + "&scope=" + URLEncoder.encode(scope, StandardCharsets.UTF_8)
+	            + "&access_type=offline"
+	            + "&prompt=consent";
+
+	    response.sendRedirect(oauthUrl);
+	}
+
+	@GetMapping("/oauth2/callback")
+	public ResponseEntity<String> oauth2Callback(@RequestParam("code") String code) throws IOException {
+	    String clientId = "***REMOVED***";
+	    String clientSecret = "***REMOVED***";
+	    String redirectUri = "http://localhost:8080/oauth2/callback";
+	    String tokenUrl = "https://oauth2.googleapis.com/token";
+
+	    // Build the request body
+	    String requestBody = "code=" + URLEncoder.encode(code, StandardCharsets.UTF_8)
+	            + "&client_id=" + URLEncoder.encode(clientId, StandardCharsets.UTF_8)
+	            + "&client_secret=" + URLEncoder.encode(clientSecret, StandardCharsets.UTF_8)
+	            + "&redirect_uri=" + URLEncoder.encode(redirectUri, StandardCharsets.UTF_8)
+	            + "&grant_type=authorization_code";
+
+	    // Send the POST request
+	    HttpURLConnection conn = (HttpURLConnection) new URL(tokenUrl).openConnection();
+	    conn.setRequestMethod("POST");
+	    conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+	    conn.setDoOutput(true);
+	    try (OutputStream os = conn.getOutputStream()) {
+	        os.write(requestBody.getBytes(StandardCharsets.UTF_8));
+	    }
+
+	    // Read the response
+	    StringBuilder response;
+	    try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8))) {
+	        response = new StringBuilder();
+	        String line;
+	        while ((line = br.readLine()) != null) {
+	            response.append(line.trim());
+	        }
+	    }
+
+	    // Print the response body
+	    System.out.println("OAuth2 Token Response: " + response);
+
+	    return ResponseEntity.ok("OAuth2 flow complete. Check your server logs for the token JSON.");
+	}
+	
     @PostMapping("/confirmation")
 	public String completeOrder(Model model, @ModelAttribute("customerInfo") Customer customerUpdates) {
 		model.addAttribute("navMenuItems", getNavMenuItems());

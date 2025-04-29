@@ -20,11 +20,11 @@
 	        <jsp:include page="sideNav.jsp"></jsp:include>
 			<div id="left-img-content">
 				<div class="image-buffer"></div>
-				<a href="${transparentImageLeft.getThird()}"><img src="${transparentImageLeft.getFirst()}" alt="${transparentImageLeft.getSecond() }"/></a>
+				<a href="${transparentImageLeft.right}"><img src="${transparentImageLeft.left}" alt="${transparentImageLeft.middle }"/></a>
 			</div>
 			<div id="right-img-content">
 				<div class="image-buffer"></div>
-				<a href="${transparentImageRight.getThird()}"><img src="${transparentImageRight.getFirst()}" alt="${transparentImageRight.getSecond() }"/></a>
+				<a href="${transparentImageRight.right}"><img src="${transparentImageRight.left}" alt="${transparentImageRight.middle }"/></a>
 			</div>
             <div id="center-content">
                 <div id="login-panel">
@@ -50,7 +50,7 @@
                     <p>Forgot Password? Click <a href="/forgotPassword">here</a></p>
                 </div>
                 <!--div id="bottom-img-content">
-                    <a href="${transparentImage.getThird()}"><img src="${transparentImage.getFirst()}" alt="${transparentImage.getSecond() }"/></a>
+                    <a href="${transparentImage.right}"><img src="${transparentImage.left}" alt="${transparentImage.middle }"/></a>
                 </div-->
             </div>
         </div>
