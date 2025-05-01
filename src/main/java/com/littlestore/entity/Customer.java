@@ -93,6 +93,14 @@ public class Customer implements Serializable {
 	@Column(name="emailSub", nullable=false, columnDefinition="boolean default true")	// Set to false if user account is deleted or disabled by admin
 	private Boolean emailSub;
 	
+	@Basic
+	@Column(name="reset_token", length=255, nullable=true)
+	private String resetToken;
+
+	@Basic
+	@Column(name="reset_token_expiry", nullable=true)
+	private LocalDateTime resetTokenExpiry;
+
  /*   @ManyToMany 
     @JoinTable(name = "customer_role",
     	joinColumns = @JoinColumn(name = "customerId", referencedColumnName = "id"), 
@@ -106,7 +114,8 @@ public class Customer implements Serializable {
 
 	public Customer(int id, String email, String password, String passwordConfirm, String firstName, String lastName,
 			String phone, String address, String city, States state, PaymentMethods preferredPayment, String paymentHandle,
-			Boolean isEnabled, LocalDateTime lastVisited, LocalDateTime lastOrdered, LocalDateTime accountCreated, Boolean emailSub, Set<Role> role) {
+			Boolean isEnabled, LocalDateTime lastVisited, LocalDateTime lastOrdered, LocalDateTime accountCreated,
+			Boolean emailSub, String resetToken, LocalDateTime resetTokenExpiry, Set<Role> role) {
 		this.id = id;
 		this.email = email;
 		this.password = password;
@@ -123,6 +132,8 @@ public class Customer implements Serializable {
 		this.lastOrdered = lastOrdered;
 		this.accountCreated = accountCreated;
 		this.emailSub = emailSub;
+		this.resetToken = resetToken;
+		this.resetTokenExpiry = resetTokenExpiry;
 		this.role = role;
 	}
 
@@ -244,6 +255,22 @@ public class Customer implements Serializable {
 	}
 	public void setEmailSub(Boolean emailSub) {
 		this.emailSub = emailSub;
+	}
+
+	public String getResetToken() {
+		return resetToken;
+	}
+
+	public void setResetToken(String resetToken) {
+		this.resetToken = resetToken;
+	}
+
+	public LocalDateTime getResetTokenExpiry() {
+		return resetTokenExpiry;
+	}
+
+	public void setResetTokenExpiry(LocalDateTime resetTokenExpiry) {
+		this.resetTokenExpiry = resetTokenExpiry;
 	}
 
 	public Set<Role> getRole() {

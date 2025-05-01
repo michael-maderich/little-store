@@ -77,4 +77,8 @@ public class CustomerService {
 	public Customer findByEmail(String email) {
 		return customerRepository.findByEmail(email);
 	}
+
+	public Customer findByResetToken(String token) {
+		return customerRepository.findByResetToken(token);
+	}
 }

@@ -28,13 +28,13 @@
 			</div>
             <div id="center-content">
                 <div id="login-panel">
-                    <h2>Reset Password</h2>
+                    <h2>Forgot Password</h2>
                     <p>Enter your e-mail address to receive a password reset link:</p>
-                    <form method="POST" action="/passwordReset" method="GET" class="form-signin">
+                    <form method="POST" action="/forgotPassword" method="GET" class="form-signin">
 						<div class="form-group ${error != null ? 'has-error' : ''}">
 							<div${message!=null?' style="color:green; margin-bottom:.5em;"':''}>${message}</div>
 	                        <br /><label for="email">
-	                            <input id="email" name="username" type="email" placeholder="Email Address" class = "text-field" required autofocus />
+	                            <input id="email" name="email" type="email" placeholder="Email Address" class = "text-field" required autofocus />
 	                        </label>
 							<div${error!=null?' style="color:#cc0000; margin-bottom:.5em;"':''}>${error}</div>
 	                        <br /><label for="submit">
@@ -43,9 +43,6 @@
 						</div>
                     </form>
                 </div>
-                <!--div id="bottom-img-content">
-					<a href="${transparentImageBottom.right}"><img src="${transparentImageBottom.left}" alt="${transparentImageBottom.middle }"/></a>
-                </div-->
             </div>
         </div>
         <footer>

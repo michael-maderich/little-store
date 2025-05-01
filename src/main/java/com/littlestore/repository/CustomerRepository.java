@@ -25,6 +25,8 @@ public interface CustomerRepository extends CrudRepository<Customer, Integer> {
     			+ " OR c.address LIKE '%' || :keyword || '%'")
     public List<Customer> search(@Param("keyword") String keyword);*/
 
+	public Customer findByResetToken(String token);
+
 /*    @Query(value = "SELECT * FROM customer c JOIN salesrep s ON "
     				+ "c.salesRep_id = s.id WHERE s.name LIKE '%?1%")
     public List<Customer> findBySalesRepName(String salesRepName);*/

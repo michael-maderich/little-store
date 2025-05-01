@@ -90,6 +90,8 @@ public class WebSecurityConfig {
             .csrf().disable()
             .authorizeRequests()
                 .antMatchers("/**").permitAll()
+                .antMatchers("/forgotPassword", "/resetPassword", "/resetPassword/**").permitAll()
+
             .and()
             .formLogin()
                 .loginPage("/login").permitAll()

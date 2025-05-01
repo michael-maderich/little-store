@@ -18,9 +18,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -30,6 +32,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -69,6 +72,8 @@ import com.littlestore.service.GmailEmailService;
 @Controller
 public class MainController {
 
+	@Autowired
+	private BCryptPasswordEncoder bCryptPasswordEncoder;
 	@Autowired
 	private CustomerService customerService;
 	@Autowired
@@ -538,13 +543,13 @@ public class MainController {
 		return "/forgotPassword";
 	}
 
-	// Page to change user password
-	@GetMapping("/passwordReset")
-	public String passwordReset(Model model, @RequestParam(value = "code", defaultValue = "") String code) {
+	@PostMapping("/forgotPassword")
+	public String processForgotPassword(@RequestParam("email") String email, Model model) {
 		model.addAttribute("navMenuItems", getNavMenuItems());
 		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
 		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
+		model.addAttribute("allowOosSearch", getGeneralDataInteger("allowOosSearch"));
 		Triple<String, String, String> imageLeft = getRandomTransparentImage();
 		model.addAttribute("transparentImageLeft", imageLeft);
 		Triple<String, String, String> imageRight = getRandomTransparentImage();
@@ -552,36 +557,131 @@ public class MainController {
 			imageRight = getRandomTransparentImage();
 		};
 		model.addAttribute("transparentImageRight", imageRight);
-		model.addAttribute("allowOosSearch", getGeneralDataInteger("allowOosSearch"));
+		Triple<String, String, String> imageBottom = getRandomTransparentImage();
+		while (imageBottom.equals(imageLeft) || imageBottom.equals(imageRight)) {
+			imageBottom = getRandomTransparentImage();
+		};
+		model.addAttribute("transparentImageBottom", imageBottom);
 
-		if (getLoggedInUser() != null)
-			return "redirect:/account"; // If user is already signed in, redirect to account page.
-		else {
-//			Customer customer = customerService.findByEmail(code);
-			for (Customer customer : customerService.listAll()) {
-				if (customerService.emailCodeMatches(customer, code))
-//				if (customer != null)
-				{
-					customer.setPassword(null);
-					model.addAttribute("customerForm", customer);
-					model.addAttribute("listStates", listStates);
-					return "/passwordReset";
-				}
+		Customer customer = customerService.findByEmail(email);
+	    if (customer != null) {
+	        String token = UUID.randomUUID().toString();
+	        customer.setResetToken(token);
+	        customer.setResetTokenExpiry(LocalDateTime.now().plusMinutes(30));
+	        customerService.update(customer); // Save token + expiry
+
+	        String resetLink = getGeneralDataString("imageUrlBase") + "/resetPassword?token=" + token;
+	        try {
+				emailService.send(customer.getEmail(), getGeneralDataString("senderEmail"),
+				    "Password Reset Request",
+				    "Click the link to reset your password: " + resetLink);
+			} catch (MessagingException | IOException e) {
+				e.printStackTrace();
+		        model.addAttribute("error", "E-mail service is down.\nPlease try again later.");
+		        return "/login";
 			}
-			return "redirect:/login";
-		}
+	    }
+	    model.addAttribute("message", "If your email exists, a password reset link has been sent.");
+	    return "forgotPassword";
 	}
-
-	// When password reset form is submitted, the page sends a POST request to itself.
-	// The user info submitted is validated and return back to signup page if there are errors.
-	// If the info submitted is valid, persist the customer data to the database
-	@PostMapping("/passwordReset")
-	public String resetPassword(Model model, @ModelAttribute("customerForm") Customer customerForm, BindingResult bindingResult) {
+	
+	@GetMapping("/resetPassword")
+	public String showResetPasswordForm(@RequestParam("token") String token, Model model) {
 		model.addAttribute("navMenuItems", getNavMenuItems());
 		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
 		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
 		model.addAttribute("allowOosSearch", getGeneralDataInteger("allowOosSearch"));
+		Triple<String, String, String> imageLeft = getRandomTransparentImage();
+		model.addAttribute("transparentImageLeft", imageLeft);
+		Triple<String, String, String> imageRight = getRandomTransparentImage();
+		while (imageRight.equals(imageLeft)) {
+			imageRight = getRandomTransparentImage();
+		};
+		model.addAttribute("transparentImageRight", imageRight);
+		Triple<String, String, String> imageBottom = getRandomTransparentImage();
+		while (imageBottom.equals(imageLeft) || imageBottom.equals(imageRight)) {
+			imageBottom = getRandomTransparentImage();
+		};
+		model.addAttribute("transparentImageBottom", imageBottom);
+
+		Customer customer = customerService.findByResetToken(token);
+	    if (customer == null || customer.getResetTokenExpiry().isBefore(LocalDateTime.now())) {
+	        model.addAttribute("error", "Invalid or expired token.\nPlease try Forgot Password again to get a new link.");
+	        return "/login";
+	    }
+	    model.addAttribute("token", token);
+	    return "resetPassword";
+	}
+
+	@PostMapping("/resetPassword")
+	public String processResetPassword(
+	    @RequestParam("token") String token,
+	    @RequestParam("password") String password,
+	    @RequestParam("confirmPassword") String confirmPassword,
+	    Model model) {
+
+		model.addAttribute("navMenuItems", getNavMenuItems());
+		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
+		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
+		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
+		model.addAttribute("allowOosSearch", getGeneralDataInteger("allowOosSearch"));
+		Triple<String, String, String> imageLeft = getRandomTransparentImage();
+		model.addAttribute("transparentImageLeft", imageLeft);
+		Triple<String, String, String> imageRight = getRandomTransparentImage();
+		while (imageRight.equals(imageLeft)) {
+			imageRight = getRandomTransparentImage();
+		};
+		model.addAttribute("transparentImageRight", imageRight);
+		Triple<String, String, String> imageBottom = getRandomTransparentImage();
+		while (imageBottom.equals(imageLeft) || imageBottom.equals(imageRight)) {
+			imageBottom = getRandomTransparentImage();
+		};
+		model.addAttribute("transparentImageBottom", imageBottom);
+
+	    if (!password.equals(confirmPassword)) {
+	        model.addAttribute("error", "Passwords do not match.");
+	        model.addAttribute("token", token);
+	        return "resetPassword";
+	    }
+
+	    Customer customer = customerService.findByResetToken(token);
+	    if (customer == null || customer.getResetTokenExpiry().isBefore(LocalDateTime.now())) {
+	        model.addAttribute("error", "Invalid or expired token.\nPlease try Forgot Password again to get a new link.");
+	        return "/login";
+	    }
+
+	    customer.setPassword(bCryptPasswordEncoder.encode(password));
+	    customer.setResetToken(null);
+	    customer.setResetTokenExpiry(null);
+	    customerService.update(customer);
+
+	    model.addAttribute("message", "Password reset successful. You may now log in.");
+	    return "/login";  // or wherever you want
+	}
+
+	// When password reset form is submitted, the page sends a POST request to itself.
+	// The user info submitted is validated and return back to signup page if there are errors.
+	// If the info submitted is valid, persist the customer data to the database
+	@PostMapping("/editAccount")
+	public String editAccount(Model model, @ModelAttribute("customerForm") Customer customerForm, BindingResult bindingResult) {
+		model.addAttribute("navMenuItems", getNavMenuItems());
+		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
+		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
+		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
+		model.addAttribute("allowOosSearch", getGeneralDataInteger("allowOosSearch"));
+		Triple<String, String, String> imageLeft = getRandomTransparentImage();
+		model.addAttribute("transparentImageLeft", imageLeft);
+		Triple<String, String, String> imageRight = getRandomTransparentImage();
+		while (imageRight.equals(imageLeft)) {
+			imageRight = getRandomTransparentImage();
+		};
+		model.addAttribute("transparentImageRight", imageRight);
+		Triple<String, String, String> imageBottom = getRandomTransparentImage();
+		while (imageBottom.equals(imageLeft) || imageBottom.equals(imageRight)) {
+			imageBottom = getRandomTransparentImage();
+		};
+		model.addAttribute("transparentImageBottom", imageBottom);
 
 		customerFormValidator.validatePasswordReset(customerForm, bindingResult);
 		if (bindingResult.hasErrors()) {
