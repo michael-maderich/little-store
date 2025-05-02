@@ -2,6 +2,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 
 <!DOCTYPE html>
@@ -34,7 +35,7 @@
 						<div class="form-group ${error != null ? 'has-error' : ''}">
 							<div${message!=null?' style="color:green; margin-bottom:.5em;"':''}>${message}</div>
 	                        <br /><label for="email">
-	                            <input id="email" name="username" type="email" placeholder=" Email Address" class = "text-field" required autofocus />
+	                            <input id="email" name="username" type="email" placeholder=" Email Address" class = "text-field" value="${fn:escapeXml(lastUsername)}" required autofocus />
 	                        </label>
 	                        <br /><label for="password">
 	                            <input id="password" name="password" type="password" placeholder=" Password" class="text-field" required />

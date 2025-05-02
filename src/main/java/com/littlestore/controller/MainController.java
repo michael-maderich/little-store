@@ -33,6 +33,7 @@ import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -423,11 +424,7 @@ public class MainController {
 	}
 
 	@GetMapping("/login")
-	public String login(Model model, String error, String logout) {
-		if (error != null)
-			model.addAttribute("error", "Your username and/or password is invalid.");
-		if (logout != null)
-			model.addAttribute("message", "You have been logged out successfully.");
+	public String login(Model model, HttpServletRequest request, String error, String logout) {
 		model.addAttribute("navMenuItems", getNavMenuItems());
 		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
@@ -440,20 +437,36 @@ public class MainController {
 		};
 		model.addAttribute("transparentImageRight", imageRight);
 		model.addAttribute("allowOosSearch", getGeneralDataInteger("allowOosSearch"));
+		// in your controller
+		String lastUsername = (String) request.getSession()
+		                                      .getAttribute("SPRING_SECURITY_LAST_USERNAME");
+		model.addAttribute("lastUsername", lastUsername);
+		System.out.println(lastUsername);
+
+		if (error != null) {
+			model.addAttribute("error", "Your username and/or password is invalid.");
+		}
+		if (logout != null) {
+			model.addAttribute("message", "You have been logged out successfully.");
+		}
+
 		Customer user = getLoggedInUser();
-		if (user == null)
-			return "/login"; // If not logged in, submit POST request to login page (handled by Spring
-								// Security)
+		if (user == null) {
+			return "/login"; // If not logged in, submit POST request to login page (handled by Spring Security)
+		}
 		else // Otherwise check Roles and direct to landing page
 		{
 			Set<Role> userRoles = user.getRole();
 			Iterator<Role> roleIterator = userRoles.iterator();
-			boolean isAdmin = false;
-			while (roleIterator.hasNext()) {
-				if (roleIterator.next().getId() == (int) (Role.Roles.ADMIN.ordinal())
-						|| roleIterator.next().getId() == (int) (Role.Roles.OWNER.ordinal()))
-					isAdmin = true;
-			}
+	        boolean isAdmin = user.getRole().stream()
+	                .anyMatch(r -> r.getId() == Role.Roles.ADMIN.ordinal()
+	                            || r.getId() == Role.Roles.OWNER.ordinal());
+//	            return isAdmin ? "redirect:/admin" : "redirect:/newitems";
+//			while (roleIterator.hasNext()) {
+//				if (roleIterator.next().getId() == (int) (Role.Roles.ADMIN.ordinal())
+//						|| roleIterator.next().getId() == (int) (Role.Roles.OWNER.ordinal()))
+//					isAdmin = true;
+//			}
 
 			if (isAdmin) {
 				return "/admin"; // If user has admin or owner role, redirect to admin console
