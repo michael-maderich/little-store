@@ -607,7 +607,7 @@ public class MainController {
 
 		Customer customer = customerService.findByResetToken(token);
 	    if (customer == null || customer.getResetTokenExpiry().isBefore(LocalDateTime.now())) {
-	        model.addAttribute("error", "Invalid or expired token.\nPlease try Forgot Password again to get a new link.");
+	        model.addAttribute("error", "Invalid or expired token.<br />Please try Forgot Password again to get a new link.");
 	        return "/login";
 	    }
 	    model.addAttribute("token", token);
@@ -647,7 +647,7 @@ public class MainController {
 
 	    Customer customer = customerService.findByResetToken(token);
 	    if (customer == null || customer.getResetTokenExpiry().isBefore(LocalDateTime.now())) {
-	        model.addAttribute("error", "Invalid or expired token.\nPlease try Forgot Password again to get a new link.");
+	        model.addAttribute("error", "Invalid or expired token.<br />Please try Forgot Password again to get a new link.");
 	        return "/login";
 	    }
 
@@ -687,7 +687,7 @@ public class MainController {
 		if (bindingResult.hasErrors()) {
 			model.addAttribute("listStates", listStates); // States enum value list needs to be sent to signup page
 															// every time. I'm sure there's a better way to do this
-			return "/passwordReset";
+			return "/resetPassword";
 		} else {
 			Customer customer = customerService.findByEmail(customerForm.getEmail());
 			customer.setPassword(customerService.encrypt(customerForm.getPassword()));

@@ -80,6 +80,7 @@
 						</label>
 						<br /><label for="phone"><form:input path="phone" id="phone" name="phone" type="text" placeholder=" Phone Number" class="text-field" disabled="true"></form:input></label>
 <%-- 						<br /><label for="submit"><form:button id="edit" name="edit" type="submit">Edit Profile</form:button></label> --%>
+						<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 					</form:form>
 				</div>
 			</div>
