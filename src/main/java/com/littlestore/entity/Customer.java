@@ -161,6 +161,10 @@ public class Customer implements Serializable {
 	@Column(name="reset_token_expiry", nullable=true)
 	private LocalDateTime resetTokenExpiry;
 
+	@Basic
+	@Column(name = "last_password_reset_request", nullable=true)
+	private LocalDateTime lastPasswordResetRequest;
+
  /*   @ManyToMany 
     @JoinTable(name = "customer_role",
     	joinColumns = @JoinColumn(name = "customerId", referencedColumnName = "id"), 
@@ -331,6 +335,14 @@ public class Customer implements Serializable {
 
 	public void setResetTokenExpiry(LocalDateTime resetTokenExpiry) {
 		this.resetTokenExpiry = resetTokenExpiry;
+	}
+
+	public LocalDateTime getLastPasswordResetRequest() {
+	    return lastPasswordResetRequest;
+	}
+
+	public void setLastPasswordResetRequest(LocalDateTime lastPasswordResetRequest) {
+	    this.lastPasswordResetRequest = lastPasswordResetRequest;
 	}
 
 	public Set<Role> getRole() {

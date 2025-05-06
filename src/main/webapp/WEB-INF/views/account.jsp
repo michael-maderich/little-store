@@ -7,14 +7,14 @@
 <!DOCTYPE html>
 <html>
 	<head>
-        <jsp:include page="headElement.jsp">
+        <jsp:include page="/WEB-INF/views/includes/headElement.jsp">
             <jsp:param name="title" value="The Little Store - Account Profile" />
             <jsp:param name="page" value="account" />
         </jsp:include>
 	</head>
 	<body>
         <header>
-			<jsp:include page="basicHeader.jsp"></jsp:include>
+			<jsp:include page="/WEB-INF/views/includes/basicHeader.jsp"></jsp:include>
         </header>
         <div id="main-content">
             <div id="side-nav">
@@ -90,7 +90,7 @@
 			</div>
         </div>
         <footer>
-			<jsp:include page="basicFooter.jsp"></jsp:include>
+			<jsp:include page="/WEB-INF/views/includes/basicFooter.jsp"></jsp:include>
         </footer>
 	</body>
 </html>

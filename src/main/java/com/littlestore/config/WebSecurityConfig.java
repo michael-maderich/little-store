@@ -6,9 +6,9 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import static org.springframework.security.config.Customizer.withDefaults;
@@ -33,40 +33,55 @@ public class WebSecurityConfig {
             // keep CSRF on for normal form posts
             .csrf(withDefaults())
 
+            .exceptionHandling(ex -> ex
+                .accessDeniedPage("/403")
+			)
+
             // authorization rules
             .authorizeHttpRequests(auth -> auth
-                // public endpoints
+                // Static assets - permit everyone
                 .antMatchers(
-                        "/403",
-                        "/category/**",
-                        "/dollarama",
-                        "/forgotPassword",
-                        "/images",
-                        "/index",
-                        "/login",
-                        "/newitems",
-                        "/printOrder/**",
-                        "/resendConfirmation/**",
-                        "/resetPassword",
-                        "/sale",
-                        "/search",
-                        "/searchresults",
-                        "/signup"
+                    "/resources/**",
+                    "/static/**",
+                    "/css/**",
+                    "/js/**",
+                    "/images/**"
                 ).permitAll()
 
+                // public endpoints
+                .antMatchers(
+                    "/403",
+                    "/category/**",
+                    "/dollarama",
+                    "/forgotPassword",
+                    "/images",
+                    "/index",
+                    "/login",
+                    "/newitems",
+                    "/printOrder/**",
+                    "/resendConfirmation/**",
+                    "/resetPassword",
+                    "/sale",
+                    "/search",
+                    "/searchresults",
+                    "/signup"
+                ).permitAll()
+                
                 // TODO: lock down admin pages
                 // everything under /admin/** requires one of those roles
                 .antMatchers("/admin/**")
                   .hasAnyRole("OWNER","ADMIN")
                 // everything else requires login
                 .anyRequest().authenticated()
+                
             )
 
             // custom login page
             .formLogin(form -> form
-                .loginPage("/login")
-                .permitAll()
-            )
+            	    .loginPage("/login")
+            	    .successHandler(successHandler())
+            	    .permitAll()
+        	)
 
             // logout config
             .logout(logout -> logout
@@ -81,16 +96,17 @@ public class WebSecurityConfig {
         return http.build();
     }
 
-    // static resources should be completely ignored by Spring Security
     @Bean
-    WebSecurityCustomizer webSecurityCustomizer() {
-        return web -> web.ignoring()
-            .antMatchers(
-                "/resources/**",
-                "/static/**",
-                "/css/**",
-                "/js/**",
-                "/images/**"
-            );
+    AuthenticationSuccessHandler successHandler() {
+      return (request, response, authentication)  -> {
+          boolean admin = authentication.getAuthorities().stream()
+              .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN") 
+                          || a.getAuthority().equals("ROLE_OWNER"));
+          if (admin) {
+            response.sendRedirect(request.getContextPath()+"/admin/dashboard");
+          } else {
+            response.sendRedirect(request.getContextPath()+"/newitems");
+          }
+      };
     }
 }

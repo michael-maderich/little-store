@@ -9,7 +9,7 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-<jsp:include page="headElement.jsp">
+<jsp:include page="/WEB-INF/views/includes/headElement.jsp">
 	<jsp:param name="title" value="The Little Store - Confirmation" />
 	<jsp:param name="page" value="confirmation" />
 </jsp:include>

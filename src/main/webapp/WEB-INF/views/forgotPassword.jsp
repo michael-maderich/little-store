@@ -7,17 +7,17 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-<jsp:include page="headElement.jsp">
+<jsp:include page="/WEB-INF/views/includes/headElement.jsp">
     <jsp:param name="title" value="The Little Store - Forgot Password" />
     <jsp:param name="page" value="login" />
 </jsp:include>
     </head>
     <body>
         <header>
-			<jsp:include page="basicHeader.jsp"></jsp:include>
+			<jsp:include page="/WEB-INF/views/includes/basicHeader.jsp"></jsp:include>
         </header>
         <div id="main-content">
-	        <jsp:include page="sideNav.jsp"></jsp:include>
+	        <jsp:include page="/WEB-INF/views/includes/sideNav.jsp"></jsp:include>
 			<div id="left-img-content">
 				<div class="image-buffer"></div>
 				<a href="${transparentImageLeft.right}"><img src="${transparentImageLeft.left}" alt="${transparentImageLeft.middle }"/></a>
@@ -28,11 +28,13 @@
 			</div>
             <div id="center-content">
                 <div id="login-panel">
-                    <h2>Forgot Password</h2>
-                    <p>Enter your e-mail address to receive a password reset link:</p>
-                    <form method="POST" action="/forgotPassword" method="GET" class="form-signin">
+                    <h2 style='margin-bottom:3rem'>Forgot Password</h2>
+					<div${message!=null?' style="color:green;"':''}>${message}</div>
+                    <c:if test="${not linkSent}"><!-- show the form only if linkSent is false or missing -->
+                    <form method="POST" action="${contextPath}/forgotPassword" class="form-signin">
+						<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+	                    <p>Enter your e-mail address to receive a password reset link:</p>
 						<div class="form-group ${error != null ? 'has-error' : ''}">
-							<div${message!=null?' style="color:green; margin-bottom:.5em;"':''}>${message}</div>
 	                        <br /><label for="email">
 	                            <input id="email" name="email" type="email" placeholder="Email Address" class = "text-field" required autofocus />
 	                        </label>
@@ -42,11 +44,12 @@
 	                        </label>
 						</div>
                     </form>
+                    </c:if>
                 </div>
             </div>
         </div>
         <footer>
-			<jsp:include page="basicFooter.jsp"></jsp:include>
+			<jsp:include page="/WEB-INF/views/includes/basicFooter.jsp"></jsp:include>
         </footer>
     </body>
 </html>

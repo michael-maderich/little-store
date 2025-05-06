@@ -12,16 +12,10 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -32,8 +26,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -42,148 +34,36 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import com.littlestore.entity.Cart;
 import com.littlestore.entity.CartDetail;
 import com.littlestore.entity.Customer;
 import com.littlestore.entity.Order;
 import com.littlestore.entity.OrderDetail;
 import com.littlestore.entity.Product;
-import com.littlestore.entity.Role;
-import com.littlestore.entity.GeneralData;
-import com.littlestore.entity.PaymentInfo;
-import com.littlestore.service.CartDetailService;
-//import com.littlestore.pagination.PaginationResult;
-import com.littlestore.service.CartService;
-import com.littlestore.service.CustomerService;
 import com.littlestore.service.EmailTemplateService;
-import com.littlestore.service.OrderDetailService;
-import com.littlestore.service.OrderService;
-import com.littlestore.service.ProductService;
-import com.littlestore.service.GeneralDataService;
-import com.littlestore.service.PaymentInfoService;
-import com.littlestore.service.SecurityService;
-import com.littlestore.validator.CustomerFormValidator;
-
 import com.littlestore.service.GmailEmailService;
+import com.littlestore.validator.PasswordResetValidator;
 
 /**
  * @author Michael Maderich
  *
  */
 @Controller
-public class MainController {
+public class MainController extends BaseController {
 
-	@Autowired
-	private BCryptPasswordEncoder bCryptPasswordEncoder;
-	@Autowired
-	private CustomerService customerService;
-	@Autowired
-	private ProductService productService;
-	@Autowired
-	private CartService cartService;
-	@Autowired
-	private CartDetailService cartDetailService;
-	@Autowired
-	private OrderService orderService;
-	@Autowired
-	private OrderDetailService orderDetailService;
-	@Autowired
-	private GeneralDataService generalDataService;
-	@Autowired
-	private PaymentInfoService paymentInfoService;
-	@Autowired
-	private SecurityService securityService;
-	@Autowired
-	private CustomerFormValidator customerFormValidator;
-	@Autowired
-	private EmailTemplateService emailTemplateService;
-    private final GmailEmailService emailService;
-	
-	private int hourDiffFromDb = 5;
+	@Autowired PasswordResetValidator passwordReqLimiter;
 
-	private List<String> listStates = Stream.of(Customer.States.values()).map(Enum::name).collect(Collectors.toList());
-
-	private List<String> listPayTypes = Stream.of(Customer.PaymentMethods.values()).map(Enum::name)
-			.collect(Collectors.toList());
-
-    public MainController(GmailEmailService emailService) {
-        this.emailService = emailService;
-    }
-
-	private List<GeneralData> getGeneralDataByCategory(String category) {
-		return generalDataService.findByCategory(category);
-	}
-
-	public Map<String, String> getGeneralDataCategoryMap(String category) {
-		List<GeneralData> categoryItems = getGeneralDataByCategory(category);
-		Map<String, String> generalDataMap = new HashMap<String, String>();
-		for (GeneralData item : categoryItems) {
-			generalDataMap.put(item.getGeneralName(), item.getGeneralValue());
-		}
-		return generalDataMap;
-	}
-
-	private String getGeneralDataString(String generalName) {
-		return generalDataService.getGeneralData(generalName);
-	}
-
-	private int getGeneralDataInteger(String generalName) {
-		String generalValue = getGeneralDataString(generalName);
-		int generalInt = 0;
-		try {
-			generalInt = Integer.parseInt(generalValue);
-		} catch (NumberFormatException e) {
-			System.out.println(e.getMessage());
-		}
-		return generalInt;
-	}
-
-	private double getGeneralDataDouble(String generalName) {
-		String generalValue = getGeneralDataString(generalName);
-		double generalDouble = 0.0;
-		try {
-			generalDouble = Double.parseDouble(generalValue);
-		} catch (NumberFormatException e) {
-			System.out.println(e.getMessage());
-		}
-		return generalDouble;
-	}
-
-	private List<String> getNavMenuItems() {
-		if (getGeneralDataInteger("showOosEverywhere") == 1) {
-			return productService.listCategoryMain();
-		} else {
-			return productService.listCategoryMainWithStock();
-		}
-	}
-
-	private List<String> getNavSubMenuItems(String categoryName) {
-		if (getGeneralDataInteger("showOosEverywhere") == 1) {
-			return productService.listCategorySpecificUnderMain(categoryName);
-		} else {
-			return productService.listCategorySpecificUnderMainWithStock(categoryName);
-		}
-	}
-
-	private Customer getLoggedInUser() {
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		if (!(authentication instanceof AnonymousAuthenticationToken)) {
-			String currentUserName = authentication.getName();
-			return customerService.findByEmail(currentUserName);
-		} else
-			return null;
-	}
-
-	private List<PaymentInfo> listPaymentInfo() {
-		List<PaymentInfo> payTypes = paymentInfoService.listAll();
-		return payTypes;
+	public MainController(GmailEmailService emailService) {
+		super(emailService);
 	}
 
 	// Possibly update with optional argument that indicates link was /addtoCart and change message appropriately
 	// to indicate something like "Available quantity changed to x. x added to cart." Something like that
 	private String updateCartChanges() {
 		String error = "";
-		Customer customer = getLoggedInUser();
+		Customer customer = getCurrentUser();
 		Cart customerCart = cartService.findByCustomerEmail(customer.getEmail());
 		if (customerCart == null) { // If not cart, no changes
 			return null;
@@ -283,7 +163,7 @@ public class MainController {
         return baseUrl + encodePath(relativePath);
     }
 
-    // Example of building the email body
+    // Build the email body
     public String buildOrderConfirmationEmail(Customer customer, Order order) throws IOException {
     	Map<String, String> variables = Map.ofEntries(
     		    Map.entry("firstName", customer.getFirstName()),
@@ -389,7 +269,7 @@ public class MainController {
 		String cartAdjustments = null;
 		int cartTotalItemQty = 0;
 		float cartTotalItemCost = 0.0f;
-		Customer customer = getLoggedInUser();
+		Customer customer = getCurrentUser();
 		if (customer != null) { // If a User is logged in, get their cart, (or null if it doesn't exist)
 			customer.setLastVisited(LocalDateTime.now().minusHours(hourDiffFromDb));
 			customerService.update(customer);
@@ -449,31 +329,7 @@ public class MainController {
 		if (logout != null) {
 			model.addAttribute("message", "You have been logged out successfully.");
 		}
-
-		Customer user = getLoggedInUser();
-		if (user == null) {
-			return "/login"; // If not logged in, submit POST request to login page (handled by Spring Security)
-		}
-		else // Otherwise check Roles and direct to landing page
-		{
-			Set<Role> userRoles = user.getRole();
-			Iterator<Role> roleIterator = userRoles.iterator();
-	        boolean isAdmin = user.getRole().stream()
-	                .anyMatch(r -> r.getId() == Role.Roles.ADMIN.ordinal()
-	                            || r.getId() == Role.Roles.OWNER.ordinal());
-//	            return isAdmin ? "redirect:/admin" : "redirect:/newitems";
-//			while (roleIterator.hasNext()) {
-//				if (roleIterator.next().getId() == (int) (Role.Roles.ADMIN.ordinal())
-//						|| roleIterator.next().getId() == (int) (Role.Roles.OWNER.ordinal()))
-//					isAdmin = true;
-//			}
-
-			if (isAdmin) {
-				return "/admin"; // If user has admin or owner role, redirect to admin console
-			} else {
-				return "/newitems"; // If user is customer, redirect to newitems page
-			}
-		}
+		return "/login"; // If not logged in, submit POST request to login page (handled by Spring Security)
 	}
 
 	@GetMapping("/signup")
@@ -484,7 +340,7 @@ public class MainController {
 		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
 		model.addAttribute("allowOosSearch", getGeneralDataInteger("allowOosSearch"));
 
-		if (getLoggedInUser() != null)
+		if (getCurrentUser() != null)
 			return "redirect:/account"; // If user is already signed in, redirect to account page.
 		else {
 			model.addAttribute("customerForm", new Customer());
@@ -557,7 +413,9 @@ public class MainController {
 	}
 
 	@PostMapping("/forgotPassword")
-	public String processForgotPassword(@RequestParam("email") String email, Model model) {
+	public String processForgotPassword(@RequestParam("email") String email,
+										Model model, HttpServletRequest req,
+										RedirectAttributes flash) {
 		model.addAttribute("navMenuItems", getNavMenuItems());
 		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
@@ -576,26 +434,62 @@ public class MainController {
 		};
 		model.addAttribute("transparentImageBottom", imageBottom);
 
+		// send or reject the reset request and message user after page refresh
 		Customer customer = customerService.findByEmail(email);
-	    if (customer != null) {
-	        String token = UUID.randomUUID().toString();
-	        customer.setResetToken(token);
-	        customer.setResetTokenExpiry(LocalDateTime.now().plusMinutes(30));
-	        customerService.update(customer); // Save token + expiry
+		String response = "If that email address exists in our system, you'll receive a reset link shortly.";
 
-	        String resetLink = getGeneralDataString("imageUrlBase") + "/resetPassword?token=" + token;
-	        try {
-				emailService.send(customer.getEmail(), getGeneralDataString("senderEmail"),
-				    "Password Reset Request",
-				    "Click the link to reset your password: " + resetLink);
-			} catch (MessagingException | IOException e) {
-				e.printStackTrace();
-		        model.addAttribute("error", "E-mail service is down.\nPlease try again later.");
-		        return "/login";
-			}
+		// Prevent spamming
+		String clientIp = req.getRemoteAddr();
+		if (!passwordReqLimiter.allowForgotPassAttemptByIp(clientIp)) {
+		    flash.addFlashAttribute("message", "Too many requests -- please wait a few minutes to retry.");
+		    flash.addFlashAttribute("linkSent", true);
+		    return "redirect:/forgotPassword";
+		}
+		// If they entered an invalid email..
+		else if (customer == null) {
+		    flash.addFlashAttribute("message", response);
+		    flash.addFlashAttribute("linkSent", true);
+		    // Do a 302 Redirect instead of rendering the JSP so refreshing the page can't resubmit password reset request
+		    return "redirect:/forgotPassword";
 	    }
-	    model.addAttribute("message", "If your email exists, a password reset link has been sent.");
-	    return "forgotPassword";
+	    else {
+	    	// If link has been requested within 5 minutes, reject and let user know
+	    	LocalDateTime lastReq = customer.getLastPasswordResetRequest();
+	        if (lastReq != null && lastReq.isAfter(LocalDateTime.now().minusMinutes(5))) {
+	            flash.addFlashAttribute("message",
+	            						"A reset link was already sent recently.<br /><br />" +
+        								"Please check your inbox or spam folder, or try again later."
+	            );
+	            flash.addFlashAttribute("linkSent", true);
+	            return "redirect:/forgotPassword";
+	        }
+	        else {
+		        // record the request time
+		        customer.setLastPasswordResetRequest(LocalDateTime.now());
+		        customerService.update(customer);
+	
+		        // generate token & send email
+		        String token = UUID.randomUUID().toString();
+		        customer.setResetToken(token);
+		        customer.setResetTokenExpiry(LocalDateTime.now().plusMinutes(15));
+		        customerService.update(customer); // Save token + expiry
+	
+		        String resetLink = getGeneralDataString("imageUrlBase") + "/resetPassword?token=" + token;
+		        try {
+					emailService.send(customer.getEmail(), getGeneralDataString("senderEmail"),
+					    "Password Reset Request",
+					    "Click the link below to reset your password. The link expires in 15 minutes.<br />" + resetLink);
+				} catch (MessagingException | IOException e) {
+					e.printStackTrace();
+			        model.addAttribute("error", "E-mail service is down.\nPlease try again later.");
+			        return "/login";
+				}
+			    flash.addFlashAttribute("message", response);
+			    flash.addFlashAttribute("linkSent", true);
+			    // Do a 302 Redirect instead of rendering the JSP so refreshing the page can't resubmit password reset request
+			    return "redirect:/forgotPassword";
+	        }
+	    }
 	}
 	
 	@GetMapping("/resetPassword")
@@ -735,7 +629,7 @@ public class MainController {
 		};
 		model.addAttribute("transparentImageRight", imageRight);
 
-		Customer customer = getLoggedInUser();
+		Customer customer = getCurrentUser();
 		if (customer == null) {
 			model.addAttribute("navMenuItems", getNavMenuItems());
 			model.addAttribute("error", "You must be logged in to view your account.");
@@ -790,7 +684,7 @@ public class MainController {
 		};
 		model.addAttribute("transparentImageRight", imageRight);
 		model.addAttribute("allowOosSearch", getGeneralDataInteger("allowOosSearch"));
-		Customer customer = getLoggedInUser();
+		Customer customer = getCurrentUser();
 		if (customer == null) { // Can't view orders if not logged in, for now. Direct user to log in/sign up
 			model.addAttribute("error", "You must be logged in to edit your account details.");
 			return "/login";
@@ -831,7 +725,7 @@ public class MainController {
 			imageRight = getRandomTransparentImage();
 		};
 		model.addAttribute("transparentImageRight", imageRight);
-		Customer customer = getLoggedInUser();
+		Customer customer = getCurrentUser();
 		if (customer == null) { // Can't view orders if not logged in, for now. Direct user to log in/sign up
 			model.addAttribute("error", "You must be logged in to view your orders.");
 			return "/login";
@@ -890,7 +784,7 @@ public class MainController {
 		if (!goodLink)
 			return "redirect:/";
 
-		Customer customer = getLoggedInUser();
+		Customer customer = getCurrentUser();
 		if (customer != null) { // If a User is logged in, get their cart, (or null if it doesn't exist)
 			Cart customerCart = cartService.findByCustomerEmail(customer.getEmail());
 			if (customerCart != null) { // If they have a cart, fill cartItems with their cart item quantities
@@ -942,7 +836,7 @@ public class MainController {
 		if (!goodLink)
 			return "redirect:/";
 
-		Customer customer = getLoggedInUser();
+		Customer customer = getCurrentUser();
 		if (customer != null) { // If a User is logged in, get their cart, (or null if it doesn't exist)
 			Cart customerCart = cartService.findByCustomerEmail(customer.getEmail());
 			if (customerCart != null) { // If they have a cart, fill cartItems with their cart item quantities
@@ -1001,7 +895,7 @@ public class MainController {
 		String cartAdjustments = "";
 		int cartTotalItemQty = 0;
 		float cartTotalItemCost = 0.0f;
-		Customer customer = getLoggedInUser();
+		Customer customer = getCurrentUser();
 		if (customer == null) { // Can't view new items if not logged in, for now. Direct user to log in/sign up
 			model.addAttribute("error",
 					"Since items shown as new are based on your last order date, you must be logged in to view new items.");
@@ -1036,7 +930,7 @@ public class MainController {
 		String cartAdjustments = "";
 		int cartTotalItemQty = 0;
 		float cartTotalItemCost = 0.0f;
-		Customer customer = getLoggedInUser();
+		Customer customer = getCurrentUser();
 		if (customer != null) { // If a User is logged in, get their cart, (or null if it doesn't exist)
 			Cart customerCart = cartService.findByCustomerEmail(customer.getEmail());
 			if (customerCart != null) { // If they have a cart, fill cartItems with their cart item quantities
@@ -1073,7 +967,7 @@ public class MainController {
 		String cartAdjustments = "";
 		int cartTotalItemQty = 0;
 		float cartTotalItemCost = 0.0f;
-		Customer customer = getLoggedInUser();
+		Customer customer = getCurrentUser();
 		if (customer != null) { // If a User is logged in, get their cart, (or null if it doesn't exist)
 			Cart customerCart = cartService.findByCustomerEmail(customer.getEmail());
 			if (customerCart != null) { // If they have a cart, fill cartItems with their cart item quantities
@@ -1118,7 +1012,7 @@ public class MainController {
 		int cartTotalItemQty = 0;
 		float cartTotalItemCost = 0.0f;
 
-		Customer customer = getLoggedInUser();
+		Customer customer = getCurrentUser();
 		if (customer != null) { // If a User is logged in, get their cart, (or null if it doesn't exist)
 			Cart customerCart = cartService.findByCustomerEmail(customer.getEmail());
 			if (customerCart != null) { // If they have a cart, fill cartItems with their cart item quantities
@@ -1173,7 +1067,7 @@ public class MainController {
 				return "redirect:" + referer;
 		}
 
-		Customer customer = getLoggedInUser();
+		Customer customer = getCurrentUser();
 		Cart customerCart;
 		Product purchasedProduct;
 		int purchasedQty = Integer.parseInt(itemQty); // Can't throw exception because referrer string format already
@@ -1284,7 +1178,7 @@ public class MainController {
 		model.addAttribute("allowOosSearch", getGeneralDataInteger("allowOosSearch"));
 		model.addAttribute("orderMinimum", getGeneralDataDouble("orderMinimum"));
 
-		Customer customer = getLoggedInUser();
+		Customer customer = getCurrentUser();
 		String cartAdjustments;
 		Cart customerCart;
 		int cartTotalItemQty = 0;
@@ -1332,7 +1226,7 @@ public class MainController {
 		model.addAttribute("allowOosSearch", getGeneralDataInteger("allowOosSearch"));
 		model.addAttribute("orderMinimum", getGeneralDataDouble("orderMinimum"));
 
-		Customer customer = getLoggedInUser();
+		Customer customer = getCurrentUser();
 		String cartAdjustments;
 		Cart customerCart;
 		int cartTotalItemQty = 0;
@@ -1424,7 +1318,7 @@ public class MainController {
 				return "redirect:/cart";
 		}
 
-		Customer customer = getLoggedInUser();
+		Customer customer = getCurrentUser();
 		model.addAttribute("navMenuItems", getNavMenuItems());
 		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
@@ -1467,7 +1361,7 @@ public class MainController {
 		int cartTotalItemQty = 0;
 		float cartTotalItemCost = 0.0f;
 
-		Customer customer = getLoggedInUser();
+		Customer customer = getCurrentUser();
 		if (customer == null) { // Can't check out if not logged in, for now. Direct user to log in
 			model.addAttribute("error", "Please log in to your account to check out.");
 			return "/login";
@@ -1580,7 +1474,7 @@ public class MainController {
 		int cartTotalItemQty = 0;
 		float cartTotalItemCost = 0.0f;
 
-		Customer customer = getLoggedInUser();
+		Customer customer = getCurrentUser();
 		if (customer == null) { // Can't complete order if not logged in, for now. Direct user to log in page
 			model.addAttribute("error", "Please log in to your account to check out.");
 			return "/login";
@@ -1801,36 +1695,6 @@ public class MainController {
 			model.addAttribute("listPayTypes", listPayTypes);
 			model.addAttribute("listPaymentInfo", listPaymentInfo());
 			return "printOrder";
-		}
-	}
-
-	@GetMapping("/admin")
-	public String adminMainPage(Model model) {
-		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
-		Customer user = getLoggedInUser();
-		if (user == null)
-			return "/login"; // If not logged in, redirect to login page
-		else // Otherwise check Roles and direct to appropriate page
-		{
-			Set<Role> userRoles = user.getRole();
-			Iterator<Role> roleIterator = userRoles.iterator();
-			boolean isAdmin = false;
-			while (roleIterator.hasNext()) {
-				if (roleIterator.next().getId() == (int) (Role.Roles.ADMIN.ordinal())
-						|| roleIterator.next().getId() == (int) (Role.Roles.OWNER.ordinal()))
-					isAdmin = true;
-			}
-
-			if (!isAdmin) {
-				model.addAttribute("navMenuItems", getNavMenuItems());
-				model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
-				model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
-				model.addAttribute("showRetailPrice", getGeneralDataInteger("showRetailPrice"));
-				model.addAttribute("allowOosSearch", getGeneralDataInteger("allowOosSearch"));
-				return "redirect:/index"; // If user is customer, redirect to home page
-			} else {
-				return "/admin"; // If user is admin, display admin control panel
-			}
 		}
 	}
 

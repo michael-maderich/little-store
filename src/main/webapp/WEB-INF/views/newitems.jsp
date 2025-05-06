@@ -8,17 +8,17 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-<jsp:include page="headElement.jsp">
+<jsp:include page="/WEB-INF/views/includes/headElement.jsp">
 	<jsp:param name="title" value="The Little Store - New Items" />
 	<jsp:param name="page" value="newitems" />
 </jsp:include>
 	</head>
 	<body>
 		<header>
-<jsp:include page="basicHeader.jsp"></jsp:include>
+<jsp:include page="/WEB-INF/views/includes/basicHeader.jsp"></jsp:include>
 		</header>
 		<div id="main-content">
-<jsp:include page="sideNav.jsp">
+<jsp:include page="/WEB-INF/views/includes/sideNav.jsp">
 	<jsp:param name="categoryName" value="${categoryName}" />
 	<jsp:param name="subCatName" value="${subCategoryName}" />
 </jsp:include>
@@ -91,7 +91,7 @@
 			</div>
 		</div>
         <footer>
-			<jsp:include page="basicFooter.jsp"></jsp:include>
+			<jsp:include page="/WEB-INF/views/includes/basicFooter.jsp"></jsp:include>
         </footer>
 	</body>
 </html>
