@@ -36,6 +36,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.littlestore.config.GmailProperties;
 import com.littlestore.entity.Cart;
 import com.littlestore.entity.CartDetail;
 import com.littlestore.entity.Customer;
@@ -55,8 +56,8 @@ public class MainController extends BaseController {
 
 	@Autowired PasswordResetValidator passwordReqLimiter;
 
-	public MainController(GmailEmailService emailService) {
-		super(emailService);
+	public MainController(GmailEmailService emailService, GmailProperties gmailProps) {
+		super(emailService, gmailProps);
 	}
 
 	// Possibly update with optional argument that indicates link was /addtoCart and change message appropriately
@@ -207,11 +208,11 @@ public class MainController extends BaseController {
 		sb.append("        <tbody>");
 
 		double orderTotal = 0;
-		String imageUrlBase = getGeneralDataString("imageUrlBase");
+		String urlRoot = getGeneralDataString("urlRoot");
 
 		for (OrderDetail orderItem : order.getOrderItems()) {
 			String relativeImgUrl = orderItem.getProduct().getImage();
-			String fullImgUrl = buildFullUrl(imageUrlBase, relativeImgUrl);
+			String fullImgUrl = buildFullUrl(urlRoot, relativeImgUrl);
 
 			sb.append("            <tr>");
 			sb.append("                <td class='checkout_image_panel' style='"+tdStyle+"; text-align:center'>");
@@ -464,21 +465,19 @@ public class MainController extends BaseController {
 	            return "redirect:/forgotPassword";
 	        }
 	        else {
-		        // record the request time
-		        customer.setLastPasswordResetRequest(LocalDateTime.now());
-		        customerService.update(customer);
-	
 		        // generate token & send email
 		        String token = UUID.randomUUID().toString();
 		        customer.setResetToken(token);
 		        customer.setResetTokenExpiry(LocalDateTime.now().plusMinutes(15));
-		        customerService.update(customer); // Save token + expiry
 	
-		        String resetLink = getGeneralDataString("imageUrlBase") + "/resetPassword?token=" + token;
+		        String resetLink = getGeneralDataString("urlRoot") + "/resetPassword?token=" + token;
 		        try {
 					emailService.send(customer.getEmail(), getGeneralDataString("senderEmail"),
 					    "Password Reset Request",
 					    "Click the link below to reset your password. The link expires in 15 minutes.<br />" + resetLink);
+			        // record the request time
+			        customer.setLastPasswordResetRequest(LocalDateTime.now());
+			        customerService.update(customer); // Save token + expiry
 				} catch (MessagingException | IOException e) {
 					e.printStackTrace();
 			        model.addAttribute("error", "E-mail service is down.\nPlease try again later.");
@@ -1407,8 +1406,8 @@ public class MainController extends BaseController {
 
 	@GetMapping("/connect")
 	public void connect(HttpServletResponse response) throws IOException {
-	    String redirectUri = "http://localhost:8080/oauth2/callback";
-	    String clientId = "***REMOVED***";
+        String clientId    = gmailProps.getClientId();
+        String redirectUri = gmailProps.getRedirectUri();
 	    String scope = "https://www.googleapis.com/auth/gmail.send";
 
 	    String oauthUrl = "https://accounts.google.com/o/oauth2/v2/auth"
@@ -1424,9 +1423,9 @@ public class MainController extends BaseController {
 
 	@GetMapping("/oauth2/callback")
 	public ResponseEntity<String> oauth2Callback(@RequestParam("code") String code) throws IOException {
-	    String clientId = "***REMOVED***";
-	    String clientSecret = "***REMOVED***";
-	    String redirectUri = "http://localhost:8080/oauth2/callback";
+        String clientId     = gmailProps.getClientId();
+        String clientSecret = gmailProps.getClientSecret();
+        String redirectUri  = gmailProps.getRedirectUri();
 	    String tokenUrl = "https://oauth2.googleapis.com/token";
 
 	    // Build the request body
@@ -1582,7 +1581,7 @@ public class MainController extends BaseController {
 		            System.out.println("Email sent to " + to);
 		        } catch (Exception e) {
 		            System.err.println("Failed to send email: " + e.getMessage());
-		            // optionally log or rethrow
+		            model.addAttribute("error", e.getMessage());
 		        }
 	        }
 

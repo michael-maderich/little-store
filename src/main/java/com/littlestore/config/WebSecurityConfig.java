@@ -69,7 +69,7 @@ public class WebSecurityConfig {
                 
                 // TODO: lock down admin pages
                 // everything under /admin/** requires one of those roles
-                .antMatchers("/admin/**")
+                .antMatchers("/admin/**", "/connect", "/oauth2/callback")
                   .hasAnyRole("OWNER","ADMIN")
                 // everything else requires login
                 .anyRequest().authenticated()

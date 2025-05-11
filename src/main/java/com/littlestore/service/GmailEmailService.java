@@ -2,7 +2,11 @@ package com.littlestore.service;
 
 import com.google.api.services.gmail.Gmail;
 import com.google.api.services.gmail.model.Message;
+import com.google.api.client.auth.oauth2.TokenResponseException;
+
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.springframework.mail.MailSendException;
 
 import javax.mail.MessagingException;
 import javax.mail.Session;
@@ -14,11 +18,12 @@ import java.util.Base64;
 import java.util.Properties;
 
 @Service
+@Lazy
 public class GmailEmailService {
 
     private final Gmail gmail;
 
-    public GmailEmailService(Gmail gmail) {
+    public GmailEmailService(@Lazy Gmail gmail) {
         this.gmail = gmail;
     }
 
@@ -26,7 +31,16 @@ public class GmailEmailService {
             throws MessagingException, IOException {
         MimeMessage email = createEmail(to, from, subject, bodyText);
         Message message = createMessageWithEmail(email);
-        gmail.users().messages().send(from, message).execute();
+        try {
+        	gmail.users().messages().send(from, message).execute();
+        }
+        catch (TokenResponseException e) {
+    	  throw new MailSendException("E-mail service is down (OAuth token invalid). Please re-authorize your GMAIL_REFRESH_TOKEN.");
+        }
+        catch (IOException e) {
+            // other I/O errors
+            throw new MailSendException("E-mail service is temporarily unavailable.", e);
+        }
     }
 
     private MimeMessage createEmail(

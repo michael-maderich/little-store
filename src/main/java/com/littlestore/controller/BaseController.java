@@ -8,6 +8,8 @@ import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import com.littlestore.config.GmailProperties;
 import com.littlestore.entity.Customer;
 import com.littlestore.entity.GeneralData;
 import com.littlestore.entity.PaymentInfo;
@@ -52,6 +54,8 @@ public abstract class BaseController {
 	protected final GmailEmailService emailService;
     @Autowired
     protected SecurityService auth;
+    
+    protected final GmailProperties gmailProps;
 
     protected int hourDiffFromDb = 5;
 
@@ -60,8 +64,9 @@ public abstract class BaseController {
 	protected List<String> listPayTypes = Stream.of(Customer.PaymentMethods.values()).map(Enum::name)
 			.collect(Collectors.toList());
 
-    protected BaseController(GmailEmailService emailService) {
+    protected BaseController(GmailEmailService emailService, GmailProperties gmailProps) {
         this.emailService = emailService;
+        this.gmailProps = gmailProps;
     }
 
     protected Customer getCurrentUser() {

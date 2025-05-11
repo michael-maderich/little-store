@@ -8,6 +8,7 @@ import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.UserCredentials;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -17,13 +18,19 @@ public class GmailConfig {
 
     private static final String APPLICATION_NAME = "LittleStore";
     private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
+    private final GmailProperties props;
+
+    public GmailConfig(GmailProperties props) {
+        this.props = props;
+    }
 
     @Bean
+    @Lazy
     Gmail gmailService() throws GeneralSecurityException, IOException {
         // Read environment variables
-        String clientId = System.getenv("GMAIL_CLIENT_ID");
-        String clientSecret = System.getenv("GMAIL_CLIENT_SECRET");
-        String refreshToken = System.getenv("GMAIL_REFRESH_TOKEN");
+        String clientId     = props.getClientId();
+        String clientSecret = props.getClientSecret();
+        String refreshToken = props.getRefreshToken();
 
         if (clientId == null || clientSecret == null || refreshToken == null) {
             throw new IllegalStateException("Gmail credentials are not set in environment variables.");
