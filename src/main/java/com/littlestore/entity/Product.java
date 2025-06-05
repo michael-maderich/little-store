@@ -7,6 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name="product")
@@ -15,10 +16,12 @@ public class Product implements Serializable {
 	private static final long serialVersionUID = 1234567891L;
 
 	@Id
+	@NotNull
 	@Column(name="upc", length=12, nullable=false, unique=true)
 	private String upc;
 
 	@Basic(optional=false)
+	@NotNull
 	@Column(name="categoryMain", length=50, nullable=false)
 	private String categoryMain;
 
@@ -27,54 +30,63 @@ public class Product implements Serializable {
 	private String categorySecondary;
 
 	@Basic(optional=false)
+	@NotNull
 	@Column(name="categorySpecific", length=50, nullable=false)
 	private String categorySpecific;
 
 	@Basic(optional=false)
+	@NotNull
 	@Column(name="name", length=50, nullable=false)
 	private String name;
 	
 	@Basic
+	@NotNull
 	@Column(name="options", length=50)
 	private String options;
 
 	@Basic
+	@NotNull
 	@Column(name="size", length=10)
 	private String size;
 
 	@Basic
-	@Column(name="cost", nullable=false)
+	@Column(name="cost", nullable=true)
 	private float cost;
 
 	@Basic
-	@Column(name="retailPrice", nullable=false)
+	@Column(name="retailPrice", nullable=true)
 	private float retailPrice;
 
 	@Basic
+	@NotNull
 	@Column(name="basePrice", nullable=false)
 	private float basePrice;
 
 	@Basic
+	@NotNull
 	@Column(name="currentPrice", nullable=false)
 	private float currentPrice;
 
 	@Basic
+	@NotNull
 	@Column(name="onSale", nullable=false)
 	private boolean onSale;
 
 	@Basic
+	@NotNull
 	@Column(name="stockQty", nullable=false)
 	private int stockQty;
 
 	@Basic
 	@Column(name="inventoried")
-	private int inventoried;
+	private boolean inventoried;
 
 	@Basic
 	@Column(name="inventoriedDate")
 	private LocalDateTime inventoriedDate;
 	
 	@Basic
+	@NotNull
 	@Column(name="purchaseLimit")
 	private int purchaseLimit;
 
@@ -83,18 +95,21 @@ public class Product implements Serializable {
 	private String description;
 
 	@Basic
+	@NotNull
 	@Column(name="image", length=255, nullable=false)
 	private String image;	// URL of product image
 
 	@Basic
 	@Column(name="transparent", nullable=false)
-	private int transparent;	// whether image has transparent background
+	private boolean transparent;	// whether image has transparent background
 
 	@Basic
+	@NotNull
 	@Column(name="dateAdded", nullable=false)
 	private LocalDateTime dateAdded;
 	
 	@Basic
+	@NotNull
 	@Column(name="dateLastSold", nullable=true)
 	private LocalDateTime dateLastSold;
 	
@@ -107,8 +122,8 @@ public class Product implements Serializable {
 
 	public Product(String upc, String categoryMain, String categorySecondary, String categorySpecific, String name,
 			String options, String size, float cost, float retailPrice, float basePrice, float currentPrice, boolean onSale,
-			int stockQty, int inventoried, LocalDateTime inventoriedDate, int purchaseLimit,
-			String description, String image, int transparent, LocalDateTime dateAdded, LocalDateTime dateLastSold) {
+			int stockQty, boolean inventoried, LocalDateTime inventoriedDate, int purchaseLimit,
+			String description, String image, boolean transparent, LocalDateTime dateAdded, LocalDateTime dateLastSold) {
 		this.upc = upc;
 		this.categoryMain = categoryMain;
 		this.categorySecondary = categorySecondary;
@@ -223,10 +238,10 @@ public class Product implements Serializable {
 		this.stockQty = stockQty;
 	}
 
-	public int getInventoried() {
+	public boolean getInventoried() {
 		return inventoried;
 	}
-	public void setInventoried(int inventoried) {
+	public void setInventoried(boolean inventoried) {
 		this.inventoried = inventoried;
 	}
 
@@ -251,10 +266,10 @@ public class Product implements Serializable {
 		this.description = description;
 	}
 
-	public int getTransparent() {
+	public boolean getTransparent() {
 		return transparent;
 	}
-	public void setTransparent(int isTransparent) {
+	public void setTransparent(boolean isTransparent) {
 		this.transparent = isTransparent;
 	}
 

@@ -1,4 +1,4 @@
-package com.littlestore.controller;
+package com.littlestore.controller.admin;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -6,20 +6,20 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.littlestore.config.GmailProperties;
+import com.littlestore.controller.BaseController;
 import com.littlestore.entity.Customer;
 import com.littlestore.service.GmailEmailService;
 
 @Controller
 @RequestMapping("/admin")
-public class OwnerController extends BaseController {
+public class AdminController extends BaseController {
   
-	public OwnerController(GmailEmailService emailService, GmailProperties gmailProps) {
+	public AdminController(GmailEmailService emailService, GmailProperties gmailProps) {
 		super(emailService, gmailProps);
 	}
 
-	@GetMapping("/dashboard")
+	@GetMapping({"", "/", "/dashboard"})
 	public String ownerDashboard(Model model) {
-		model.addAttribute("navMenuItems", getNavMenuItems());
 		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
 		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
@@ -36,17 +36,23 @@ public class OwnerController extends BaseController {
 
     // e.g. “Manage Orders”
     @GetMapping("/orders")
-    public String listOrders( Model m ) {
-    	m.addAttribute("orders", orderService.listAll() );
+    public String listOrders( Model model ) {
+		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
+		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
+		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
+    	model.addAttribute("orders", orderService.listAll() );
     	return "admin/orders";
     }
   
     // e.g. “Manage Products”
-    @GetMapping("/products")
-    public String listProducts(Model m) {
-    	m.addAttribute("products", productService.listAll());
-    	return "admin/products";
-    }
+//    @GetMapping("/products")
+//    public String listProducts(Model model) {
+//		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
+//		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
+//		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
+//    	model.addAttribute("products", productService.listAll());
+//    	return "admin/products";
+//    }
   
     // etc…
 }

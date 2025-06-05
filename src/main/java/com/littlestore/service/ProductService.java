@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +18,6 @@ import com.littlestore.repository.ProductRepository;
 public class ProductService {
 	
 	ProductRepository repo;
-	@Autowired
 	public ProductService(ProductRepository repo) {
 		this.repo = repo;
 	}
@@ -84,6 +82,10 @@ public class ProductService {
     
 	public List<String> listCategoryMain() {
 		return repo.findAllCategoryMainAsc();
+	}	 
+	
+	public List<String> listCategorySpecific() {
+		return repo.findAllCategorySpecificAsc();
 	}	 
 	
 	public List<String> listCategoryMainWithStock() {

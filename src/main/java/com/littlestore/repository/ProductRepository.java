@@ -48,6 +48,10 @@ public interface ProductRepository extends CrudRepository<Product, String>, JpaS
     
 //	public List<String> findAllDistinctCategorySpecificGroupByCategoryMainOrderByCategorySpecific();
 	
+	// Get list of Product Specific Categories
+	@Query(value = "SELECT DISTINCT p.categorySpecific FROM product p ORDER BY p.categorySpecific", nativeQuery=true)
+	public List<String> findAllCategorySpecificAsc();
+
 	// Get list of Product Specific Categories under the passed Main Category
 	@Query(value = "SELECT DISTINCT p.categorySpecific FROM product p "
 				+ "WHERE p.categoryMain = :mainCat ORDER BY p.categorySpecific", nativeQuery=true)

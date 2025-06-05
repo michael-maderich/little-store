@@ -1,0 +1,187 @@
+/* admin.css */
+@charset "UTF-8";
+
+/* ———————————————————————————————————————————
+   Design Tokens & Spacing Scale
+   ——————————————————————————————————————————— */
+:root {
+  /* Sidebar */
+  --sidebar-width:     10rem;            /* 160px at 16px base */
+  --sidebar-bg:        #343a40;
+  --sidebar-text:      #f8f9fa;
+
+  /* Content */
+  --content-max-width: 75rem;            /* ~1020px */
+  --gutter:            1rem;             /* 16px */
+}
+
+/* ———————————————————————————————————————————
+   Sidebar (fixed) on the left
+   ——————————————————————————————————————————— */
+#admin-side-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: var(--sidebar-width);
+  height: 100vh;                         /* full viewport height */
+  background-color: var(--sidebar-bg);
+  color: var(--sidebar-text);
+  overflow-y: auto;                      /* scroll if too tall */
+  padding: var(--gutter) 0;
+  box-sizing: border-box;
+}
+
+/* Reset list styles */
+#admin-side-nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+#admin-side-nav li {
+  margin: 0.5rem 0;
+}
+
+/* Link styles */
+#admin-side-nav a {
+  display: block;
+  padding: 0.75rem var(--gutter);
+  color: inherit;
+  text-decoration: none;
+  font-size: 1rem;
+}
+#admin-side-nav a:hover,
+#admin-side-nav a.active {
+  background-color: rgba(255,255,255,0.1);
+}
+
+/* ———————————————————————————————————————————
+   Main wrapper, pushed right of sidebar
+   ——————————————————————————————————————————— */
+#main-content {
+  margin-left: var(--sidebar-width);
+  padding: var(--gutter);
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+/* ———————————————————————————————————————————
+   Inner content, centered and constrained
+   ——————————————————————————————————————————— */
+#center-content {
+  margin: 0 auto;
+  max-width: var(--content-max-width);
+  text-align: center;
+  padding: var(--gutter);
+}
+
+/* ———————————————————————————————————————————
+   Tables
+   ——————————————————————————————————————————— */
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: var(--gutter) auto;
+}
+.admin-table th,
+.admin-table td {
+  padding: 0.75rem;
+  border: 1px solid #dee2e6;
+  text-align: left;
+}
+.admin-table thead {
+  background-color: #007bff;             /* reuse primary color */
+  color: #fff;
+}
+.admin-table tbody tr:nth-child(even) {
+  background: #fff;
+}
+.admin-table tbody tr:nth-child(odd) {
+  background: #f1f3f5;
+}
+
+/* ———————————————————————————————————————————
+   Buttons
+   ——————————————————————————————————————————— */
+.btn-primary {
+  display: inline-block;
+  font-size: 1rem;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 0.25rem;
+  background-color: #007bff;
+  color: #fff;
+  text-decoration: none;
+  cursor: pointer;
+}
+.btn-primary:hover {
+  background-color: #0069d9;
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+   Force admin‐console <select> to use a white background
+   ───────────────────────────────────────────────────────────────────── */
+#main-content select.form-control {
+  background-color: #fff;
+  color: #212529;            /* ensure dropdown text stays dark */
+  border: 1px solid #ced4da; /* match your input borders */
+}
+
+/* Optional: give the <select> a pointer cursor so it feels clickable */
+.form-control[type="text"],
+.form-control[type="number"],
+.form-control,
+select.form-control {
+  cursor: pointer;
+}
+
+/* Optional: if you want to tweak the arrow‐icon color/spacing */
+select.form-control {
+  appearance: auto;
+  -webkit-appearance: menulist;
+  -moz-appearance: menulist;
+  background-color: #fff;    /* keep your white background */
+  padding-right: 1.5rem;     /* ensure room for the arrow */
+}
+
+#main-content .form-control {
+  max-width: 45rem;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0 auto;
+}
+
+#main-content .form-group {
+  margin-top: 1.5rem; /* adjust up/down to taste */
+}
+
+/* ———————————————————————————————————————————
+   Center the Transparent? checkbox + label within its form-group
+   ——————————————————————————————————————————— */
+#main-content .form-check {
+  display: flex;               /* turn the form-check into a flex container */
+  justify-content: center;     /* horizontally center checkbox + label */
+  align-items: center;         /* vertically align them */
+  gap: 0.5rem;                 /* optional spacing between checkbox and label */
+}
+
+
+/* ———————————————————————————————————————————
+   Responsive tweaks (≤48rem / ~768px)
+   ——————————————————————————————————————————— */
+@media (max-width: 48rem) {
+  /* Sidebar becomes full-width, above content */
+  #admin-side-nav {
+    position: relative;
+    width: 100%;
+    height: auto;
+  }
+  /* Reset main-content to span full width */
+  #main-content {
+    margin-left: 0;
+  }
+  /* Tighter padding on small screens */
+  #center-content,
+  #main-content {
+    padding: 0.5rem;
+  }
+}
