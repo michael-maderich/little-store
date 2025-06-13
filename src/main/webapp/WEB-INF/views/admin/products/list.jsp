@@ -2,6 +2,12 @@
 
 <h2>Products</h2>
 
+<c:if test="${not empty successMessage}">
+  <div class="alert alert-success" style="margin-bottom:1rem;">
+    ${successMessage}
+  </div>
+</c:if>
+
 <a href="${pageContext.request.contextPath}/admin/products/create" class="btn">New Product</a>
 
 <table class="admin-table">
@@ -18,15 +24,14 @@
             <c:when test="${not empty p.image}">
               <img src="${p.image}"
                    alt="${p.name}"
-                   width="60"
-                   height="60"
-                   loading="lazy" />
+                   loading="lazy"
+                   class="product-thumb" />
             </c:when>
             <c:otherwise>
               <!-- Placeholder if no image set -->
               <img src="${contextPath}/images/placeholder.jpg"
                    alt="No image"
-                   width="60" height="60" />
+                   class="product-thumb" />
             </c:otherwise>
           </c:choose>
         </td>

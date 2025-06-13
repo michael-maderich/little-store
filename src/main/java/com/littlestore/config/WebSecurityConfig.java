@@ -9,6 +9,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
+import org.springframework.security.web.session.SimpleRedirectInvalidSessionStrategy;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import static org.springframework.security.config.Customizer.withDefaults;
@@ -30,68 +32,76 @@ public class WebSecurityConfig {
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            // keep CSRF on for normal form posts
-            .csrf(withDefaults())
+                // when the HTTP session is invalid/expired…
+                .sessionManagement(management -> management
+                        .invalidSessionStrategy(
+                                new SimpleRedirectInvalidSessionStrategy("/login")
+                        ))
+                // keep CSRF on for normal form posts
+                .csrf(withDefaults())
 
-            .exceptionHandling(ex -> ex
-                .accessDeniedPage("/403")
-			)
+                .exceptionHandling(ex -> ex
+                	    // Unauthenticated (or invalid session) → redirect to /login
+                	    .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"))
+                	    // Authenticated but insufficient role → show 403 page
+                	    .accessDeniedPage("/403")
+            	  )
 
-            // authorization rules
-            .authorizeHttpRequests(auth -> auth
-                // Static assets - permit everyone
-                .antMatchers(
-                    "/resources/**",
-                    "/static/**",
-                    "/css/**",
-                    "/js/**",
-                    "/images/**"
-                ).permitAll()
+                // authorization rules
+                .authorizeHttpRequests(auth -> auth
+                                // Static assets - permit everyone
+                                .antMatchers(
+                                        "/resources/**",
+                                        "/static/**",
+                                        "/css/**",
+                                        "/js/**",
+                                        "/images/**"
+                                ).permitAll()
 
-                // public endpoints
-                .antMatchers(
-                    "/403",
-                    "/category/**",
-                    "/dollarama",
-                    "/forgotPassword",
-                    "/images",
-                    "/index",
-                    "/login",
-                    "/newitems",
-                    "/printOrder/**",
-                    "/resendConfirmation/**",
-                    "/resetPassword",
-                    "/sale",
-                    "/search",
-                    "/searchresults",
-                    "/signup"
-                ).permitAll()
-                
-                // TODO: lock down admin pages
-                // everything under /admin/** requires one of those roles
-                .antMatchers("/admin/**", "/connect", "/oauth2/callback")
-                  .hasAnyRole("OWNER","ADMIN")
-                // everything else requires login
-                .anyRequest().authenticated()
-                
-            )
+                                // public endpoints
+                                .antMatchers(
+                                        "/403",
+                                        "/category/**",
+                                        "/dollarama",
+                                        "/forgotPassword",
+                                        "/images",
+                                        "/index",
+                                        "/login",
+                                        "/newitems",
+                                        "/printOrder/**",
+                                        "/resendConfirmation/**",
+                                        "/resetPassword",
+                                        "/sale",
+                                        "/search",
+                                        "/searchresults",
+                                        "/signup"
+                                ).permitAll()
 
-            // custom login page
-            .formLogin(form -> form
-            	    .loginPage("/login")
-            	    .successHandler(successHandler())
-            	    .permitAll()
-        	)
+                                // TODO: lock down admin pages
+                                // everything under /admin/** requires one of those roles
+                                .antMatchers("/admin/**", "/connect", "/oauth2/callback")
+                                .hasAnyRole("OWNER", "ADMIN")
+                                // everything else requires login
+                                .anyRequest().authenticated()
 
-            // logout config
-            .logout(logout -> logout
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .logoutSuccessUrl("/")
-                .permitAll()
-            )
+                )
 
-            // if you still need HTTP Basic for an API
-            .httpBasic(withDefaults());
+                // custom login page
+                .formLogin(form -> form
+                                .loginPage("/login")
+                                .successHandler(successHandler())
+                                .permitAll()
+                )
+
+                // logout config
+                .logout(logout -> logout
+                                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                                .logoutSuccessUrl("/")
+                                .permitAll()
+                )
+
+                // if you still need HTTP Basic for an API
+                .httpBasic(withDefaults());
 
         return http.build();
     }

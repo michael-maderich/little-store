@@ -18,6 +18,7 @@ import com.littlestore.repository.ProductRepository;
 public class ProductService {
 	
 	ProductRepository repo;
+
 	public ProductService(ProductRepository repo) {
 		this.repo = repo;
 	}
@@ -37,7 +38,7 @@ public class ProductService {
 	}
 
 	public Product get(String upc) {
-		return repo.findById(upc).get();
+		return repo.findById(upc).orElse(null);
 	}
 
 	public List<Product> findByName(String name) {

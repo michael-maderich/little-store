@@ -164,6 +164,34 @@ select.form-control {
   gap: 0.5rem;                 /* optional spacing between checkbox and label */
 }
 
+/* Thumbnail images in the product list: keep them ≤ 60px on either side */
+.product-thumb {
+  max-width: 3.75rem;   /* 60px ÷ 16px = 3.75rem */
+  max-height: 3.75rem;  /* ditto */
+  width: auto;          /* let browser compute the other dimension */
+  height: auto;
+  display: block;       /* if you want them centered in a table cell */
+  margin: 0 auto;
+  object-fit: contain;  /* ensures the image is letterboxed, not cropped */
+}
+
+/* Image preview in the edit/create form */
+.product-img-preview {
+  max-width: 8rem;
+  max-height: 8rem;
+  width: auto;          /* let browser compute the other dimension */
+  height: auto;
+  display: block;       /* if you want them centered in a table cell */
+  margin: 0 auto;
+  object-fit: contain;  /* ensures the image is letterboxed, not cropped */
+}
+
+/* Keep the Transparent Background label black even when the checkbox is disabled */
+#main-content .check-label {
+  color: #000 !important;
+  margin-left: 0.5rem;
+}
+
 
 /* ———————————————————————————————————————————
    Responsive tweaks (≤48rem / ~768px)

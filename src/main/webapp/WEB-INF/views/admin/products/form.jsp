@@ -4,28 +4,38 @@
 
 <h2>
   <c:choose>
-    <c:when test="${product.upc == null}">
-      Create Product
-    </c:when>
-    <c:otherwise>
-      Edit Product
-    </c:otherwise>
+    <c:when test="${isNew}">Create Product</c:when>
+    <c:otherwise>Edit Product</c:otherwise>
   </c:choose>
 </h2>
+
+<!-- ==================
+     0) GLOBAL ERROR BANNER (if controller set errorMessage)
+     ================== -->
+<c:if test="${not empty errorMessage}">
+  <div class="alert alert-danger" style="margin-bottom:1rem;">
+    ${errorMessage}
+  </div>
+</c:if>
 
 <form:form modelAttribute="product"
            action="${contextPath}/admin/products/save"
            method="post"
            enctype="multipart/form-data">
 
+  <!-- hidden flag so we know in the POST whether this is a create or an edit -->
+  <input type="hidden" name="isNew" value="${isNew}" />
+
   <!-- ===================
        1) UPC (Primary Key, not nullable, unique)
        =================== -->
   <div class="form-group">
-    <form:label path="upc"><b>UPC</b><span style="color:red;">*</span> (required)<br />Must be unique</form:label>
+    <form:label path="upc"><b>UPC</b><span style="color:red;">*</span> (<i>required</i>)<br />Must be unique</form:label>
     <form:input path="upc"
                 readonly="${not empty product.upc}"
-                cssClass="form-control" />
+                cssClass="form-control"
+                maxlength="${maxLenUpc}"
+                required="true" />
     <form:errors path="upc" cssClass="text-danger" />
   </div>
 
@@ -33,15 +43,20 @@
        2) Main Category (not nullable) - dropdown with existing values + free entry
        =================== -->
   <div class="form-group">
-    <form:label path="categoryMain"><b>Main Category</b><span style="color:red;">*</span> (required)<br />Select an existing category or add a new one</form:label>
+    <form:label path="categoryMain"><b>Main Category</b><span style="color:red;">*</span> (<i>required</i>)<br />Select an existing category or add a new one</form:label>
   
     <!-- 1) the SELECT dropdown with all existing values + an "Other" choice -->
-    <form:select path="categoryMain" cssClass="form-control" id="categoryMainSelect">
+    <form:select path="categoryMain"
+    			 cssClass="form-control"
+    			 id="categoryMainSelect"
+    			 required="true"
+                 oninvalid="this.setCustomValidity('Please select or enter a main category')"
+                 oninput="this.setCustomValidity('')">
       <form:option value="" label="-- Select Main Category --" />
       <c:forEach var="cm" items="${allCategoryMain}">
         <form:option value="${cm}">${cm}</form:option>
       </c:forEach>
-      <form:option value="__OTHER__">Enter New Main Category...</form:option>
+      <form:option value="__OTHER__">New Main Category...</form:option>
     </form:select>
     <form:errors path="categoryMain" cssClass="text-danger" />
 
@@ -52,7 +67,9 @@
              name="newCategoryMain"
              id="newCategoryMain"
              class="form-control"
-             placeholder="Type new Main Category" />
+             maxlength="${maxLenCategoryMain}"
+             placeholder="Type new Main Category"
+       		 value="<c:out value='${param.newCategoryMain}'/>" />
       <span class="text-muted small">Enter a new category name.</span>
     </div>
   </div>
@@ -80,15 +97,20 @@
        4) Specific Category (not nullable) - dropdown with existing values + free entry
        =================== -->
   <div class="form-group">
-    <form:label path="categorySpecific"><b>Sub-Category</b><span style="color:red;">*</span> (required)<br />Select a Sub-category under selected Main Category or add a new one.</form:label>
+    <form:label path="categorySpecific"><b>Sub-Category</b><span style="color:red;">*</span> (<i>required</i>)<br />Select a Sub-category under selected Main Category or add a new one.</form:label>
   
     <!-- 1) the SELECT dropdown with all existing values + an "Other" choice -->
-    <form:select path="categorySpecific" cssClass="form-control" id="categorySpecificSelect">
+    <form:select path="categorySpecific"
+    			 cssClass="form-control"
+    			 id="categorySpecificSelect"
+    			 required="true"
+                 oninvalid="this.setCustomValidity('Please select or enter a specific category')"
+                 oninput="this.setCustomValidity('')">
       <form:option value="" label="-- Select Sub-Category --" />
       <c:forEach var="csp" items="${allCategorySpecific}">
         <form:option value="${csp}">${csp}</form:option>
       </c:forEach>
-      <form:option value="__OTHER__">Other...</form:option>
+      <form:option value="__OTHER__">New Sub-Category...</form:option>
     </form:select>
     <form:errors path="categorySpecific" cssClass="text-danger" />
 
@@ -99,8 +121,10 @@
              name="newCategorySpecific"
              id="newCategorySpecific"
              class="form-control"
-             placeholder="Type new Sub-Category" />
-      <span class="text-muted small">Enter a brand-new category name.</span>
+             maxlength="${maxLenCategorySpecific}"
+             placeholder="Type new Sub-Category"
+       		 value="<c:out value='${param.newCategorySpecific}'/>" />
+      <span class="text-muted small">Enter a brand-new sub-category name.</span>
     </div>
   </div>
 
@@ -108,8 +132,8 @@
        5) Name (not nullable)
        =================== -->
   <div class="form-group">
-    <form:label path="name"><b>Name</b><span style="color:red;">*</span> (required)<br />Brand name, usually (i.e. Tide, Suave, etc)</form:label>
-    <form:input path="name" cssClass="form-control" />
+    <form:label path="name"><b>Name</b><span style="color:red;">*</span> (<i>required</i>)<br />Brand name, usually (i.e. Tide, Suave, etc)</form:label>
+    <form:input path="name" cssClass="form-control"  maxlength="${maxLenName}" required="true" />
     <form:errors path="name" cssClass="text-danger" />
   </div>
 
@@ -117,16 +141,16 @@
        6) Options (nullable)
        =================== -->
   <div class="form-group">
-    <form:label path="options"><b>Options</b><br />Scent, flavor, etc.</form:label>
-    <form:input path="options" cssClass="form-control" />
+    <form:label path="options"><b>Options</b> (optional)<br />Scent, flavor, etc.</form:label>
+    <form:input path="options" cssClass="form-control"  maxlength="${maxLenOptions}" />
   </div>
 
   <!-- ===================
        7) Size (nullable)
        =================== -->
   <div class="form-group">
-    <form:label path="size"><b>Size</b><br />12 oz, 20 g, 1 ct, etc.</form:label>
-    <form:input path="size" cssClass="form-control" />
+    <form:label path="size"><b>Size</b> (optional)<br />12 oz, 20 g, 1 ct, etc.</form:label>
+    <form:input path="size" cssClass="form-control"  maxlength="${maxLenSize}" />
   </div>
 
   <!-- ===================
@@ -134,7 +158,7 @@
        =================== -->
   <div class="form-group">
     <form:label path="cost"><b>Cost</b> (optional)<br />Unit cost per item added</form:label>
-    <form:input path="cost" type="number" step="0.01" cssClass="form-control" />
+    <form:input path="cost" type="number" inputmode="decimal" cssClass="form-control" step="0.0001" min="0" max="10000" />
     <form:errors path="cost" cssClass="text-danger" />
   </div>
 
@@ -143,7 +167,7 @@
        =================== -->
   <div class="form-group">
     <form:label path="retailPrice"><b>Retail Price</b> (optional)<br />Lowest retail price for user comparison (i.e. Walmart Price)</form:label>
-    <form:input path="retailPrice" type="number" step="0.01" cssClass="form-control" />
+    <form:input path="retailPrice" type="number" inputmode="decimal" cssClass="form-control" step="0.01" min="0" max="10000" />
     <form:errors path="retailPrice" cssClass="text-danger" />
   </div>
 
@@ -151,8 +175,8 @@
        10) Base Price (float, not nullable) - currency
        =================== -->
   <div class="form-group">
-    <form:label path="basePrice"><b>Base Price</b><span style="color:red;">*</span> (required)<br />Regular price for item (as opposed to Current Price which may be sale price)</form:label>
-    <form:input path="basePrice" type="number" step="0.01" cssClass="form-control" />
+    <form:label path="basePrice"><b>Base Price</b><span style="color:red;">*</span> (<i>required</i>)<br />Regular price for item (as opposed to Current Price which may be sale price)</form:label>
+    <form:input path="basePrice" type="number" inputmode="decimal" cssClass="form-control" step="0.0001" min="0" max="10000" required="true" />
     <form:errors path="basePrice" cssClass="text-danger" />
   </div>
 
@@ -160,8 +184,8 @@
        11) Current Price (float, not nullable) - currency
        =================== -->
   <div class="form-group">
-    <form:label path="currentPrice"><b>Current Price</b><span style="color:red;">*</span> (required)<br />Current selling price (Base Price or less)</form:label>
-    <form:input path="currentPrice" type="number" step="0.01" cssClass="form-control" />
+    <form:label path="currentPrice"><b>Current Price</b><span style="color:red;">*</span> (<i>required</i>)<br />Current selling price (Base Price or less)</form:label>
+    <form:input path="currentPrice" type="number" inputmode="decimal" cssClass="form-control" step="0.0001" min="0" max="10000" required="true" />
     <form:errors path="currentPrice" cssClass="text-danger" />
   </div>
 
@@ -169,8 +193,8 @@
        12) Stock Quantity (int, not nullable)
        =================== -->
   <div class="form-group">
-    <form:label path="stockQty"><b>Stock Quantity</b><span style="color:red;">*</span> (required)<br />Current stock quantity - increase to add new stock</form:label>
-    <form:input path="stockQty" type="number" cssClass="form-control" />
+    <form:label path="stockQty"><b>Stock Quantity</b><span style="color:red;">*</span> (<i>required</i>)<br />Current stock quantity - increase to add new stock</form:label>
+    <form:input path="stockQty" type="number" cssClass="form-control" step="1" min="0" max="10000" required="true" />
     <form:errors path="stockQty" cssClass="text-danger" />
   </div>
 
@@ -179,86 +203,104 @@
        =================== -->
   <div class="form-group">
     <form:label path="purchaseLimit"><b>Purchase Limit</b> (optional)<br />Purchase Limit per order per customer. Leave blank or 0 for no limit.</form:label>
-    <form:input path="purchaseLimit" type="number" cssClass="form-control" />
+    <form:input path="purchaseLimit" type="number" cssClass="form-control" step="1" min="0" max="10000" />
   </div>
 
   <!-- ===================
        14) Image (URL stored in DB, not nullable) and upload field
        =================== -->
   <div class="form-group">
-    <label for="imageFile"><b>Product Image</b><span style="color:red;">*</span> (required)<br />Image required for new items or replace for existing items.</label>
+    <label for="imageFile"><b>Product Image</b><span style="color:red;">*</span> (<i>required</i>) Max size: 5 MB<br />If image has a transparent background (auto-detected), it will be randomly shown at login, etc.</label>
     <input type="file"
            name="imageFile"
            id="imageFile"
            accept="image/*"
-           class="form-control" />
-    <br /> Check <i>Transparent</i> if image has a transparent background. It will be randomly shown at login, etc.
+           class="form-control"
+           maxlength="255" />
     <form:errors path="image" cssClass="text-danger" />
-
-    <!-- ===================
-       15) Transparent (boolean, not nullable) - rendered as a checkbox
-       =================== -->
-    <div class="form-group form-check">
-      <form:checkbox path="transparent" cssClass="form-check-input" id="transparent" />
-      <label class="form-check-label" for="transparent"><b>Transparent?</b></label>
-      <form:errors path="transparent" cssClass="text-danger" />
-    </div>
-
-    <c:if test="${not empty product.image}">
-      <br/>
-      <img src="${product.image}"
-           alt="${product.name}"
-           width="120"
-           height="120"
-           loading="lazy" />
-
-      <p><small><b>Current image</b> (will be replaced if you choose a new file)</small></p>
-    </c:if>
   </div>
 
-  <!-- 16) Hidden fields we do not expose: onSale, inventoried, inventoriedDate,
+  <!-- ===================
+       15) Current Image + Transparent checkbox (only if editing/existing product)
+       =================== -->
+  <c:if test="${not empty product.image}">
+    <div class="form-group d-flex align-items-center" style="justify-content: center; gap: 1rem; margin-top: 1rem;">
+      <!-- 1) Current Image Preview (on the left) -->
+      <div style="text-align: center;">
+        <img src="${product.image}"
+             alt="${product.name}"
+             loading="lazy"
+             class="product-img-preview" />
+      </div>
+
+      <!-- 2) Disabled "Transparent Background" Checkbox (on the right) -->
+      <div class="form-check" style="display: flex; align-items: center;">
+        <form:checkbox path="transparent"
+                       value="true"
+                       cssClass="form-check-input"
+                       id="transparent"
+                       disabled="true" />
+        <label class="check-label"
+               for="transparent">
+          Transparent Background
+        </label>
+      </div>
+    </div>
+        <p style="margin-top: 0.5rem;">
+          <small><b>Current image</b> (will be replaced if you upload a new file)</small>
+        </p>
+  </c:if>
+
+  <!-- 16) Hidden fields we do not expose: onSale (computed), inventoried, inventoriedDate,
       description (computed), dateAdded (computed), dateLastSold (not updated here) -->
 
-  <button type="submit" class="btn btn-primary">
-    Save
-  </button>
-  <a href="${contextPath}/admin/products" class="btn btn-secondary">
-    Cancel
-  </a>
+  <button type="submit" class="btn btn-primary">Save</button>
+  <a href="${contextPath}/admin/products" class="btn btn-secondary">Cancel</a>
 </form:form>
 
 <script>
-  // Whenever the Main Category <select> changes...
-  document.getElementById('categoryMainSelect').addEventListener('change', function(e) {
-    const newDiv = document.getElementById('newCategoryMainDiv');
-    if (this.value === '__OTHER__') {
-      newDiv.style.display = 'block';
-    } else {
-      newDiv.style.display = 'none';
-      // Clear the "other" text field if user switches back to a real option
-      document.getElementById('newCategoryMain').value = '';
-    }
-  });
+  document.addEventListener("DOMContentLoaded", function() {
+    // Main category elements
+    const mainSelect  = document.getElementById("categoryMainSelect");
+    const mainDiv     = document.getElementById("newCategoryMainDiv");
+    const mainInput   = document.getElementById("newCategoryMain");
 
-  // Whenever the Specific Category <select> changes...
-  document.getElementById('categorySpecificSelect').addEventListener('change', function(e) {
-    const newDiv = document.getElementById('newCategorySpecificDiv');
-    if (this.value === '__OTHER__') {
-      newDiv.style.display = 'block';
-    } else {
-      newDiv.style.display = 'none';
-      document.getElementById('newCategorySpecific').value = '';
-    }
-  });
+    // Specific category elements
+    const specSelect  = document.getElementById("categorySpecificSelect");
+    const specDiv     = document.getElementById("newCategorySpecificDiv");
+    const specInput   = document.getElementById("newCategorySpecific");
 
-  // On page load, if the bound value is "Other", show its text field
-  window.addEventListener('DOMContentLoaded', function() {
-    if (document.getElementById('categoryMainSelect').value === '__OTHER__') {
-      document.getElementById('newCategoryMainDiv').style.display = 'block';
+    // Toggle "New Main Category" field (visibility + required)
+    function toggleMainField() {
+      if (mainSelect.value === "__OTHER__") {
+        mainDiv.style.display  = "block";
+        mainInput.required     = true;
+      } else {
+        mainDiv.style.display  = "none";
+        mainInput.required     = false;
+        mainInput.value        = "";
+      }
     }
-    if (document.getElementById('categorySpecificSelect').value === '__OTHER__') {
-      document.getElementById('newCategorySpecificDiv').style.display = 'block';
+
+    // Toggle "New Specific Category" field (visibility + required)
+    function toggleSpecField() {
+      if (specSelect.value === "__OTHER__") {
+        specDiv.style.display  = "block";
+        specInput.required     = true;
+      } else {
+        specDiv.style.display  = "none";
+        specInput.required     = false;
+        specInput.value        = "";
+      }
     }
+
+    // Wire up change events for both dropdowns
+    mainSelect.addEventListener("change", toggleMainField);
+    specSelect.addEventListener("change", toggleSpecField);
+
+    // Run once on load in case we're re-rendered after a validation error
+    toggleMainField();
+    toggleSpecField();
   });
 </script>
 

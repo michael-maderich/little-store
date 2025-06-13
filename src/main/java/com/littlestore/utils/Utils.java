@@ -1,12 +1,15 @@
 package com.littlestore.utils;
 
+import java.lang.reflect.Field;
 //import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.servlet.http.HttpServletRequest;
 
 import com.littlestore.entity.Cart;
+import com.littlestore.entity.Product;
 
 public class Utils {
 
@@ -42,5 +45,21 @@ public class Utils {
 
 	public static Cart getLastOrderedCartInSession(HttpServletRequest request) {
 		return (Cart) request.getSession().getAttribute("lastOrderedCart");
-	}	
+	}
+
+	/** 
+	 * Returns the JPA @Column.length for the given field on the given entity class,
+	 * or fallbackValue if the annotation is missing.
+	 */
+	public static Integer getColumnLength(Class<?> entityClass, String fieldName, int fallbackValue) {
+	  try {
+	    Field f = entityClass.getDeclaredField(fieldName);
+	    Column col = f.getAnnotation(Column.class);
+	    return (col != null && col.length() > 0)
+	      ? col.length()
+	      : fallbackValue;
+	  } catch (NoSuchFieldException e) {
+	    return fallbackValue;
+	  }
+	}
 }

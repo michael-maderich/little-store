@@ -7,7 +7,12 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name="product")
@@ -16,106 +21,114 @@ public class Product implements Serializable {
 	private static final long serialVersionUID = 1234567891L;
 
 	@Id
-	@NotNull
+	@NotBlank(message="UPC is required")
+	@Size(max=12, message="UPC cannot exceed 12 characters")
 	@Column(name="upc", length=12, nullable=false, unique=true)
 	private String upc;
 
 	@Basic(optional=false)
-	@NotNull
+    @NotBlank(message="Main category is required")
+    @Size(max=50, message="Main Category name may not exceed 50 characters")
 	@Column(name="categoryMain", length=50, nullable=false)
 	private String categoryMain;
 
 	@Basic(optional=true)
+    @Size(max=50, message="Secondary Category name may not exceed 50 characters")
 	@Column(name="categorySecondary", length=50, nullable=true)
 	private String categorySecondary;
 
 	@Basic(optional=false)
-	@NotNull
+    @NotBlank(message="Sub-category is required")
+    @Size(max=50, message="Sub-Category name may not exceed 50 characters")
 	@Column(name="categorySpecific", length=50, nullable=false)
 	private String categorySpecific;
 
 	@Basic(optional=false)
-	@NotNull
+    @NotBlank(message="Name is required")
+    @Size(max=50, message="Name may not exceed 50 characters")
 	@Column(name="name", length=50, nullable=false)
 	private String name;
 	
 	@Basic
-	@NotNull
-	@Column(name="options", length=50)
+    @Size(max=75, message="Options may not exceed 75 characters")
+	@Column(name="options", length=75)
 	private String options;
 
 	@Basic
-	@NotNull
-	@Column(name="size", length=10)
+    @Size(max=20, message="Size may not exceed 20 characters")
+	@Column(name="size", length=20)
 	private String size;
 
 	@Basic
+    @DecimalMin(value="0.0", inclusive=true, message="Cost must be greater than zero")
+	@Digits(integer=10, fraction=4, message="Cost must be a valid monetary amount")
 	@Column(name="cost", nullable=true)
-	private float cost;
+	private Float cost;
 
 	@Basic
+    @DecimalMin(value="0.0", inclusive=true, message="Retail Price must be greater than zero")
+	@Digits(integer=10, fraction=2, message="Retail Price must be a valid monetary amount")
 	@Column(name="retailPrice", nullable=true)
-	private float retailPrice;
+	private Float retailPrice;
 
 	@Basic
-	@NotNull
+    @NotNull(message="Base Price is required")
+    @DecimalMin(value="0.0", inclusive=true, message="Base Price must be greater than zero")
+	@Digits(integer=10, fraction=4, message="Base Price must be a valid monetary amount")
 	@Column(name="basePrice", nullable=false)
-	private float basePrice;
+	private Float basePrice;
 
 	@Basic
-	@NotNull
+    @NotNull(message="Current Price is required")
+    @DecimalMin(value="0.0", inclusive=true, message="Current Price must be greater than zero")
+	@Digits(integer=10, fraction=4, message="Current Price must be a valid monetary amount")
 	@Column(name="currentPrice", nullable=false)
-	private float currentPrice;
+	private Float currentPrice;
 
 	@Basic
-	@NotNull
 	@Column(name="onSale", nullable=false)
-	private boolean onSale;
+	private Boolean onSale;
 
 	@Basic
-	@NotNull
+	@NotNull(message="Stock Quantity is required")
+	@Min(value=0, message="Stock Quantity cannot be negative")
 	@Column(name="stockQty", nullable=false)
-	private int stockQty;
+	private Integer stockQty;
 
 	@Basic
 	@Column(name="inventoried")
-	private boolean inventoried;
+	private Boolean inventoried;
 
 	@Basic
 	@Column(name="inventoriedDate")
 	private LocalDateTime inventoriedDate;
 	
 	@Basic
-	@NotNull
+	@Min(value=0, message="Purchase limit cannot be negative")
 	@Column(name="purchaseLimit")
-	private int purchaseLimit;
+	private Integer purchaseLimit;
 
 	@Basic
-	@Column(name="description", length=200, nullable=false)
+	@Size(max=255, message="Description may not exceed 255 characters")
+	@Column(name="description", length=255)
 	private String description;
 
 	@Basic
-	@NotNull
-	@Column(name="image", length=255, nullable=false)
+	@Size(max=255, message="Image URL may not exceed 255 characters")
+	@Column(name="image", length=255)
 	private String image;	// URL of product image
 
 	@Basic
 	@Column(name="transparent", nullable=false)
-	private boolean transparent;	// whether image has transparent background
+	private Boolean transparent;	// whether image has transparent background
 
 	@Basic
-	@NotNull
-	@Column(name="dateAdded", nullable=false)
+	@Column(name="dateAdded", nullable=false, updatable=false)
 	private LocalDateTime dateAdded;
 	
 	@Basic
-	@NotNull
 	@Column(name="dateLastSold", nullable=true)
 	private LocalDateTime dateLastSold;
-	
-	/*	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name="creationDate", nullable=false)
-	private Date createDate*/
 	
 	public Product() {
 	}
@@ -196,52 +209,52 @@ public class Product implements Serializable {
 		this.size = size;
 	}
 
-	public float getCost() {
+	public Float getCost() {
 		return cost;
 	}
-	public void setCost(float cost) {
+	public void setCost(Float cost) {
 		this.cost = cost;
 	}
 
-	public float getRetailPrice() {
+	public Float getRetailPrice() {
 		return retailPrice;
 	}
-	public void setRetailPrice(float retailPrice) {
+	public void setRetailPrice(Float retailPrice) {
 		this.retailPrice = retailPrice;
 	}
 
-	public float getBasePrice() {
+	public Float getBasePrice() {
 		return basePrice;
 	}
-	public void setBasePrice(float basePrice) {
+	public void setBasePrice(Float basePrice) {
 		this.basePrice = basePrice;
 	}
 
-	public float getCurrentPrice() {
+	public Float getCurrentPrice() {
 		return currentPrice;
 	}
-	public void setCurrentPrice(float currentPrice) {
+	public void setCurrentPrice(Float currentPrice) {
 		this.currentPrice = currentPrice;
 	}
 
-	public boolean isOnSale() {
+	public Boolean isOnSale() {
 		return onSale;
 	}
-	public void setOnSale(boolean onSale) {
+	public void setOnSale(Boolean onSale) {
 		this.onSale = onSale;
 	}
 
-	public int getStockQty() {
+	public Integer getStockQty() {
 		return stockQty;
 	}
-	public void setStockQty(int stockQty) {
+	public void setStockQty(Integer stockQty) {
 		this.stockQty = stockQty;
 	}
 
-	public boolean getInventoried() {
+	public Boolean getInventoried() {
 		return inventoried;
 	}
-	public void setInventoried(boolean inventoried) {
+	public void setInventoried(Boolean inventoried) {
 		this.inventoried = inventoried;
 	}
 
@@ -252,10 +265,10 @@ public class Product implements Serializable {
 		this.inventoriedDate = inventoriedDate;
 	}
 
-	public int getPurchaseLimit() {
+	public Integer getPurchaseLimit() {
 		return purchaseLimit;
 	}
-	public void setPurchaseLimit(int purchaseLimit) {
+	public void setPurchaseLimit(Integer purchaseLimit) {
 		this.purchaseLimit = purchaseLimit;
 	}
 
@@ -266,10 +279,10 @@ public class Product implements Serializable {
 		this.description = description;
 	}
 
-	public boolean getTransparent() {
+	public Boolean getTransparent() {
 		return transparent;
 	}
-	public void setTransparent(boolean isTransparent) {
+	public void setTransparent(Boolean isTransparent) {
 		this.transparent = isTransparent;
 	}
 
