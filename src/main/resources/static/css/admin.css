@@ -117,6 +117,7 @@
   background-color: #0069d9;
 }
 
+/* form.jsp */
 /* ─────────────────────────────────────────────────────────────────────
    Force admin‐console <select> to use a white background
    ───────────────────────────────────────────────────────────────────── */
@@ -190,6 +191,53 @@ select.form-control {
 #main-content .check-label {
   color: #000 !important;
   margin-left: 0.5rem;
+}
+
+/* Prepend $ to currency form inputs on add/edit product */
+/* 1) Make the prepend and input share the same white background & border */
+#main-content .input-group-prepend .input-group-text,
+#main-content .input-group .form-control {
+  background-color: #fff;
+  border: 1px solid #ced4da;  /* same as your other inputs */
+  color: #212529;              /* match normal input text */
+}
+
+/* 2) Remove the extra right‐border on the text so the two pieces look joined */
+#main-content .input-group-prepend .input-group-text {
+  border-right: none;
+}
+
+/* 3) Square off the inner corners so the two halves meld seamlessly */
+#main-content .input-group .form-control {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  margin: 0;   /* undo any centering margin inside the group */
+}
+#main-content .input-group-prepend .input-group-text {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  /* you may need a tiny negative margin to compensate for collapsed borders: */
+  margin-right: -1px;
+}
+
+/* 4) (Optional) Constrain the entire group to the same max-width & centering as other inputs */
+#main-content .input-group {
+  max-width: 45rem;
+  width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.currency-container {
+  display: flex;
+  align-items: center;
+  max-width: 45rem;  /* match your form width */
+  margin: 0 auto;    /* center if you need */
+}
+
+.currency-symbol {
+  margin-right: 0.5rem;
+  font-size: 1rem;
 }
 
 
