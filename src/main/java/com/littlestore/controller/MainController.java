@@ -1577,8 +1577,17 @@ public class MainController extends BaseController {
 
 	        if (emailBody != null) {
 		        try {
-					emailService.send(to, from, subject, emailBody);
-		            System.out.println("Email sent to " + to);
+                    // Send order confirmation to customer
+                    emailService.send(to, from, subject, emailBody);
+                    System.out.println("Email sent to " + to);
+
+                    // Send order to site owner
+                    emailService.send(getGeneralDataString("receiverEmail"), from, "New Order Received", emailBody);
+                    System.out.println("Email sent to " + to);
+
+                    // Send order notification to printer
+//                    emailService.send("jamitinmybox@hpeprint.com", from, "New Order Received", emailBody);
+//                    System.out.println("Email sent to " + to);
 		        } catch (Exception e) {
 		            System.err.println("Failed to send email: " + e.getMessage());
 		            model.addAttribute("error", e.getMessage());
