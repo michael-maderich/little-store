@@ -6,6 +6,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -14,6 +15,8 @@ import org.springframework.security.web.session.SimpleRedirectInvalidSessionStra
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import static org.springframework.security.config.Customizer.withDefaults;
+
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 
 @Configuration
 @EnableWebSecurity
@@ -49,6 +52,11 @@ public class WebSecurityConfig {
 
                 // authorization rules
                 .authorizeHttpRequests(auth -> auth
+		                        // 1) allow access to static resources
+		                        .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+		                        // allow the Google verification HTML
+		                        .antMatchers("/google22fbe34eb1adbca9.html").permitAll()
+
                                 // Static assets - permit everyone
                                 .antMatchers(
                                         "/resources/**",
@@ -69,6 +77,7 @@ public class WebSecurityConfig {
                                         "/login",
                                         "/newitems",
                                         "/printOrder/**",
+                                        "/privacyPolicy",
                                         "/resendConfirmation/**",
                                         "/resetPassword",
                                         "/sale",
@@ -118,5 +127,16 @@ public class WebSecurityConfig {
             response.sendRedirect(request.getContextPath()+"/newitems");
           }
       };
+    }
+
+    /**
+     * Completely bypass Spring Security for the Google verification file,
+     * so the static HTML in /static/ is served without any login.
+     */
+    @Bean
+    WebSecurityCustomizer webSecurityCustomizer() {
+      return (web) -> web
+        .ignoring()
+        .antMatchers("/google22fbe34eb1adbca9.html");
     }
 }
