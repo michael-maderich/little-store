@@ -254,7 +254,7 @@ public class MainController extends BaseController {
 		return "/403";
 	}
 
-	@GetMapping("/{nonsense}")
+	@GetMapping("/{nonsense:[^.]+}")
 	public String badUrl(Model model) {
 		model.addAttribute("navMenuItems", getNavMenuItems());
 		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
@@ -265,7 +265,7 @@ public class MainController extends BaseController {
 	}
 
 	// Mapping to root/home/index page
-	@GetMapping({ "/", "home", "/index" })
+	@GetMapping({ "/", "/home", "/index" })
 	public String home(Model model) {
 		String cartAdjustments = null;
 		int cartTotalItemQty = 0;
@@ -1704,6 +1704,14 @@ public class MainController extends BaseController {
 			model.addAttribute("listPaymentInfo", listPaymentInfo());
 			return "printOrder";
 		}
+	}
+
+	@GetMapping("/privacyPolicy")
+	public String privacyPolicy(Model model) {
+		model.addAttribute("receiverEmail", getGeneralDataString("receiverEmail"));
+		model.addAttribute("storeName", getGeneralDataString("storeName"));
+		model.addAttribute("storeUrl", getGeneralDataString("storeUrl"));
+		return "privacy_policy";
 	}
 
 	/*
