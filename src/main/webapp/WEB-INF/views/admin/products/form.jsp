@@ -18,7 +18,8 @@
   </div>
 </c:if>
 
-<form:form modelAttribute="product"
+<form:form id="productForm"
+           modelAttribute="product"
            action="${contextPath}/admin/products/save"
            method="post"
            enctype="multipart/form-data">
@@ -32,9 +33,10 @@
   <div class="form-group">
     <form:label path="upc"><b>UPC</b><span style="color:red;">*</span> (<i>required</i>)<br />Must be unique</form:label>
     <form:input path="upc"
-                readonly="${not empty product.upc}"
+                readonly="${!isNew}"
                 cssClass="form-control"
                 maxlength="${maxLenUpc}"
+                pattern="^[A-Za-z0-9._-]+$"
                 required="true" />
     <form:errors path="upc" cssClass="text-danger" />
   </div>
@@ -69,7 +71,7 @@
              class="form-control"
              maxlength="${maxLenCategoryMain}"
              placeholder="Type new Main Category"
-       		 value="<c:out value='${param.newCategoryMain}'/>" />
+			 value="<c:out value='${param.newCategoryMain}'/>" />
       <span class="text-muted small">Enter a new category name.</span>
     </div>
   </div>
@@ -122,7 +124,7 @@
              id="newCategorySpecific"
              class="form-control"
              maxlength="${maxLenCategorySpecific}"
-             placeholder="Type new Sub-Category"
+			 placeholder="Type new Sub-Category"
        		 value="<c:out value='${param.newCategorySpecific}'/>" />
       <span class="text-muted small">Enter a brand-new sub-category name.</span>
     </div>
@@ -167,7 +169,10 @@
        =================== -->
   <div class="form-group">
     <form:label path="retailPrice"><b>Retail Price</b> (optional)<br />Lowest retail price for user comparison (i.e. Walmart Price)</form:label>
-    <form:input path="retailPrice" type="number" inputmode="decimal" cssClass="form-control" step="0.01" min="0" max="10000" />
+    <div class="currency-container">
+      <span class="currency-symbol">$</span>
+      <form:input path="retailPrice" type="number" inputmode="decimal" cssClass="form-control" step="0.01" min="0" max="10000" />
+    </div>
     <form:errors path="retailPrice" cssClass="text-danger" />
   </div>
 
@@ -176,7 +181,10 @@
        =================== -->
   <div class="form-group">
     <form:label path="basePrice"><b>Base Price</b><span style="color:red;">*</span> (<i>required</i>)<br />Regular price for item (as opposed to Current Price which may be sale price)</form:label>
-    <form:input path="basePrice" type="number" inputmode="decimal" cssClass="form-control" step="0.0001" min="0" max="10000" required="true" />
+    <div class="currency-container">
+      <span class="currency-symbol">$</span>
+      <form:input path="basePrice" type="number" inputmode="decimal" cssClass="form-control" step="0.0001" min="0" max="10000" required="true" />
+    </div>
     <form:errors path="basePrice" cssClass="text-danger" />
   </div>
 
@@ -185,7 +193,10 @@
        =================== -->
   <div class="form-group">
     <form:label path="currentPrice"><b>Current Price</b><span style="color:red;">*</span> (<i>required</i>)<br />Current selling price (Base Price or less)</form:label>
-    <form:input path="currentPrice" type="number" inputmode="decimal" cssClass="form-control" step="0.0001" min="0" max="10000" required="true" />
+    <div class="currency-container">
+      <span class="currency-symbol">$</span>
+      <form:input path="currentPrice" type="number" inputmode="decimal" cssClass="form-control" step="0.0001" min="0" max="10000" required="true" />
+    </div>
     <form:errors path="currentPrice" cssClass="text-danger" />
   </div>
 
@@ -216,6 +227,7 @@
            id="imageFile"
            accept="image/*"
            class="form-control"
+           <c:if test="${isNew}">required="true"</c:if>
            maxlength="255" />
     <form:errors path="image" cssClass="text-danger" />
   </div>
@@ -223,33 +235,39 @@
   <!-- ===================
        15) Current Image + Transparent checkbox (only if editing/existing product)
        =================== -->
-  <c:if test="${not empty product.image}">
+  <!--c:if test="${not empty product.image}"-->
     <div class="form-group d-flex align-items-center" style="justify-content: center; gap: 1rem; margin-top: 1rem;">
       <!-- 1) Current Image Preview (on the left) -->
       <div style="text-align: center;">
-        <img src="${product.image}"
-             alt="${product.name}"
-             loading="lazy"
-             class="product-img-preview" />
+        <c:choose><c:when test="${not empty product.image}">
+          <img src="${product.image}"
+               alt="${product.name}"
+               loading="lazy"
+               class="product-img-preview" />
+        </c:when><c:otherwise>
+          <!-- Placeholder if no image set -->
+          <img src="${contextPath}/images/placeholder.jpg"
+               alt="No image"
+               class="product-img-preview" />
+        </c:otherwise></c:choose>
       </div>
 
-      <!-- 2) Disabled "Transparent Background" Checkbox (on the right) -->
+      <!-- 2) "Transparent Background" Checkbox (on the right) -->
       <div class="form-check" style="display: flex; align-items: center;">
+        <form:hidden path="transparent" />
         <form:checkbox path="transparent"
-                       value="true"
                        cssClass="form-check-input"
-                       id="transparent"
-                       disabled="true" />
+                       id="transparent" />
         <label class="check-label"
                for="transparent">
           Transparent Background
         </label>
       </div>
     </div>
-        <p style="margin-top: 0.5rem;">
-          <small><b>Current image</b> (will be replaced if you upload a new file)</small>
-        </p>
-  </c:if>
+    <p style="margin-top: 0.5rem;">
+      <small><b>Current image</b> (will be replaced if you upload a new file)</small>
+    </p>
+  <!--/c:if-->
 
   <!-- 16) Hidden fields we do not expose: onSale (computed), inventoried, inventoriedDate,
       description (computed), dateAdded (computed), dateLastSold (not updated here) -->
@@ -259,49 +277,73 @@
 </form:form>
 
 <script>
-  document.addEventListener("DOMContentLoaded", function() {
-    // Main category elements
-    const mainSelect  = document.getElementById("categoryMainSelect");
-    const mainDiv     = document.getElementById("newCategoryMainDiv");
-    const mainInput   = document.getElementById("newCategoryMain");
+document.addEventListener("DOMContentLoaded", function() {
+  // grab everything once
+  const mainSelect = document.getElementById("categoryMainSelect");
+  const mainDiv    = document.getElementById("newCategoryMainDiv");
+  const mainInput  = document.getElementById("newCategoryMain");
+  const specSelect = document.getElementById("categorySpecificSelect");
+  const specDiv    = document.getElementById("newCategorySpecificDiv");
+  const specInput  = document.getElementById("newCategorySpecific");
+  const form       = document.getElementById("productForm");
 
-    // Specific category elements
-    const specSelect  = document.getElementById("categorySpecificSelect");
-    const specDiv     = document.getElementById("newCategorySpecificDiv");
-    const specInput   = document.getElementById("newCategorySpecific");
+  // Toggle functions
+  function toggleMainField() {
+    console.log("toggleMainField:", mainSelect.value);
+    if (mainSelect.value === "__OTHER__") {
+      mainDiv.style.display  = "block";
+      mainInput.required     = true;
+    } else {
+      mainDiv.style.display  = "none";
+      mainInput.required     = false;
+      mainInput.value        = "";
+    }
+  }
+  function toggleSpecField() {
+    console.log("toggleSpecField:", specSelect.value);
+    if (specSelect.value === "__OTHER__") {
+      specDiv.style.display  = "block";
+      specInput.required     = true;
+    } else {
+      specDiv.style.display  = "none";
+      specInput.required     = false;
+      specInput.value        = "";
+    }
+  }
 
-    // Toggle "New Main Category" field (visibility + required)
-    function toggleMainField() {
-      if (mainSelect.value === "__OTHER__") {
-        mainDiv.style.display  = "block";
-        mainInput.required     = true;
-      } else {
-        mainDiv.style.display  = "none";
-        mainInput.required     = false;
-        mainInput.value        = "";
+  // wire up the change events
+  mainSelect.addEventListener("change", toggleMainField);
+  specSelect.addEventListener("change", toggleSpecField);
+
+  // run once on load (covers validation-error re-render)
+  toggleMainField();
+  toggleSpecField();
+
+  // client-side regex for final validation
+  const clientRegex = /^[A-Za-z0-9]([A-Za-z0-9._-]*[A-Za-z0-9])?$/;
+
+  form.addEventListener("submit", function(e) {
+    // only bother if the free-form field is visible
+    if (mainSelect.value === "__OTHER__") {
+      const v = mainInput.value.trim();
+      if (!clientRegex.test(v)) {
+        e.preventDefault();
+        alert("Main category name must start/end with a letter or digit, may only contain letters, digits, hyphens (-), dots (.), or underscores (_), and no slashes.");
+        mainInput.focus();
+        return;
       }
     }
-
-    // Toggle "New Specific Category" field (visibility + required)
-    function toggleSpecField() {
-      if (specSelect.value === "__OTHER__") {
-        specDiv.style.display  = "block";
-        specInput.required     = true;
-      } else {
-        specDiv.style.display  = "none";
-        specInput.required     = false;
-        specInput.value        = "";
+    if (specSelect.value === "__OTHER__") {
+      const v = specInput.value.trim();
+      if (!clientRegex.test(v)) {
+        e.preventDefault();
+        alert("Specific category name must start/end with a letter or digit, may only contain letters, digits, hyphens (-), dots (.), or underscores (_), and no slashes.");
+        specInput.focus();
+        return;
       }
     }
-
-    // Wire up change events for both dropdowns
-    mainSelect.addEventListener("change", toggleMainField);
-    specSelect.addEventListener("change", toggleSpecField);
-
-    // Run once on load in case we're re-rendered after a validation error
-    toggleMainField();
-    toggleSpecField();
   });
+});
 </script>
 
 <%@ include file="/WEB-INF/views/admin/fragments/adminFooter.jsp" %>

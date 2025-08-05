@@ -1,4 +1,5 @@
 <%@ include file="/WEB-INF/views/admin/fragments/adminHeader.jsp" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <h2>Products</h2>
 
@@ -37,7 +38,11 @@
         </td>
         <td>${p.upc}</td>
         <td>${p.description}</td>
-        <td>${p.currentPrice}</td>
+		<td>
+		  $<fmt:formatNumber 
+		       value="${p.currentPrice}" 
+		       pattern="0.00##" />
+		</td>
         <td>${p.stockQty}</td>
         <td>
           <a href="${pageContext.request.contextPath}/admin/products/edit/${p.upc}">Edit</a> |

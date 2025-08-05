@@ -60,7 +60,7 @@ public class Product implements Serializable {
 	private String size;
 
 	@Basic
-    @DecimalMin(value="0.0", inclusive=true, message="Cost must be greater than zero")
+    @DecimalMin(value="0.0", inclusive=true, message="Cost must not be a negative value")
 	@Digits(integer=10, fraction=4, message="Cost must be a valid monetary amount")
 	@Column(name="cost", nullable=true)
 	private Float cost;
@@ -73,14 +73,14 @@ public class Product implements Serializable {
 
 	@Basic
     @NotNull(message="Base Price is required")
-    @DecimalMin(value="0.0", inclusive=true, message="Base Price must be greater than zero")
+    @DecimalMin(value="0.0", inclusive=false, message="Base Price must be greater than zero")
 	@Digits(integer=10, fraction=4, message="Base Price must be a valid monetary amount")
 	@Column(name="basePrice", nullable=false)
 	private Float basePrice;
 
 	@Basic
     @NotNull(message="Current Price is required")
-    @DecimalMin(value="0.0", inclusive=true, message="Current Price must be greater than zero")
+    @DecimalMin(value="0.0", inclusive=false, message="Current Price must be greater than zero")
 	@Digits(integer=10, fraction=4, message="Current Price must be a valid monetary amount")
 	@Column(name="currentPrice", nullable=false)
 	private Float currentPrice;
@@ -282,8 +282,8 @@ public class Product implements Serializable {
 	public Boolean getTransparent() {
 		return transparent;
 	}
-	public void setTransparent(Boolean isTransparent) {
-		this.transparent = isTransparent;
+	public void setTransparent(Boolean transparent) {
+		this.transparent = transparent;
 	}
 
 	public String getImage() {

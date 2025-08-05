@@ -51,7 +51,7 @@ public class Utils {
 	 * Returns the JPA @Column.length for the given field on the given entity class,
 	 * or fallbackValue if the annotation is missing.
 	 */
-	public static Integer getColumnLength(Class<?> entityClass, String fieldName, int fallbackValue) {
+	public static int getColumnLength(Class<Product> entityClass, String fieldName, int fallbackValue) {
 	  try {
 	    Field f = entityClass.getDeclaredField(fieldName);
 	    Column col = f.getAnnotation(Column.class);

@@ -1,6 +1,7 @@
 package com.littlestore.config;
 
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.gmail.Gmail;
@@ -16,8 +17,7 @@ import java.security.GeneralSecurityException;
 @Configuration
 public class GmailConfig {
 
-    private static final String APPLICATION_NAME = "LittleStore";
-    private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
+    private static final String APPLICATION_NAME = "little-store";
     private final GmailProperties props;
 
     public GmailConfig(GmailProperties props) {
@@ -27,6 +27,9 @@ public class GmailConfig {
     @Bean
     @Lazy
     Gmail gmailService() throws GeneralSecurityException, IOException {
+        final NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+        final JsonFactory jsonFactory = GsonFactory.getDefaultInstance();
+
         // Read environment variables
         String clientId     = props.getClientId();
         String clientSecret = props.getClientSecret();
@@ -47,8 +50,8 @@ public class GmailConfig {
         credentials.refresh();
 
         return new Gmail.Builder(
-                GoogleNetHttpTransport.newTrustedTransport(),
-                JSON_FACTORY,
+                httpTransport,
+                jsonFactory,
                 new HttpCredentialsAdapter(credentials)
         )
         .setApplicationName(APPLICATION_NAME)

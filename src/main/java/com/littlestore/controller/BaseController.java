@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.littlestore.config.GmailProperties;
@@ -72,8 +74,17 @@ public abstract class BaseController {
     protected Customer getCurrentUser() {
     	return auth.getLoggedInUser();
     }
-	
-    protected List<GeneralData> getGeneralDataByCategory(String category) {
+
+	public boolean currentUserIsAdmin() {
+	    Authentication auth = SecurityContextHolder
+	                              .getContext()
+	                              .getAuthentication();
+	    return auth.getAuthorities().stream()
+	               .map(a -> a.getAuthority())
+	               .anyMatch("ROLE_ADMIN"::equals);
+	}
+
+	protected List<GeneralData> getGeneralDataByCategory(String category) {
 		return generalDataService.findByCategory(category);
 	}
 

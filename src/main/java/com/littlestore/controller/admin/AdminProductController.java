@@ -6,10 +6,13 @@ import com.littlestore.entity.Product;
 import com.littlestore.service.ProductService;
 import com.littlestore.utils.Utils;
 import com.littlestore.service.GmailEmailService;
+
+import org.springframework.beans.propertyeditors.CustomNumberEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.cloudinary.Cloudinary;
@@ -20,6 +23,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.util.Map;
 
@@ -77,6 +81,24 @@ public class AdminProductController extends BaseController {
             model.addAttribute("successMessage", successMessage);
         }
         return "admin/products/list";
+    }
+
+    /**
+     * Configure data binding so that any Float fields (e.g. cost,
+     * basePrice, currentPrice, retailPrice) are both parsed and formatted
+     * with exactly two decimal places.
+     */
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        // min 2 decimals, max 4 decimals
+        DecimalFormat twoDp = new DecimalFormat("0.00##");
+        twoDp.setGroupingUsed(false);
+
+        // Apply to ALL Float fields in this controller
+        binder.registerCustomEditor(
+            Float.class,
+            new CustomNumberEditor(Float.class, twoDp, true)
+        );
     }
 
     @GetMapping("/create")
@@ -155,6 +177,8 @@ public class AdminProductController extends BaseController {
         // ─────────────────────────────────────────────────────────────
         // C) Handle “New...” logic for categoryMain and categorySpecific
         // ─────────────────────────────────────────────────────────────
+        String folderPattern = "^(?!v\\d+$)(?!.*\\/)[A-Za-z0-9](?:[A-Za-z0-9._-]*[A-Za-z0-9])?$";
+
         if ("__OTHER__".equals(product.getCategoryMain())) {
             if (newCategoryMain == null || newCategoryMain.trim().isEmpty()) {
                 bindingResult.rejectValue("categoryMain", "error.product", "Please enter a new Main Category or select one");
@@ -164,6 +188,12 @@ public class AdminProductController extends BaseController {
             }
             else if (newCategoryMain.trim().length() > 50) {
                 bindingResult.rejectValue("categoryMain", "error.product", "Main Category name may not exceed 50 characters");
+                populateCategoryDropdowns(model);
+                model.addAttribute("errorMessage", "Please fix the errors below and resubmit.");
+                return "admin/products/form";
+            }
+            else if (!newCategoryMain.matches(folderPattern)) {
+                bindingResult.rejectValue("categoryMain", "error.product", "Main Category name must start/end with a letter or digit, may only contain letters, digits, hyphens (-), dots (.), or underscores (_), and no slashes.");
                 populateCategoryDropdowns(model);
                 model.addAttribute("errorMessage", "Please fix the errors below and resubmit.");
                 return "admin/products/form";
@@ -182,6 +212,12 @@ public class AdminProductController extends BaseController {
             }
             else if (newCategorySpecific.trim().length() > 50) {
                 bindingResult.rejectValue("categorySpecific", "error.product", "Sub-Category name may not exceed 50 characters");
+                populateCategoryDropdowns(model);
+                model.addAttribute("errorMessage", "Please fix the errors below and resubmit.");
+                return "admin/products/form";
+            }
+            else if (!newCategorySpecific.matches(folderPattern)) {
+                bindingResult.rejectValue("categorySpecific", "error.product", "Sub-Category name must start/end with a letter or digit, may only contain letters, digits, hyphens (-), dots (.), or underscores (_), and no slashes.");
                 populateCategoryDropdowns(model);
                 model.addAttribute("errorMessage", "Please fix the errors below and resubmit.");
                 return "admin/products/form";
@@ -208,10 +244,13 @@ public class AdminProductController extends BaseController {
         if (imageFile != null && !imageFile.isEmpty()) {
             try {
             	// If editing a Product and an image was provided, delete the old image
-            	if (!isNew) {
-	                String oldFolder  = productService.get(product.getUpc()).getCategoryMain().replaceAll("\\s+","_")
-	                        + "/" +
-	                        productService.get(product.getUpc()).getCategorySpecific().replaceAll("\\s+","_");
+            	// Don't delete original base images unless under ADMIN role
+            	String imageBase = getGeneralDataString("imageBase");
+            	if ( !isNew && (!imageBase.equals("images/") || currentUserIsAdmin()) ) {
+	                String oldFolder  = imageBase
+	                		+ productService.get(product.getUpc()).getCategoryMain().replaceAll("\\s+","_")			// Current folder in DB
+	                        + "/"
+	                		+ productService.get(product.getUpc()).getCategorySpecific().replaceAll("\\s+","_");
 	            	String oldPublicId = oldFolder + "/" + product.getUpc();
 	
 	            	// b) Delete the old image
@@ -224,9 +263,9 @@ public class AdminProductController extends BaseController {
 				    // (You can inspect destroyResult.get("result") for “ok” or “not found”)
             	}
 
-			    String safeMain     = product.getCategoryMain().replaceAll("\\s+", "_");
+			    String safeMain     = product.getCategoryMain().replaceAll("\\s+", "_");			// New folder from form
             	String safeSpecific = product.getCategorySpecific().replaceAll("\\s+", "_");
-            	String folderPath = safeMain + "/" + safeSpecific;
+            	String folderPath   = imageBase + safeMain + "/" + safeSpecific;
 
             	byte[] data;
             	try (InputStream in = imageFile.getInputStream()) {
@@ -269,13 +308,13 @@ public class AdminProductController extends BaseController {
                 product.setTransparent(hasAlpha);
 
             } catch (IOException ioex) {
-                bindingResult.rejectValue("imageUrl", "error.product", "Image upload failed");
+                bindingResult.rejectValue("image", "error.product", "Image upload failed");
                 populateCategoryDropdowns(model);
                 model.addAttribute("errorMessage", "Please fix the errors below and resubmit.");
                 return "admin/products/form";
             }
         }
-        // If editing and they didn’t choose a new file, we leave product.getImageUrl() as-is.
+        // If editing and they didn’t choose a new file, we leave product.getImage() as-is.
 
         // ─────────────────────────────────────────────────────────────
         // E) Build the computed fields
@@ -308,6 +347,12 @@ public class AdminProductController extends BaseController {
 
         // 4) inventoried/inventoriedDate – leave at default (0 / null) since not exposed
 
+        
+        // 5) guard against null for transparent
+        if (product.getTransparent() == null) {
+            product.setTransparent(false);
+        }
+
         // ─────────────────────────────────────────────────────────────
         // F) Persist and redirect
         // ─────────────────────────────────────────────────────────────
@@ -322,8 +367,32 @@ public class AdminProductController extends BaseController {
 		redirect.addFlashAttribute("copyrightName", getGeneralDataString("copyrightName"));
 		redirect.addFlashAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
 		redirect.addFlashAttribute("mainStyle", getGeneralDataString("mainStyle"));
-        productService.delete(upc);
-        redirect.addFlashAttribute("successMessage", "Product deleted.");
+	    // 1) Load the product so we can get its UPC
+	    Product p = productService.get(upc);
+		String message = (p == null) ? "Product not found" : p.getDescription() + " deleted.";
+        if (p != null) {
+        	productService.delete(upc);
+
+        	try {
+	        	String oldFolder  = p.getCategoryMain().replaceAll("\\s+","_")
+			                    	+ "/" +
+			                    	p.getCategorySpecific().replaceAll("\\s+","_");
+	        	String oldPublicId = oldFolder + "/" + p.getUpc();
+	
+	        	// b) Delete the old image
+			    /*Map<?,?> destroyResult =*/ cloudinary.uploader().destroy(
+			        oldPublicId,
+			        ObjectUtils.asMap(
+			          "invalidate", true      // also purge CDN caches
+			        )
+			    );
+			    // (You can inspect destroyResult.get("result") for “ok” or “not found”)
+            } catch (IOException ioex) {
+        		redirect.addFlashAttribute("errorMessage", "Image deletion failed.");
+                return "redirect:/admin/products";
+            }
+        }
+        redirect.addFlashAttribute("successMessage", message);
         return "redirect:/admin/products";
     }
 }
