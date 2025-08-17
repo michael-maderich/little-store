@@ -70,6 +70,7 @@ public class WebSecurityConfig {
                                 .antMatchers(
                                         "/403",
                                         "/category/**",
+                                        "/connect",
                                         "/dollarama",
                                         "/forgotPassword",
                                         "/images",
