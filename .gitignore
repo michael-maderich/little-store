@@ -1,4 +1,5 @@
 HELP.md
+PROJECT_ANALYSIS.md
 .mvn/
 .settings/
 !.mvn/wrapper/maven-wrapper.jar
