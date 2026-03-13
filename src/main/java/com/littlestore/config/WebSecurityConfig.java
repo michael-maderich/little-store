@@ -54,8 +54,6 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(auth -> auth
 		                        // 1) allow access to static resources
 		                        .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-		                        // allow the Google verification HTML
-		                        .antMatchers("/google22fbe34eb1adbca9.html").permitAll()
 
                                 // Static assets - permit everyone
                                 .antMatchers(
@@ -68,6 +66,7 @@ public class WebSecurityConfig {
 
                                 // public endpoints
                                 .antMatchers(
+                                        "/",
                                         "/403",
                                         "/category/**",
                                         "/connect",
@@ -77,6 +76,7 @@ public class WebSecurityConfig {
                                         "/index",
                                         "/login",
                                         "/newitems",
+                                        "/oauth2/authorization/**",
                                         "/printOrder/**",
                                         "/privacyPolicy",
                                         "/resendConfirmation/**",
@@ -130,14 +130,4 @@ public class WebSecurityConfig {
       };
     }
 
-    /**
-     * Completely bypass Spring Security for the Google verification file,
-     * so the static HTML in /static/ is served without any login.
-     */
-    @Bean
-    WebSecurityCustomizer webSecurityCustomizer() {
-      return (web) -> web
-        .ignoring()
-        .antMatchers("/google22fbe34eb1adbca9.html");
-    }
 }
