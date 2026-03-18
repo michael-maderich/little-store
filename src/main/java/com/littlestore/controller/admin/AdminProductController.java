@@ -282,7 +282,11 @@ public class AdminProductController extends BaseController {
                     )
                 );
 
-                product.setImage((String) uploadResult.get("secure_url"));
+                // Build a version-free URL so it's predictable from categoryMain/categorySpecific/upc
+                String publicId = (String) uploadResult.get("public_id");
+                String format   = (String) uploadResult.get("format");
+                product.setImage("https://res.cloudinary.com/" + cloudinary.config.cloudName
+                        + "/image/upload/" + publicId + "." + format);
 
                 // Check for image transparency
                 Boolean hasAlpha = false;
