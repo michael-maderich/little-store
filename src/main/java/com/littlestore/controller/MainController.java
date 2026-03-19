@@ -320,9 +320,8 @@ public class MainController extends BaseController {
 		model.addAttribute("allowOosSearch", getGeneralDataInteger("allowOosSearch"));
 		// in your controller
 		String lastUsername = (String) request.getSession()
-		                                      .getAttribute("SPRING_SECURITY_LAST_USERNAME");
+		                                      .getAttribute("LAST_USERNAME");
 		model.addAttribute("lastUsername", lastUsername);
-		System.out.println(lastUsername);
 
 		if (error != null) {
 			model.addAttribute("error", "Your username and/or password is invalid.");

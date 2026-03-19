@@ -9,8 +9,10 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.session.SimpleRedirectInvalidSessionStrategy;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
@@ -100,6 +102,7 @@ public class WebSecurityConfig {
                 .formLogin(form -> form
                                 .loginPage("/login")
                                 .successHandler(successHandler())
+                                .failureHandler(failureHandler())
                                 .permitAll()
                 )
 
@@ -114,6 +117,15 @@ public class WebSecurityConfig {
                 .httpBasic(withDefaults());
 
         return http.build();
+    }
+
+    @Bean
+    AuthenticationFailureHandler failureHandler() {
+        return (request, response, exception) -> {
+            String username = request.getParameter("username");
+            request.getSession().setAttribute("LAST_USERNAME", username);
+            response.sendRedirect(request.getContextPath() + "/login?error");
+        };
     }
 
     @Bean

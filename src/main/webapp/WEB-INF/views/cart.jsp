@@ -44,7 +44,7 @@
 								<th>Sub-total</th>
 								<th>
 									<form action="${customerCart.cartItems!=null ? '/clearCart' : '/'}">
-										<button type="submit" ${customerCart.cartItems==null ? 'hidden ' : ''}class="btn btn-sm btn-primary btn-block highlighted">
+										<button type="submit" ${customerCart.cartItems==null ? 'hidden ' : ''}class="btn btn-sm btn-primary btn-block highlighted" onclick="return confirm('Remove all items from your cart?')">
 											Remove All
 										</button>
 									</form>
