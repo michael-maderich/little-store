@@ -319,8 +319,8 @@ public class MainController extends BaseController {
 		model.addAttribute("transparentImageRight", imageRight);
 		model.addAttribute("allowOosSearch", getGeneralDataInteger("allowOosSearch"));
 		// in your controller
-		String lastUsername = (String) request.getSession()
-		                                      .getAttribute("LAST_USERNAME");
+		String lastUsername = (String) request.getSession().getAttribute("LAST_USERNAME");
+		request.getSession().removeAttribute("LAST_USERNAME");
 		model.addAttribute("lastUsername", lastUsername);
 
 		if (error != null) {
@@ -1084,6 +1084,9 @@ public class MainController extends BaseController {
 		} catch (NoSuchElementException e) {
 			return "redirect:" + referer;
 		}
+		if (purchasedProduct == null) {
+			return "redirect:" + referer;
+		}
 
 		if (customer == null) { // Can't add to cart if not logged in, for now. Direct user to log in/sign up
 			model.addAttribute("navMenuItems", getNavMenuItems());
@@ -1134,8 +1137,9 @@ public class MainController extends BaseController {
 			}
 			lineNum++;
 
+			Float retailPrice = purchasedProduct.getRetailPrice();
 			CartDetail newLineItem = new CartDetail(customerCart, purchasedProduct, purchasedQty,
-					purchasedProduct.getRetailPrice(), purchasedProduct.getBasePrice(),
+					retailPrice != null ? retailPrice : 0.0f, purchasedProduct.getBasePrice(),
 					purchasedProduct.getCurrentPrice(), lineNum);
 			cartItems.add(newLineItem);
 			Collections.sort(cartItems); // CartDetail entity contains compareTo() method. List sorted for better

@@ -35,7 +35,7 @@
 						<div class="form-group ${error != null ? 'has-error' : ''}">
 							<div${message!=null?' style="color:green; margin-bottom:.5em;"':''}>${message}</div>
 	                        <br /><label for="email">
-	                            <input id="email" name="username" type="email" placeholder=" Email Address" class = "text-field" value="${fn:escapeXml(lastUsername)}" required autofocus />
+	                            <input id="email" name="username" type="email" placeholder=" Email Address" class = "text-field" value="${fn:escapeXml(lastUsername)}" required />
 	                        </label>
 	                        <br /><label for="password">
 	                            <input id="password" name="password" type="password" placeholder=" Password" class="text-field" required />
@@ -43,6 +43,7 @@
 	                        </label>
 							<div${error!=null?' style="color:#cc0000; margin-bottom:.5em;"':''}>${error}</div>
 							<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+						<script>document.getElementById("${not empty lastUsername ? 'password' : 'email'}").focus();</script>
 	                        <br /><label for="submit">
 	                            <button id="submit" name="submit" type="submit">Log In</button>
 	                        </label>
