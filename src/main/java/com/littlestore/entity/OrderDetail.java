@@ -153,8 +153,12 @@ public class OrderDetail implements Serializable, Comparable<OrderDetail> {
 		int compare = getProduct().getCategoryMain().compareTo(o.getProduct().getCategoryMain());
 		if (compare == 0) compare = getProduct().getCategorySpecific().compareTo(o.getProduct().getCategorySpecific());
 		if (compare == 0) compare = getProduct().getName().compareTo(o.getProduct().getName());
-		if (compare == 0) compare = getProduct().getSize().compareTo(o.getProduct().getSize());
-		if (compare == 0) compare = getProduct().getOptions().compareTo(o.getProduct().getOptions());
+		String thisSize = getProduct().getSize() != null ? getProduct().getSize() : "";
+		String otherSize = o.getProduct().getSize() != null ? o.getProduct().getSize() : "";
+		if (compare == 0) compare = thisSize.compareTo(otherSize);
+		String thisOptions = getProduct().getOptions() != null ? getProduct().getOptions() : "";
+		String otherOptions = o.getProduct().getOptions() != null ? o.getProduct().getOptions() : "";
+		if (compare == 0) compare = thisOptions.compareTo(otherOptions);
 		return compare;
 	}
 }

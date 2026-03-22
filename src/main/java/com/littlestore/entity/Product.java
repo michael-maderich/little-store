@@ -2,6 +2,7 @@ package com.littlestore.entity;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -319,9 +320,8 @@ public class Product implements Serializable {
 		result = prime * result + Float.floatToIntBits(basePrice);
 		result = prime * result + ((categoryMain == null) ? 0 : categoryMain.hashCode());
 		result = prime * result + ((categorySpecific == null) ? 0 : categorySpecific.hashCode());
-		result = prime * result + Float.floatToIntBits(cost);
-		result = prime * result + Float.floatToIntBits(retailPrice);
-		result = prime * result + Float.floatToIntBits(basePrice);
+		result = prime * result + (cost == null ? 0 : Float.floatToIntBits(cost));
+		result = prime * result + (retailPrice == null ? 0 : Float.floatToIntBits(retailPrice));
 		result = prime * result + Float.floatToIntBits(currentPrice);
 		result = prime * result + ((dateAdded == null) ? 0 : dateAdded.hashCode());
 		result = prime * result + ((description == null) ? 0 : description.hashCode());
@@ -329,7 +329,7 @@ public class Product implements Serializable {
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + (onSale ? 1231 : 1237);
 		result = prime * result + ((options == null) ? 0 : options.hashCode());
-		result = prime * result + purchaseLimit;
+		result = prime * result + (purchaseLimit == null ? 0 : purchaseLimit);
 		result = prime * result + ((size == null) ? 0 : size.hashCode());
 		result = prime * result + stockQty;
 		result = prime * result + ((upc == null) ? 0 : upc.hashCode());
@@ -357,11 +357,11 @@ public class Product implements Serializable {
 				return false;
 		} else if (!categorySpecific.equals(other.categorySpecific))
 			return false;
-		if (Float.floatToIntBits(cost) != Float.floatToIntBits(other.cost))
+		if (!Objects.equals(cost, other.cost))
 			return false;
-		if (Float.floatToIntBits(currentPrice) != Float.floatToIntBits(other.retailPrice))
+		if (!Objects.equals(retailPrice, other.retailPrice))
 			return false;
-		if (Float.floatToIntBits(currentPrice) != Float.floatToIntBits(other.basePrice))
+		if (Float.floatToIntBits(basePrice) != Float.floatToIntBits(other.basePrice))
 			return false;
 		if (Float.floatToIntBits(currentPrice) != Float.floatToIntBits(other.currentPrice))
 			return false;
@@ -392,7 +392,7 @@ public class Product implements Serializable {
 				return false;
 		} else if (!options.equals(other.options))
 			return false;
-		if (purchaseLimit != other.purchaseLimit)
+		if (!Objects.equals(purchaseLimit, other.purchaseLimit))
 			return false;
 		if (size == null) {
 			if (other.size != null)

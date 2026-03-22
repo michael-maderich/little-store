@@ -130,6 +130,31 @@ public class MainController extends BaseController {
 		return triplet;
 	}
 
+	// Picks a random transparent-image product, preferring ones not already in the exclude list.
+	// Falls back to allowing duplicates when the pool is too small for unique selection.
+	private Triple<String, String, String> getRandomTransparentImage(List<Triple<String, String, String>> exclude) {
+		List<Product> pool = productService.getProductsWithTransparentImages();
+		List<Product> candidates = new ArrayList<>();
+		for (Product p : pool) {
+			boolean excluded = false;
+			for (Triple<String, String, String> ex : exclude) {
+				if (ex.getLeft() != null && ex.getLeft().equals(p.getImage())) {
+					excluded = true;
+					break;
+				}
+			}
+			if (!excluded) candidates.add(p);
+		}
+		List<Product> chosen = candidates.isEmpty() ? pool : candidates;
+		int index = (int) Math.floor(Math.random() * chosen.size());
+		Product randomProduct = chosen.get(index);
+		String image = randomProduct.getImage();
+		String desc = randomProduct.getDescription();
+		String productUrl = "/category/" + randomProduct.getCategoryMain() + "/" + randomProduct.getCategorySpecific()
+				+ "/#" + randomProduct.getUpc();
+		return Triple.of(image, desc, productUrl);
+	}
+
     /**
     * Encodes a relative path for safe URL usage, preserving slashes.
     *
@@ -312,10 +337,7 @@ public class MainController extends BaseController {
 		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
 		Triple<String, String, String> imageLeft = getRandomTransparentImage();
 		model.addAttribute("transparentImageLeft", imageLeft);
-		Triple<String, String, String> imageRight = getRandomTransparentImage();
-		while (imageRight.equals(imageLeft)) {
-			imageRight = getRandomTransparentImage();
-		};
+		Triple<String, String, String> imageRight = getRandomTransparentImage(List.of(imageLeft));
 		model.addAttribute("transparentImageRight", imageRight);
 		model.addAttribute("allowOosSearch", getGeneralDataInteger("allowOosSearch"));
 		// in your controller
@@ -347,10 +369,7 @@ public class MainController extends BaseController {
 			model.addAttribute("listStates", listStates);
 			Triple<String, String, String> imageLeft = getRandomTransparentImage();
 			model.addAttribute("transparentImageLeft", imageLeft);
-			Triple<String, String, String> imageRight = getRandomTransparentImage();
-			while (imageRight.equals(imageLeft)) {
-				imageRight = getRandomTransparentImage();
-			};
+			Triple<String, String, String> imageRight = getRandomTransparentImage(List.of(imageLeft));
 			model.addAttribute("transparentImageRight", imageRight);
 			return "/signup";
 		}
@@ -368,10 +387,7 @@ public class MainController extends BaseController {
 		model.addAttribute("allowOosSearch", getGeneralDataInteger("allowOosSearch"));
 		Triple<String, String, String> imageLeft = getRandomTransparentImage();
 		model.addAttribute("transparentImageLeft", imageLeft);
-		Triple<String, String, String> imageRight = getRandomTransparentImage();
-		while (imageRight.equals(imageLeft)) {
-			imageRight = getRandomTransparentImage();
-		};
+		Triple<String, String, String> imageRight = getRandomTransparentImage(List.of(imageLeft));
 		model.addAttribute("transparentImageRight", imageRight);
 
 		customerFormValidator.validate(customerForm, bindingResult);
@@ -399,15 +415,9 @@ public class MainController extends BaseController {
 		model.addAttribute("allowOosSearch", getGeneralDataInteger("allowOosSearch"));
 		Triple<String, String, String> imageLeft = getRandomTransparentImage();
 		model.addAttribute("transparentImageLeft", imageLeft);
-		Triple<String, String, String> imageRight = getRandomTransparentImage();
-		while (imageRight.equals(imageLeft)) {
-			imageRight = getRandomTransparentImage();
-		};
+		Triple<String, String, String> imageRight = getRandomTransparentImage(List.of(imageLeft));
 		model.addAttribute("transparentImageRight", imageRight);
-		Triple<String, String, String> imageBottom = getRandomTransparentImage();
-		while (imageBottom.equals(imageLeft) || imageBottom.equals(imageRight)) {
-			imageBottom = getRandomTransparentImage();
-		};
+		Triple<String, String, String> imageBottom = getRandomTransparentImage(List.of(imageLeft, imageRight));
 		model.addAttribute("transparentImageBottom", imageBottom);
 		return "/forgotPassword";
 	}
@@ -423,15 +433,9 @@ public class MainController extends BaseController {
 		model.addAttribute("allowOosSearch", getGeneralDataInteger("allowOosSearch"));
 		Triple<String, String, String> imageLeft = getRandomTransparentImage();
 		model.addAttribute("transparentImageLeft", imageLeft);
-		Triple<String, String, String> imageRight = getRandomTransparentImage();
-		while (imageRight.equals(imageLeft)) {
-			imageRight = getRandomTransparentImage();
-		};
+		Triple<String, String, String> imageRight = getRandomTransparentImage(List.of(imageLeft));
 		model.addAttribute("transparentImageRight", imageRight);
-		Triple<String, String, String> imageBottom = getRandomTransparentImage();
-		while (imageBottom.equals(imageLeft) || imageBottom.equals(imageRight)) {
-			imageBottom = getRandomTransparentImage();
-		};
+		Triple<String, String, String> imageBottom = getRandomTransparentImage(List.of(imageLeft, imageRight));
 		model.addAttribute("transparentImageBottom", imageBottom);
 
 		// send or reject the reset request and message user after page refresh
@@ -499,15 +503,9 @@ public class MainController extends BaseController {
 		model.addAttribute("allowOosSearch", getGeneralDataInteger("allowOosSearch"));
 		Triple<String, String, String> imageLeft = getRandomTransparentImage();
 		model.addAttribute("transparentImageLeft", imageLeft);
-		Triple<String, String, String> imageRight = getRandomTransparentImage();
-		while (imageRight.equals(imageLeft)) {
-			imageRight = getRandomTransparentImage();
-		};
+		Triple<String, String, String> imageRight = getRandomTransparentImage(List.of(imageLeft));
 		model.addAttribute("transparentImageRight", imageRight);
-		Triple<String, String, String> imageBottom = getRandomTransparentImage();
-		while (imageBottom.equals(imageLeft) || imageBottom.equals(imageRight)) {
-			imageBottom = getRandomTransparentImage();
-		};
+		Triple<String, String, String> imageBottom = getRandomTransparentImage(List.of(imageLeft, imageRight));
 		model.addAttribute("transparentImageBottom", imageBottom);
 
 		Customer customer = customerService.findByResetToken(token);
@@ -533,15 +531,9 @@ public class MainController extends BaseController {
 		model.addAttribute("allowOosSearch", getGeneralDataInteger("allowOosSearch"));
 		Triple<String, String, String> imageLeft = getRandomTransparentImage();
 		model.addAttribute("transparentImageLeft", imageLeft);
-		Triple<String, String, String> imageRight = getRandomTransparentImage();
-		while (imageRight.equals(imageLeft)) {
-			imageRight = getRandomTransparentImage();
-		};
+		Triple<String, String, String> imageRight = getRandomTransparentImage(List.of(imageLeft));
 		model.addAttribute("transparentImageRight", imageRight);
-		Triple<String, String, String> imageBottom = getRandomTransparentImage();
-		while (imageBottom.equals(imageLeft) || imageBottom.equals(imageRight)) {
-			imageBottom = getRandomTransparentImage();
-		};
+		Triple<String, String, String> imageBottom = getRandomTransparentImage(List.of(imageLeft, imageRight));
 		model.addAttribute("transparentImageBottom", imageBottom);
 
 	    if (!password.equals(confirmPassword)) {
@@ -577,15 +569,9 @@ public class MainController extends BaseController {
 		model.addAttribute("allowOosSearch", getGeneralDataInteger("allowOosSearch"));
 		Triple<String, String, String> imageLeft = getRandomTransparentImage();
 		model.addAttribute("transparentImageLeft", imageLeft);
-		Triple<String, String, String> imageRight = getRandomTransparentImage();
-		while (imageRight.equals(imageLeft)) {
-			imageRight = getRandomTransparentImage();
-		};
+		Triple<String, String, String> imageRight = getRandomTransparentImage(List.of(imageLeft));
 		model.addAttribute("transparentImageRight", imageRight);
-		Triple<String, String, String> imageBottom = getRandomTransparentImage();
-		while (imageBottom.equals(imageLeft) || imageBottom.equals(imageRight)) {
-			imageBottom = getRandomTransparentImage();
-		};
+		Triple<String, String, String> imageBottom = getRandomTransparentImage(List.of(imageLeft, imageRight));
 		model.addAttribute("transparentImageBottom", imageBottom);
 
 		customerFormValidator.validatePasswordReset(customerForm, bindingResult);
@@ -621,10 +607,7 @@ public class MainController extends BaseController {
 		model.addAttribute("allowOosSearch", getGeneralDataInteger("allowOosSearch"));
 		Triple<String, String, String> imageLeft = getRandomTransparentImage();
 		model.addAttribute("transparentImageLeft", imageLeft);
-		Triple<String, String, String> imageRight = getRandomTransparentImage();
-		while (imageRight.equals(imageLeft)) {
-			imageRight = getRandomTransparentImage();
-		};
+		Triple<String, String, String> imageRight = getRandomTransparentImage(List.of(imageLeft));
 		model.addAttribute("transparentImageRight", imageRight);
 
 		Customer customer = getCurrentUser();
@@ -676,10 +659,7 @@ public class MainController extends BaseController {
 		model.addAttribute("allowOosSearch", getGeneralDataInteger("allowOosSearch"));
 		Triple<String, String, String> imageLeft = getRandomTransparentImage();
 		model.addAttribute("transparentImageLeft", imageLeft);
-		Triple<String, String, String> imageRight = getRandomTransparentImage();
-		while (imageRight.equals(imageLeft)) {
-			imageRight = getRandomTransparentImage();
-		};
+		Triple<String, String, String> imageRight = getRandomTransparentImage(List.of(imageLeft));
 		model.addAttribute("transparentImageRight", imageRight);
 		model.addAttribute("allowOosSearch", getGeneralDataInteger("allowOosSearch"));
 		Customer customer = getCurrentUser();
@@ -718,10 +698,7 @@ public class MainController extends BaseController {
 		model.addAttribute("allowOosSearch", getGeneralDataInteger("allowOosSearch"));
 		Triple<String, String, String> imageLeft = getRandomTransparentImage();
 		model.addAttribute("transparentImageLeft", imageLeft);
-		Triple<String, String, String> imageRight = getRandomTransparentImage();
-		while (imageRight.equals(imageLeft)) {
-			imageRight = getRandomTransparentImage();
-		};
+		Triple<String, String, String> imageRight = getRandomTransparentImage(List.of(imageLeft));
 		model.addAttribute("transparentImageRight", imageRight);
 		Customer customer = getCurrentUser();
 		if (customer == null) { // Can't view orders if not logged in, for now. Direct user to log in/sign up
@@ -1110,7 +1087,7 @@ public class MainController extends BaseController {
 			List<CartDetail> cartItems = new ArrayList<>(customerCart.getCartItems());
 			int lineNum = 0;
 			for (CartDetail cartItem : cartItems) {
-				if (cartItem.getProduct().getUpc() == upc) { // One or more of this item is already in the cart, so just
+				if (cartItem.getProduct().getUpc().equals(upc)) { // One or more of this item is already in the cart, so just
 																// increase qty
 					purchasedQty += cartItem.getQty(); // Add qty already in cart to amount added to cart
 					if (purchasedQty > cartItem.getProduct().getStockQty()) { // If more than available stock is
@@ -1514,14 +1491,16 @@ public class MainController extends BaseController {
 
 			// Add to Customer any updates to meeting address, phone/contact, payment method
 			// and payment handle
-			customer.setPhone(customerUpdates.getPhone().trim().isEmpty() ? null : customerUpdates.getPhone().trim());
-			customer.setAddress(
-					customerUpdates.getAddress().trim().isEmpty() ? null : customerUpdates.getAddress().trim());
-			customer.setCity(customerUpdates.getCity().trim().isEmpty() ? null : customerUpdates.getCity().trim());
+			String _phone = customerUpdates.getPhone();
+			customer.setPhone(_phone == null || _phone.trim().isEmpty() ? null : _phone.trim());
+			String _address = customerUpdates.getAddress();
+			customer.setAddress(_address == null || _address.trim().isEmpty() ? null : _address.trim());
+			String _city = customerUpdates.getCity();
+			customer.setCity(_city == null || _city.trim().isEmpty() ? null : _city.trim());
 			customer.setState(customerUpdates.getState());
 			customer.setPreferredPayment(customerUpdates.getPreferredPayment());
-			customer.setPaymentHandle(customerUpdates.getPaymentHandle().trim().isEmpty() ? null
-					: customerUpdates.getPaymentHandle().trim());
+			String _payHandle = customerUpdates.getPaymentHandle();
+			customer.setPaymentHandle(_payHandle == null || _payHandle.trim().isEmpty() ? null : _payHandle.trim());
 			customer.setLastOrdered(LocalDateTime.now().minusHours(hourDiffFromDb)); // Set last order time for
 																						// determining New Items
 			customerService.update(customer);
