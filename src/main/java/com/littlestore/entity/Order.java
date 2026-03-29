@@ -53,11 +53,11 @@ public class Order implements Serializable {
 	public Order() {
 	}
 
-	public Order(int orderNum, Customer customer, LocalDateTime orderDateTime, LocalDateTime reqDeliveryDateTime,
+	public Order(int orderNum, Customer customer, LocalDateTime reqDeliveryDateTime,
 			String status, String comments, List<OrderDetail> orderItems) {
 		this.orderNum = orderNum;
 		this.customer = customer;
-		this.orderDateTime = LocalDateTime.now();	// orderDateTime;
+		this.orderDateTime = LocalDateTime.now();
 		this.reqDeliveryDateTime = reqDeliveryDateTime;
 		this.status = status;
 		this.comments = comments;

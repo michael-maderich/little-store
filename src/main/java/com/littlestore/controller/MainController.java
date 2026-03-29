@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.UUID;
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
@@ -1612,7 +1613,7 @@ public class MainController extends BaseController {
 				return "/login";
 			}
 
-			if (customerOrder.getCustomer().getId() != customer.getId()) {
+			if (!Objects.equals(customerOrder.getCustomer().getId(), customer.getId())) {
 				model.addAttribute("error", "Order number not found for user " + email + ".");
 				return "/login";
 			}
@@ -1674,7 +1675,7 @@ public class MainController extends BaseController {
 				return "/login";
 			}
 
-			if (customerOrder.getCustomer().getId() != customer.getId()) {
+			if (!Objects.equals(customerOrder.getCustomer().getId(), customer.getId())) {
 				model.addAttribute("error", "Order number not found for user " + email + ".");
 				return "/login";
 			}
