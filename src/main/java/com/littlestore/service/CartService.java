@@ -2,7 +2,6 @@ package com.littlestore.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,13 +12,12 @@ import com.littlestore.repository.CartRepository;
 @Service
 public class CartService {
 	
-	@Autowired
-	private CartRepository cartRepository;
-	@Autowired
-	private CustomerService customerService;
+	private final CartRepository cartRepository;
+	private final CustomerService customerService;
 
-	public CartService(CartRepository cartRepository) {
+	public CartService(CartRepository cartRepository, CustomerService customerService) {
 		this.cartRepository = cartRepository;
+		this.customerService = customerService;
 	}
 	
 	

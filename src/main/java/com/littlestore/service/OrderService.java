@@ -5,7 +5,6 @@ import java.util.List;
 
 //import org.hibernate.Session;
 //import org.hibernate.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,15 +21,13 @@ import com.littlestore.repository.OrderRepository;
 public class OrderService {
 //	@Autowired
 //	private SessionFactory sessionFactory;
-    @Autowired
-	private OrderRepository orderRepository;
-    @Autowired
-    private CustomerService customerService;
-//    @Autowired
-//    private ProductService productService;
+    private final OrderRepository orderRepository;
+    private final CustomerService customerService;
+//    private final ProductService productService;
 
-    public OrderService(OrderRepository orderRepository) {
+    public OrderService(OrderRepository orderRepository, CustomerService customerService) {
     	this.orderRepository = orderRepository;
+    	this.customerService = customerService;
     }
 	
     

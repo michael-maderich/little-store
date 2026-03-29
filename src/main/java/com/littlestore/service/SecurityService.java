@@ -2,7 +2,6 @@ package com.littlestore.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,13 +16,17 @@ import com.littlestore.entity.Customer;
 @Service
 public class SecurityService {
 
-	@Autowired
-	private AuthenticationManager authenticationManager;
-	@Autowired
-	private UserDetailsService userDetailsService;
-	@Autowired
-	protected CustomerService customerService;
-	
+	private final AuthenticationManager authenticationManager;
+	private final UserDetailsService userDetailsService;
+	private final CustomerService customerService;
+
+	public SecurityService(AuthenticationManager authenticationManager, UserDetailsService userDetailsService,
+			CustomerService customerService) {
+		this.authenticationManager = authenticationManager;
+		this.userDetailsService = userDetailsService;
+		this.customerService = customerService;
+	}
+
 	private static final Logger logger = LoggerFactory.getLogger(SecurityService.class);
 	
 	public String findLoggedInEmail() {
