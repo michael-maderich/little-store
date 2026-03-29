@@ -3,6 +3,17 @@
 
 <h2>Orders</h2>
 
+<c:if test="${not empty message}">
+  <div class="alert alert-success" style="margin-bottom:1rem;">
+    ${message}
+  </div>
+</c:if>
+<c:if test="${not empty error}">
+  <div class="alert alert-danger" style="margin-bottom:1rem;">
+    ${error}
+  </div>
+</c:if>
+
 <table class="admin-table">
   <thead>
     <tr>

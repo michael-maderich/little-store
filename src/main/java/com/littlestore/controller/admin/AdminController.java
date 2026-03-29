@@ -1,14 +1,9 @@
 package com.littlestore.controller.admin;
 
-import java.util.Collections;
-import java.util.List;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import com.littlestore.entity.Order;
 
 import com.littlestore.config.GmailProperties;
 import com.littlestore.controller.BaseController;
@@ -38,28 +33,4 @@ public class AdminController extends BaseController {
 			return "admin/dashboard";
 		}
 	}
-
-    // e.g. “Manage Orders”
-    @GetMapping("/orders")
-    public String listOrders( Model model ) {
-		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
-		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
-		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
-    	List<Order> orders = orderService.listAll();
-    	Collections.reverse(orders);
-    	model.addAttribute("orders", orders);
-    	return "admin/orders";
-    }
-  
-    // e.g. “Manage Products”
-//    @GetMapping("/products")
-//    public String listProducts(Model model) {
-//		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
-//		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
-//		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
-//    	model.addAttribute("products", productService.listAll());
-//    	return "admin/products";
-//    }
-  
-    // etc…
 }

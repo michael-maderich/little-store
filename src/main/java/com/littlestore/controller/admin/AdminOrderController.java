@@ -2,10 +2,12 @@ package com.littlestore.controller.admin;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.List;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -22,6 +24,20 @@ public class AdminOrderController extends BaseController {
 
     public AdminOrderController(GmailEmailService emailService, GmailProperties gmailProps) {
         super(emailService, gmailProps);
+    }
+
+    @GetMapping
+    public String listOrders(Model model, @ModelAttribute("message") String message,
+            @ModelAttribute("error") String error) {
+        model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
+        model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
+        model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
+        List<Order> orders = orderService.listAll();
+        Collections.reverse(orders);
+        model.addAttribute("orders", orders);
+        if (message != null && !message.isEmpty()) model.addAttribute("message", message);
+        if (error != null && !error.isEmpty()) model.addAttribute("error", error);
+        return "admin/orders/list";
     }
 
     @GetMapping("/{orderNum}/print")
@@ -46,7 +62,7 @@ public class AdminOrderController extends BaseController {
         model.addAttribute("listStates", listStates);
         model.addAttribute("listPayTypes", listPayTypes);
         model.addAttribute("listPaymentInfo", listPaymentInfo());
-        return "printOrder";
+        return "admin/orders/print";
     }
 
     @GetMapping("/{orderNum}/resend")
