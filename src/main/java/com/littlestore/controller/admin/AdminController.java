@@ -1,9 +1,14 @@
 package com.littlestore.controller.admin;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.littlestore.entity.Order;
 
 import com.littlestore.config.GmailProperties;
 import com.littlestore.controller.BaseController;
@@ -40,7 +45,9 @@ public class AdminController extends BaseController {
 		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
 		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
-    	model.addAttribute("orders", orderService.listAll() );
+    	List<Order> orders = orderService.listAll();
+    	Collections.reverse(orders);
+    	model.addAttribute("orders", orders);
     	return "admin/orders";
     }
   
