@@ -11,6 +11,7 @@
       <th>Date</th>
       <th>Status</th>
       <th>Total</th>
+      <th>Actions</th>
     </tr>
   </thead>
   <tbody>
@@ -29,6 +30,13 @@
             <c:set var="total" value="${total + item.qty * item.price}" />
           </c:forEach>
           $<fmt:formatNumber value="${total}" pattern="0.00" />
+        </td>
+        <td style="white-space: nowrap">
+          <a href="/admin/orders/${o.orderNum}/print" target="_blank"
+             class="admin-btn">Print Order</a>
+          <a href="/admin/orders/${o.orderNum}/resend"
+             class="admin-btn"
+             onclick="return confirm('Resend confirmation for order #${o.orderNum} to ${o.customer.email}?')">Resend Confirmation</a>
         </td>
       </tr>
     </c:forEach>
