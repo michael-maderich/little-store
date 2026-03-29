@@ -114,17 +114,15 @@ public class AdminProductController extends BaseController {
     }
 
     @GetMapping("/edit/{upc}")
-    public String showEditForm(@PathVariable String upc, Model model) {
+    public String showEditForm(@PathVariable String upc, Model model, RedirectAttributes redirect) {
 		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
 		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
 
 		Product product = productService.get(upc);
         if (product == null) {
-            // If no product found, redirect to list with error
-            model.addAttribute("errorMessage", "No such product with UPC: " + upc);
-            return "admin/products/list";
-//            return "redirect:/admin/products";
+            redirect.addFlashAttribute("errorMessage", "No such product with UPC: " + upc);
+            return "redirect:/admin/products";
         }
 
 		populateCategoryDropdowns(model);

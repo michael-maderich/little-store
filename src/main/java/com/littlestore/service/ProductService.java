@@ -3,6 +3,7 @@ package com.littlestore.service;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 import org.springframework.data.jpa.domain.Specification;
@@ -139,7 +140,7 @@ public class ProductService {
 				String name = subCatItems.get(0).getName();
 				String size = subCatItems.get(0).getSize();
 				for (Product p : subCatItems) {
-					if (p.getName().equals(name) && p.getSize().equals(size)) {
+					if (p.getName().equals(name) && Objects.equals(p.getSize(), size)) {
 						groupItems.add(p);
 					}
 					else {

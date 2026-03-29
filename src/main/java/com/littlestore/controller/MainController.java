@@ -399,7 +399,7 @@ public class MainController extends BaseController {
 			customerForm.setIsEnabled(true);
 			customerForm.setAccountCreated(LocalDateTime.now().minusHours(hourDiffFromDb));
 			customerService.create(customerForm);
-			securityService.autoLogin(customerForm.getEmail(), customerForm.getPasswordConfirm());
+			auth.autoLogin(customerForm.getEmail(), customerForm.getPasswordConfirm());
 			model.addAttribute("listStates", listStates);
 			return "/account";
 		}
@@ -583,7 +583,7 @@ public class MainController extends BaseController {
 			Customer customer = customerService.findByEmail(customerForm.getEmail());
 			customer.setPassword(customerService.encrypt(customerForm.getPassword()));
 			customerService.update(customer);
-			securityService.autoLogin(customerForm.getEmail(), customerForm.getPasswordConfirm());
+			auth.autoLogin(customerForm.getEmail(), customerForm.getPasswordConfirm());
 			model.addAttribute("listStates", listStates);
 			model.addAttribute("message", "Your password has been successfully changed. Please log in with your new password.");
 			return "/login";
@@ -1235,9 +1235,13 @@ public class MainController extends BaseController {
 				return "redirect:/cart";
 			}
 			int removedQty = removedLineItem.getQty();
-			cartAdjustments = ("" + removedQty).concat(" ").concat(removedLineItem.getProduct().getName()).concat(" ")
-					.concat(removedLineItem.getProduct().getOptions()).concat(" ")
-					.concat(removedLineItem.getProduct().getSize()).concat(" removed from cart");
+			String pName = removedLineItem.getProduct().getName();
+			String pOpts = removedLineItem.getProduct().getOptions();
+			String pSize = removedLineItem.getProduct().getSize();
+			cartAdjustments = removedQty + " " + pName
+					+ (pOpts != null && !pOpts.isEmpty() ? " " + pOpts : "")
+					+ (pSize != null && !pSize.isEmpty() ? " " + pSize : "")
+					+ " removed from cart";
 			cartItems.remove(removedLineItem);
 			Collections.sort(cartItems); // CartDetail entity contains compareTo() method
 			customerCart.setCartItems(cartItems);

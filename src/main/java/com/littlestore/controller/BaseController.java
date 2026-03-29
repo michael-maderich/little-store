@@ -48,8 +48,6 @@ public abstract class BaseController {
 	@Autowired
 	protected PaymentInfoService paymentInfoService;
 	@Autowired
-	protected SecurityService securityService;
-	@Autowired
 	protected CustomerFormValidator customerFormValidator;
 	@Autowired
 	protected EmailTemplateService emailTemplateService;
