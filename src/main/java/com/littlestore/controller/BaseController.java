@@ -189,7 +189,7 @@ public abstract class BaseController {
     		    Map.entry("payHandle", customer.getPaymentHandle() == null ? "" : customer.getPaymentHandle()),
     		    Map.entry("orderNum", String.valueOf(order.getOrderNum())),
     		    Map.entry("orderDate", order.getOrderDateTime().format(DateTimeFormatter.ISO_LOCAL_DATE)),
-    		    Map.entry("orderStatus", order.getStatus()),
+    		    Map.entry("orderStatus", order.getStatus() == null ? "" : order.getStatus().getLabel()),
     		    Map.entry("supportEmail", getGeneralDataString("receiverEmail")),
     		    Map.entry("orderItemsTable", buildOrderItemsTable(order))
     		);

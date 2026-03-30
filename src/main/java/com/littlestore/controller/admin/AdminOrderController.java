@@ -9,13 +9,16 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.littlestore.config.GmailProperties;
 import com.littlestore.controller.BaseController;
 import com.littlestore.entity.Customer;
 import com.littlestore.entity.Order;
+import com.littlestore.entity.OrderStatus;
 import com.littlestore.service.GmailEmailService;
 
 @Controller
@@ -104,6 +107,47 @@ public class AdminOrderController extends BaseController {
                     "Failed to send email for order #" + orderNum + ": " + e.getMessage());
         }
 
+        return "redirect:/admin/orders";
+    }
+
+    @PostMapping("/{orderNum}/status")
+    public String updateStatus(@PathVariable(name = "orderNum") int orderNum,
+            @RequestParam("status") OrderStatus status,
+            RedirectAttributes redirectAttributes) {
+        Order customerOrder;
+        try {
+            customerOrder = orderService.get(orderNum);
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Order #" + orderNum + " not found.");
+            return "redirect:/admin/orders";
+        }
+        customerOrder.setStatus(status);
+        customerOrder.setStatusDateTime(java.time.LocalDateTime.now());
+        orderService.save(customerOrder);
+        redirectAttributes.addFlashAttribute("message",
+                "Order #" + orderNum + " status updated to " + status.getLabel() + ".");
+        return "redirect:/admin/orders";
+    }
+
+    @GetMapping("/{orderNum}/cancel")
+    public String cancelOrder(@PathVariable(name = "orderNum") int orderNum,
+            RedirectAttributes redirectAttributes) {
+        Order customerOrder;
+        try {
+            customerOrder = orderService.get(orderNum);
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Order #" + orderNum + " not found.");
+            return "redirect:/admin/orders";
+        }
+        if (customerOrder.getStatus() == OrderStatus.DELIVERED) {
+            redirectAttributes.addFlashAttribute("error",
+                    "Order #" + orderNum + " is already delivered and cannot be cancelled.");
+            return "redirect:/admin/orders";
+        }
+        customerOrder.setStatus(OrderStatus.CANCELLED);
+        customerOrder.setStatusDateTime(java.time.LocalDateTime.now());
+        orderService.save(customerOrder);
+        redirectAttributes.addFlashAttribute("message", "Order #" + orderNum + " has been cancelled.");
         return "redirect:/admin/orders";
     }
 }

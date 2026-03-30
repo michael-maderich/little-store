@@ -3,9 +3,14 @@
 
 <h2>Products</h2>
 
-<c:if test="${not empty successMessage}">
+<c:if test="${not empty message}">
   <div class="alert alert-success" style="margin-bottom:1rem;">
-    ${successMessage}
+    ${message}
+  </div>
+</c:if>
+<c:if test="${not empty error}">
+  <div class="alert alert-danger" style="margin-bottom:1rem;">
+    ${error}
   </div>
 </c:if>
 

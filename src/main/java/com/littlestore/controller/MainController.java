@@ -41,6 +41,7 @@ import com.littlestore.entity.Cart;
 import com.littlestore.entity.CartDetail;
 import com.littlestore.entity.Customer;
 import com.littlestore.entity.Order;
+import com.littlestore.entity.OrderStatus;
 import com.littlestore.entity.OrderDetail;
 import com.littlestore.entity.Product;
 import com.littlestore.service.EmailTemplateService;
@@ -1400,7 +1401,8 @@ public class MainController extends BaseController {
 			customerOrder.setCustomer(customer);
 			customerOrder.setOrderDateTime(LocalDateTime.now().minusHours(hourDiffFromDb));
 			customerOrder.setReqDeliveryDateTime(null);
-			customerOrder.setStatus("Confirmed"); // Will need to update this later using enum
+			customerOrder.setStatus(OrderStatus.PROCESSING);
+			customerOrder.setStatusDateTime(LocalDateTime.now().minusHours(hourDiffFromDb));
 			customerOrder.setComments(null);
 			orderService.save(customerOrder);
 

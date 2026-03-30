@@ -7,6 +7,8 @@ import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -39,10 +41,14 @@ public class Order implements Serializable {
 	@Column(name="reqDeliveryDateTime")
 	private LocalDateTime reqDeliveryDateTime;
 	
-	@Basic
+	@Enumerated(EnumType.STRING)
 	@Column(name="status", length=20)
-	private String status;				// 'Unshipped','Paid','Delivered'
-	
+	private OrderStatus status;
+
+	@Basic
+	@Column(name="statusDateTime", nullable=false)
+	private LocalDateTime statusDateTime;
+
 	@Basic
 	@Column(name="comments", length=250)
 	private String comments;
@@ -54,12 +60,13 @@ public class Order implements Serializable {
 	}
 
 	public Order(int orderNum, Customer customer, LocalDateTime reqDeliveryDateTime,
-			String status, String comments, List<OrderDetail> orderItems) {
+			OrderStatus status, String comments, List<OrderDetail> orderItems) {
 		this.orderNum = orderNum;
 		this.customer = customer;
 		this.orderDateTime = LocalDateTime.now();
 		this.reqDeliveryDateTime = reqDeliveryDateTime;
 		this.status = status;
+		this.statusDateTime = LocalDateTime.now();
 		this.comments = comments;
 		this.orderItems = orderItems;
 	}
@@ -93,11 +100,18 @@ public class Order implements Serializable {
 		this.reqDeliveryDateTime = reqDeliveryDateTime;
 	}
 
-	public String getStatus() {
+	public OrderStatus getStatus() {
 		return status;
 	}
-	public void setStatus(String status) {
+	public void setStatus(OrderStatus status) {
 		this.status = status;
+	}
+
+	public LocalDateTime getStatusDateTime() {
+		return statusDateTime;
+	}
+	public void setStatusDateTime(LocalDateTime statusDateTime) {
+		this.statusDateTime = statusDateTime;
 	}
 
 	public String getComments() {
@@ -126,6 +140,7 @@ public class Order implements Serializable {
 		result = prime * result + orderNum;
 		result = prime * result + ((reqDeliveryDateTime == null) ? 0 : reqDeliveryDateTime.hashCode());
 		result = prime * result + ((status == null) ? 0 : status.hashCode());
+		result = prime * result + ((statusDateTime == null) ? 0 : statusDateTime.hashCode());
 		return result;
 	}
 
@@ -167,6 +182,11 @@ public class Order implements Serializable {
 			if (other.status != null)
 				return false;
 		} else if (!status.equals(other.status))
+			return false;
+		if (statusDateTime == null) {
+			if (other.statusDateTime != null)
+				return false;
+		} else if (!statusDateTime.equals(other.statusDateTime))
 			return false;
 		return true;
 	}

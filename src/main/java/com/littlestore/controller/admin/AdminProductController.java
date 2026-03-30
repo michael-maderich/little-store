@@ -69,17 +69,15 @@ public class AdminProductController extends BaseController {
     }
 
     @GetMapping
-    public String listProducts(Model model, @ModelAttribute("successMessage") String successMessage) {
+    public String listProducts(Model model, @ModelAttribute("message") String message,
+            @ModelAttribute("error") String error) {
         List<Product> products = productService.listAll();
 		model.addAttribute("copyrightName", getGeneralDataString("copyrightName"));
 		model.addAttribute("copyrightUrl", getGeneralDataString("copyrightUrl"));
 		model.addAttribute("mainStyle", getGeneralDataString("mainStyle"));
         model.addAttribute("products", products);
-        // If there was a flash successMessage, the model now contains it.
-        // The JSP will render it if not empty.
-        if (successMessage != null && !successMessage.isEmpty()) {
-            model.addAttribute("successMessage", successMessage);
-        }
+        if (message != null && !message.isEmpty()) model.addAttribute("message", message);
+        if (error != null && !error.isEmpty()) model.addAttribute("error", error);
         return "admin/products/list";
     }
 
@@ -121,7 +119,7 @@ public class AdminProductController extends BaseController {
 
 		Product product = productService.get(upc);
         if (product == null) {
-            redirect.addFlashAttribute("errorMessage", "No such product with UPC: " + upc);
+            redirect.addFlashAttribute("error", "No such product with UPC: " + upc);
             return "redirect:/admin/products";
         }
 
@@ -359,7 +357,7 @@ public class AdminProductController extends BaseController {
         // F) Persist and redirect
         // ─────────────────────────────────────────────────────────────
         productService.save(product);
-        redirect.addFlashAttribute("successMessage", "Product saved successfully.");
+        redirect.addFlashAttribute("message", "Product saved successfully.");
         return "redirect:/admin/products";
     }
 
@@ -390,11 +388,11 @@ public class AdminProductController extends BaseController {
 			    );
 			    // (You can inspect destroyResult.get("result") for “ok” or “not found”)
             } catch (IOException ioex) {
-        		redirect.addFlashAttribute("errorMessage", "Image deletion failed.");
+        		redirect.addFlashAttribute("error", "Image deletion failed.");
                 return "redirect:/admin/products";
             }
         }
-        redirect.addFlashAttribute("successMessage", message);
+        redirect.addFlashAttribute("message", message);
         return "redirect:/admin/products";
     }
 }
