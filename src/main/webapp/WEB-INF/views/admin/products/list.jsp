@@ -1,6 +1,22 @@
 <%@ include file="/WEB-INF/views/admin/fragments/adminHeader.jsp" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
+<script>
+async function confirmDelete(event, upc) {
+  event.preventDefault();
+  const url = event.currentTarget.href;
+  try {
+    const res = await fetch('${pageContext.request.contextPath}/admin/products/' + upc + '/in-cart');
+    const inCart = await res.json();
+    const msg = inCart
+      ? 'This product is currently in one or more customer carts. Deleting it will also remove it from those carts. Delete anyway?'
+      : 'Delete this product?';
+    if (confirm(msg)) window.location.href = url;
+  } catch (e) {
+    if (confirm('Delete this product?')) window.location.href = url;
+  }
+}
+</script>
 <h2>Products</h2>
 
 <c:if test="${not empty message}">
@@ -52,7 +68,7 @@
         <td>
           <a href="${pageContext.request.contextPath}/admin/products/edit/${p.upc}">Edit</a> |
           <a href="${pageContext.request.contextPath}/admin/products/delete/${p.upc}"
-             onclick="return confirm('Delete this product?');">Delete</a>
+             onclick="confirmDelete(event, '${p.upc}'); return false;">Delete</a>
         </td>
       </tr>
     </c:forEach>

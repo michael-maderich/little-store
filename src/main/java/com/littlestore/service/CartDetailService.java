@@ -76,4 +76,13 @@ public class CartDetailService {
 	public void delete(CartDetail item) {
 		cartDetailRepository.delete(item);
 	}
+
+    @Transactional(rollbackFor = Exception.class)
+	public void deleteAllByUpc(String upc) {
+		cartDetailRepository.deleteByProductUpc(upc);
+	}
+
+	public boolean existsByUpc(String upc) {
+		return cartDetailRepository.existsByProductUpc(upc);
+	}
 }

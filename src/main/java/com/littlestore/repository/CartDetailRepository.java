@@ -15,7 +15,11 @@ public interface CartDetailRepository extends CrudRepository<CartDetail, CartDet
 	public List<CartDetail> findByCartOrderByLineNumberAsc(Cart cart);
 
 	public void delete(CartDetail item);
-	
+
+	public void deleteByProductUpc(String upc);
+
+	public boolean existsByProductUpc(String upc);
+
 	@Query(value = "SELECT * FROM cartDetail line "
 	+ "WHERE line.cartNum = :cartNum AND line.upc = :upc", nativeQuery=true)
 	public CartDetail findLineByCartNumAndUpc(@Param("cartNum") int cartNum, String upc);

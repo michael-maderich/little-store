@@ -15,6 +15,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.http.ResponseEntity;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -361,6 +362,12 @@ public class AdminProductController extends BaseController {
         return "redirect:/admin/products";
     }
 
+    @GetMapping("/{upc}/in-cart")
+    @ResponseBody
+    public ResponseEntity<Boolean> isInCart(@PathVariable String upc) {
+        return ResponseEntity.ok(cartDetailService.existsByUpc(upc));
+    }
+
     @GetMapping("/delete/{upc}")
     public String deleteProduct(@PathVariable String upc,
                                 RedirectAttributes redirect) {
@@ -371,6 +378,7 @@ public class AdminProductController extends BaseController {
 	    Product p = productService.get(upc);
 		String message = (p == null) ? "Product not found" : p.getDescription() + " deleted.";
         if (p != null) {
+        	cartDetailService.deleteAllByUpc(upc);
         	productService.delete(upc);
 
         	try {
